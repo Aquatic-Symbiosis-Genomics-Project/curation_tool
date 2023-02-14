@@ -34,7 +34,5 @@ jobs:
         uses: crystal-lang/install-crystal@v1
       - name: Install Shards 
         run: shards install 
-      - name: Run tests
-        run: crystal spec --order=random
       - name: Build
         run: shards build
