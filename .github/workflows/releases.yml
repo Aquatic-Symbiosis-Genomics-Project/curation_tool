@@ -1,0 +1,26 @@
+name: Deployment
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  release_linux:
+    runs-on: ubuntu-latest
+    container:
+      image: crystallang/crystal:latest-alpine
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          shards build --production --release --static --no-debug
+          strip ./bin/decon_blastBTK
+      - name: Upload
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./bin/curation_tool
+          asset_name: curation_tool
+          asset_content_type: binary/octet-stream

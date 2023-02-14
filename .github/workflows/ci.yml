@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [master]
+jobs:
+  check_format:
+    runs-on: ubuntu-latest
+    container:
+      image: crystallang/crystal
+    steps:
+      - uses: actions/checkout@v3
+      - name: Format
+        run: crystal tool format --check
+
+  coding_standards:
+    runs-on: ubuntu-latest
+    container:
+      image: crystallang/crystal
+    steps:
+      - uses: actions/checkout@v3
+      - name: Crystal Ameba Linter
+        id: crystal-ameba
+        uses: crystal-ameba/github-action@v0.6.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1
+      - name: Install Shards 
+        run: shards install 
+      - name: Run tests
+        run: crystal spec --order=random
+      - name: Build
+        run: shards build
