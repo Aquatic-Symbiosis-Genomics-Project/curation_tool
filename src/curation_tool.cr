@@ -36,7 +36,6 @@ OptionParser.parse do |parser|
     STDERR.puts parser
     exit(1)
   end
-
 end
 
 y = GritJiraIssue.new(issue)

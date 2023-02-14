@@ -37,23 +37,22 @@ class GritJiraIssue
     raise "cannot get the yaml" unless r.success?
     @yaml = YAML.parse(r.body)
   end
-
 end
 
 module CurationTool
   VERSION = "0.1.0"
 
   def setup_tol(y)
-	# mkdir /lustre/scratch123/tol/teams/grit/tom_mathers/curations/<tol_ID>
-	wd = "/lustre/scratch123/tol/teams/grit/#{ENV["USER"]}/#{y.yaml["specimen"]}"
-	Dir.mkdir_p(wd)
-  
-	# ln -s /lustre/scratch124/tol/projects/darwin/data/<path> . ; curation_v2;cursetup
+    # mkdir /lustre/scratch123/tol/teams/grit/tom_mathers/curations/<tol_ID>
+    wd = "/lustre/scratch123/tol/teams/grit/#{ENV["USER"]}/#{y.yaml["specimen"]}"
+    Dir.mkdir_p(wd)
 
-	# get file_to_curate
-	fasta_gz = y.json["fields"]["customfield_11677"].as_s.sub("curation","decontaminated.fa.gz")
-	FileUtils.ln_sf(fasta_gz ,"#{wd}/")
-        cmd = <<-HERE
+    # ln -s /lustre/scratch124/tol/projects/darwin/data/<path> . ; curation_v2;cursetup
+
+    # get file_to_curate
+    fasta_gz = y.json["fields"]["customfield_11677"].as_s.sub("curation", "decontaminated.fa.gz")
+    FileUtils.ln_sf(fasta_gz, "#{wd}/")
+    cmd = <<-HERE
 cd #{wd};
 zcat *.fa.gz > original.fa ; 
 perl /software/grit/projects/vgp_curation_scripts/rapid_split.pl -fa original.fa ; 
@@ -64,7 +63,6 @@ HERE
     puts `#{cmd}`
     raise "something went wrong" unless $?.success?
   end
-
 
   # copy pretext
   def setup_local(yaml)
@@ -97,10 +95,9 @@ HERE
      "#{input}.chromosome.list.csv",
      "#{input}.curated.agp"].each { |f|
       puts "copying #{d}/#{f} => #{target_dir}/#{f}"
-      puts File.copy("#{d}/#{f}","#{target_dir}/#{f})")
+      puts File.copy("#{d}/#{f}", "#{target_dir}/#{f})")
     }
   end
-
 
   # rapid_pretext2tpf_XL.py scaffolds.tpf <tol_id>.pretext.agp_
   # rapid_join.pl -csv chrs.csv -fa original.fa -tpf rapid_prtxt_XL.tpf -out <tol_id>
