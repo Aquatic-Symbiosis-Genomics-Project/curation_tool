@@ -40,6 +40,8 @@ end
 
 y = GritJiraIssue.new(issue)
 
+puts y.json.to_pretty_json
+
 if setup
   puts "copy pretext =>"
   setup_local(y.yaml)
