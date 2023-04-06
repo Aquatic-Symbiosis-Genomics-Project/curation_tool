@@ -22,5 +22,5 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./bin/curation_tool
-          asset_name: curation_tool
+          asset_name: curation_tool-${{ runner.os }}
           asset_content_type: binary/octet-stream

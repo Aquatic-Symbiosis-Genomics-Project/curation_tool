@@ -36,3 +36,11 @@ jobs:
         run: shards install 
       - name: Build
         run: shards build
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ env.name }}
+          files: |
+            bin/curation_tool
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
