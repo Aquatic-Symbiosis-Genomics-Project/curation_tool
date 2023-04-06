@@ -31,7 +31,7 @@ class GritJiraIssue
   end
 
   def geval_db
-    if self.json["fileds"].as_h.has_key?("customfield_11643")
+    if self.json["fields"].as_h.has_key?("customfield_11643")
       self.json["fields"]["customfield_11643"].as_s
     else
       ""
