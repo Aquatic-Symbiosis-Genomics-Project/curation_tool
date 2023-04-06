@@ -28,10 +28,10 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    container:
+      image: crystallang/crystal:latest-alpine
     steps:
       - uses: actions/checkout@v3
-      - name: Install Crystal
-        uses: crystal-lang/install-crystal@v1
       - name: Install Shards 
         run: shards install 
       - name: Build
@@ -39,7 +39,7 @@ jobs:
       - name: Release
         uses: actions/upload-artifact@v3
         with:
-          name: curation_tool-ubuntu-latest
+          name: curation_tool-latest-alpine
           path: bin/curation_tool
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
