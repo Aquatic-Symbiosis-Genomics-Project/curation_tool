@@ -39,7 +39,7 @@ jobs:
       - name: Release
         uses: actions/upload-artifact@v3
         with:
-          name: curation_tool-${{ env.name }}
+          name: curation_tool-ubuntu-latest
           path: bin/curation_tool
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
