@@ -206,29 +206,4 @@ HERE
     puts `#{cmd}`
     raise "something went wrong" unless $?.success?
   end
-
-  # copy for QC
-  def copy_qc(j, d)
-    # nab the decontaminated file from Jira? and use the basedir from that?
-    target_dir = j["fields"]["customfield_11677"].to_s
-    target_dir = target_dir.split("/")[0..-3].join("/")
-    target_dir = "#{target_dir}/curated/#{j["fields"]["customfield_11627"]}.#{j["fields"]["customfield_11609"].as_f.to_i}"
-
-    # sample_id + release_version | or from geval database
-    input = j["fields"]["customfield_11643"].to_s.split("_")[-2..-1].join("_")
-    ["rapid_prtxt_XL.tpf",
-     "haps_rapid_prtxt_XL.tpf",
-     "#{input}.curated_primary.no_mt.unscrubbed.fa",
-     "#{input}.inter.csv",
-     "#{input}.additional_haplotigs.unscrubbed.fa",
-     "#{input}.chromosome.list.csv",
-     "#{input}.curated.agp"].each { |f|
-      puts "copying #{d}/#{f} => #{target_dir}/#{f}"
-      puts File.copy("#{d}/#{f}", "#{target_dir}/#{f})")
-    }
-  end
-
-  # rapid_pretext2tpf_XL.py scaffolds.tpf <tol_id>.pretext.agp_
-  # rapid_join.pl -csv chrs.csv -fa original.fa -tpf rapid_prtxt_XL.tpf -out <tol_id>
-  # Make new pretext map.
 end
