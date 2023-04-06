@@ -31,7 +31,11 @@ class GritJiraIssue
   end
 
   def geval_db
-    self.json["fields"]["customfield_11643"].as_s
+    if self.json["fileds"].as_h.has_key?("customfield_11643")
+      self.json["fields"]["customfield_11643"].as_s
+    else
+      ""
+    end
   end
 
   def decon_file
@@ -48,8 +52,9 @@ class GritJiraIssue
 
   # in the form of tol_id _ version
   def sample_version
-    if self.geval_db
-      self.geval_db.split("_")[-2..-1].join("_")
+    g = self.geval_db
+    if g.blank?
+      g.split("_")[-2..-1].join("_")
     else
       "#{self.tol_id}_#{self.release_version}"
     end
