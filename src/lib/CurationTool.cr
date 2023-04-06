@@ -109,12 +109,19 @@ module CurationTool
   VERSION = "0.1.0"
 
   def setup_tol(y)
-    wd = "#{Dir.current}/#{y.tol_id}"
+    wd = y.working_dir
     Dir.mkdir_p(wd)
 
+    fasta_gz = y.decon_file.sub("contamination", "decontaminated.fa.gz")
+
+    raise Exception.new("scaffolds.tpf in working #{wd} already exists") if File.exists?(wd + "/scaffolds.tpf")
+
     cmd = <<-HERE
-touch #{wd}/notes;
-scp #{ENV["USER"]}@tol:/nfs/team135/pretext_maps/#{y.tol_id}*.pretext #{wd}/
+cd #{wd} ;
+zcat #{fasta_gz} > original.fa ;
+perl /software/grit/projects/vgp_curation_scripts/rapid_split.pl -fa original.fa ;
+mv -f original.fa.tpf original.tpf ;
+cp original.tpf scaffolds.tpf;
 HERE
     puts `#{cmd}`
     raise "something went wrong" unless $?.success?
