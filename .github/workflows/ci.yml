@@ -37,10 +37,9 @@ jobs:
       - name: Build
         run: shards build
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.name }}
-          files: |
-            bin/curation_tool
+          name: curation_tool-${{ env.name }}
+          path: bin/curation_tool
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
