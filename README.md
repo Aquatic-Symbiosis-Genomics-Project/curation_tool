@@ -8,18 +8,21 @@ simple commandline tool to organise curation files using the GRIT JIRA
 ## Installation
 
 if you got crystal installed:
+
 shards build
+
 will create a curation_tool binary in bin/
 
 ## Usage
 
-Usage: curation_tool --issue JIRA_ID [--setup_local | --copy_qc]
-    -i JIRA_ID, --issue JIRA_ID      JIRA ID
-    -p, --copy_pretext               copy over pretext
-    -w, --setup_working_dir          create initial curation files and directory
-    -r, --build_release              create pretext and release files
-    -q, --copy_qc                    copy from DIR to curation for QC
-    -h, --help                       show this help
+Usage: curation_tool --issue JIRA_ID [--copy_pretext | --copy_qc | --build_releas | --setup_working_dir]
+
+- -i JIRA_ID, --issue JIRA_ID JIRA ID
+- -p, --copy_pretext          copy over pretext
+- -w, --setup_working_dir     create initial curation files and directory
+- -r, --build_release         create pretext and release files
+- -q, --copy_qc               copy from DIR to curation for QC
+- -h, --help                  show this help
 
 ## Contributors
 
