@@ -35,7 +35,7 @@ jobs:
       - name: Install Shards 
         run: shards install 
       - name: Build
-        run: shards build
+        run: shards build --production --release --static --no-debug
       - name: Release
         uses: actions/upload-artifact@v3
         with:
