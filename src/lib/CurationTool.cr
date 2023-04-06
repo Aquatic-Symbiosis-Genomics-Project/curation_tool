@@ -31,10 +31,10 @@ class GritJiraIssue
   end
 
   def geval_db
-    if self.json["fields"].as_h.has_key?("customfield_11643")
-      self.json["fields"]["customfield_11643"].as_s
-    else
+    if self.json["fields"]["customfield_11643"].as_nil.nil?
       ""
+    else
+      self.json["fields"]["customfield_11643"].as_s
     end
   end
 
@@ -54,9 +54,9 @@ class GritJiraIssue
   def sample_version
     g = self.geval_db
     if g.blank?
-      g.split("_")[-2..-1].join("_")
-    else
       "#{self.tol_id}_#{self.release_version}"
+    else
+      g.split("_")[-2..-1].join("_")
     end
   end
 
@@ -164,11 +164,11 @@ HERE
   def copy_qc(y)
     target_dir = y.curated_dir
     wd = y.working_dir
+    input_id = y.sample_version
     FileUtils.mkdir_p(target_dir)
 
     Dir.cd(wd) do
       # sample_id + release_version | or from geval database
-      input_id = y.sample_version
       input_id = y.tol_id unless File.exists?("#{input_id}.curated_primary.no_mt.unscrubbed.fa")
 
       # required files
