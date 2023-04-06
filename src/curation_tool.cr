@@ -15,7 +15,7 @@ OptionParser.parse do |parser|
   parser.on("-i JIRA_ID", "--issue JIRA_ID", "JIRA ID") { |i| issue = i }
   parser.on("-p", "--copy_pretext", "copy over pretext") { setup = true }
   parser.on("-w", "--setup_working_dir", "create initial curation files and directory") { tol = true }
-  parser.on("-r", "--build_release") { release = true }
+  parser.on("-r", "--build_release", "create pretext and release files") { release = true }
   parser.on("-q", "--copy_qc", "copy from DIR to curation for QC") { qc = true }
 
   parser.on("-h", "--help", "show this help") do

@@ -39,7 +39,7 @@ class GritJiraIssue
   end
 
   def release_version
-    self.json["fields"]["customfield_11609"].as_i
+    self.json["fields"]["customfield_11609"].as_f.to_i
   end
 
   def tol_id
