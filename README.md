@@ -7,12 +7,19 @@ simple commandline tool to organise curation files using the GRIT JIRA
 
 ## Installation
 
-if one a Mac: install homebrew and do a brew install crystal
+if you got crystal installed:
+shards build
+will create a curation_tool binary in bin/
 
 ## Usage
 
--q copy files from the current diretory to QC
--l create a local directory for pretext
+Usage: curation_tool --issue JIRA_ID [--setup_local | --copy_qc]
+    -i JIRA_ID, --issue JIRA_ID      JIRA ID
+    -p, --copy_pretext               copy over pretext
+    -w, --setup_working_dir          create initial curation files and directory
+    -r, --build_release              create pretext and release files
+    -q, --copy_qc                    copy from DIR to curation for QC
+    -h, --help                       show this help
 
 ## Contributors
 
