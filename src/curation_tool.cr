@@ -9,16 +9,14 @@ issue = "GRIT-736"
 setup = false
 qc = false
 tol = false
-qc_dir = ""
+release = false
 OptionParser.parse do |parser|
   parser.banner = "Usage: curation_tool --issue JIRA_ID [--setup_local | --copy_qc]"
   parser.on("-i JIRA_ID", "--issue JIRA_ID", "JIRA ID") { |i| issue = i }
-  parser.on("-l", "--setup_local", "copy over pretext") { setup = true }
-  parser.on("-t", "--setup_tol", "create initial RC files") { tol = true }
-  parser.on("-q DIR", "--copy_qc DIR", "copy from DIR to curation for QC") { |q|
-    qc = true
-    qc_dir = q
-  }
+  parser.on("-p", "--copy_pretext", "copy over pretext") { setup = true }
+  parser.on("-w", "--setup_working_dir", "create initial curation files and directory") { tol = true }
+  parser.on("-r", "--build_release") { release = true }
+  parser.on("-q", "--copy_qc", "copy from DIR to curation for QC") { qc = true }
 
   parser.on("-h", "--help", "show this help") do
     puts parser
@@ -40,20 +38,18 @@ end
 
 y = GritJiraIssue.new(issue)
 
-puts y.json.to_pretty_json
+# puts y.json.to_pretty_json
 
 if setup
-  puts "copy pretext =>"
-  setup_local(y.yaml)
-end
-
-if qc
-  puts "stage for QC =>"
-  copy_qc(y.json, qc_dir)
-end
-
-if tol
-  puts "staging files for RC"
+  puts "copy pretext => #{Dir.current}/#{y.tol_id}"
+  setup_local(y)
+elsif tol
+  puts "staging files for RC => #{y.working_dir}"
   setup_tol(y)
+elsif release
+  puts "building release files and pretext => #{y.working_dir}"
+  build_release(y)
+elsif qc
+  puts "stage for QC => #{y.curated_dir}"
+  copy_qc(y)
 end
-# puts y.json.to_pretty_json("  ")
