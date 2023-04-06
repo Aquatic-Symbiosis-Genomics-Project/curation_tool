@@ -11,7 +11,7 @@ qc = false
 tol = false
 release = false
 OptionParser.parse do |parser|
-  parser.banner = "Usage: curation_tool --issue JIRA_ID [--setup_local | --copy_qc]"
+  parser.banner = "Usage: curation_tool --issue JIRA_ID [--copy_pretext | --copy_qc | --build_releas | --setup_working_dir]"
   parser.on("-i JIRA_ID", "--issue JIRA_ID", "JIRA ID") { |i| issue = i }
   parser.on("-p", "--copy_pretext", "copy over pretext") { setup = true }
   parser.on("-w", "--setup_working_dir", "create initial curation files and directory") { tol = true }
