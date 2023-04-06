@@ -133,7 +133,7 @@ rapid_pretext2tpf_XL.py scaffolds.tpf #{id}.pretext.agp_1 ;
 rapid_join.pl -csv chrs.csv -fa original.fa -tpf rapid_prtxt_XL.tpf -out #{id} ;
 rapid_join.pl -fa original.fa -tpf haps_rapid_prtxt_XL.tpf -out #{id} -hap ;
 HERE
-      o= `#{cmd}`
+      o = `#{cmd}`
       puts o
       raise "something went wrong" unless $?.success?
 
