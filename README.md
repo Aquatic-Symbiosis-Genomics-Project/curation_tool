@@ -18,7 +18,7 @@ cd curation_tool
 shards build
 ```
 
-- You can also get binaries compiled using Github Actions from the [Release](https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/releases) page. They are statically compiled.
+- You can also get binaries compiled using Github Actions from the [Release](https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/releases) page. They are statically linked.
 
 ## Usage
 
