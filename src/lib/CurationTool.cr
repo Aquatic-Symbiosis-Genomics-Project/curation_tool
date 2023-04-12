@@ -142,8 +142,8 @@ HERE
       cmd = <<-HERE
 touch #{id}.additional_haplotigs.unscrubbed.fa ;
 rapid_pretext2tpf_XL.py scaffolds.tpf #{id}.pretext.agp_1 ;
-rapid_join.pl -csv chrs.csv -fa original.fa -tpf rapid_prtxt_XL.tpf -out #{id} ;
 [ -s haps_rapid_prtxt_XL.tpf ] && rapid_join.pl -fa original.fa -tpf haps_rapid_prtxt_XL.tpf -out #{id} -hap ;
+rapid_join.pl -csv chrs.csv -fa original.fa -tpf rapid_prtxt_XL.tpf -out #{id} ;
 HERE
       o = `#{cmd}`
       puts o
