@@ -31,10 +31,10 @@ class GritJiraIssue
   end
 
   def geval_db
-    if self.json["fields"]["customfield_11643"].as_nil.nil?
-      ""
-    else
+    if self.json["fields"]["customfield_11643"].as_s?
       self.json["fields"]["customfield_11643"].as_s
+    else
+      ""
     end
   end
 
