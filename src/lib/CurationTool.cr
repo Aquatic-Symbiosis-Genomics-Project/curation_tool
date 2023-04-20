@@ -56,7 +56,7 @@ class GritJiraIssue
     if g.blank?
       "#{self.tol_id}_#{self.release_version}"
     else
-      g.split("_")[-2..-1].join("_")
+      g.split("_")[2..-1].join("_")
     end
   end
 
