@@ -70,7 +70,7 @@ class GritJiraIssue
     dir = Dir["/nfs/team135/curated_pretext_maps/#{prefix}*"].select { |f| File.directory?(f) }
     if prefix == 'i'
       second = self.tol_id[1]
-      dir = Dir["/nfs/team135/curated_pretext_maps/#{prefix}_*/#{second}_*/"].select { |f| File.directory?(f) }
+      dir = Dir["/nfs/team135/curated_pretext_maps/#{prefix}_*/#{second}_*"].select { |f| File.directory?(f) }
     end
     dir[0]
   end
