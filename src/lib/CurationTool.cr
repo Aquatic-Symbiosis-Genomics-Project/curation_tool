@@ -68,7 +68,7 @@ class GritJiraIssue
   def pretext_dir
     prefix = self.tol_id[0]
     dir = Dir["/nfs/team135/curated_pretext_maps/#{prefix}*"].select { |f| File.directory?(f) }
-    if prefix == "i"
+    if prefix == 'i'
       second = self.tol_id[1]
       dir = Dir["/nfs/team135/curated_pretext_maps/#{prefix}_*/#{second}_*/"].select { |f| File.directory?(f) }
     end
