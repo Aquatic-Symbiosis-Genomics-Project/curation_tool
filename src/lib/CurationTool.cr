@@ -96,14 +96,14 @@ class GritJiraIssue
     raise "cannot get token for #{@@url}"
   end
 
-  def json
+  def get_json
     r = HTTP::Client.get("https://jira.sanger.ac.uk/rest/api/2/issue/#{@id}", headers: HTTP::Headers{"Accept" => "application/json", "Authorization" => "Bearer #{@token}"})
     raise "cannot get the ticket" unless r.success?
     @json = JSON.parse(r.body)
   end
 
-  def yaml
-    yaml_url = self.json["fields"]["attachment"].as_a.map { |e| e["content"] }.select { |elem| /.*\.yaml/.match(elem.as_s) }[0]
+  def get_yaml
+    yaml_url = self.json["fields"]["attachment"].as_a.map { |e| e["content"] }.select { |elem| /.*\.(yaml|yml)/.match(elem.as_s) }[0]
     r = HTTP::Client.get("#{yaml_url}", headers: HTTP::Headers{"Authorization" => "Bearer #{@token}"})
     raise "cannot get the yaml" unless r.success?
     @yaml = YAML.parse(r.body)
