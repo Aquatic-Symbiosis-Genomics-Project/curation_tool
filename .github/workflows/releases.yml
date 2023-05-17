@@ -14,13 +14,10 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           shards build --production --release --static --no-debug
-          strip ./bin/curation_tool
-      - name: Upload
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          strip ./bin/*
+      - name: release
+        uses: softprops/action-gh-release@v1
+        if: startWith(github.ref, 'refs/tags/'
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./bin/curation_tool
-          asset_name: curation_tool-latest-alpine
-          asset_content_type: binary/octet-stream
+          files: |
+            ./bin/*

@@ -39,7 +39,7 @@ jobs:
       - name: Release
         uses: actions/upload-artifact@v3
         with:
-          name: curation_tool-latest-alpine
-          path: bin/curation_tool
+          name: curation_tools
+          path: bin/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
