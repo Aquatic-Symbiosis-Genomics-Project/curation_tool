@@ -50,6 +50,10 @@ class GritJiraIssue
     self.yaml["specimen"].as_s
   end
 
+  def get_scientific_name
+    self.yaml["species"].as_s
+  end
+
   # in the form of tol_id _ version
   def sample_version
     g = self.geval_db

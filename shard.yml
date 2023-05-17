@@ -7,6 +7,8 @@ authors:
 targets:
   curation_tool:
     main: src/curation_tool.cr
+  fcs_submit:
+    main: src/submit_fcs.cr
 
 crystal: 1.7.2
 
