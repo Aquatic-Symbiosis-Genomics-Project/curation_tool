@@ -1,9 +1,5 @@
 #!/bin/env crystal
 
-# export MODULEPATH=/software/treeoflife/shpc/current/views/<team-name>:/software/treeoflife/custom-installs/modules:/software/modules
-# module load nextflow/23.04.0-5857
-# module load ISG/singularity/3.10.0
-# module load ISG/python/
 
 require "option_parser"
 require "./lib/GritJiraIssue"
@@ -37,7 +33,19 @@ end
 issue = "GRIT-863"
 
 OptionParser.parse do |parser|
-  parser.banner = "Usage: submit_fcs --issue JIRA_ID "
+  parser.banner = <<-__HERE__
+Usage: submit_fcs --issue JIRA_ID
+
+don't forget to setup your environment:
+
+export MODULEPATH=/software/treeoflife/shpc/current/views/grit:/software/treeoflife/custom-installs/modules:/software/modules
+module load nextflow/23.04.0-5857
+module load ISG/singularity/3.10.0
+module load ISG/python/
+
+the options are:
+__HERE__
+
   parser.on("-i JIRA_ID", "--issue JIRA_ID", "JIRA ID") { |i| issue = i }
 
   parser.on("-h", "--help", "show this help") do
