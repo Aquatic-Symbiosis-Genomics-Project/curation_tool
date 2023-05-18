@@ -5,7 +5,6 @@
 # module load ISG/singularity/3.10.0
 # module load ISG/python/
 
-require "fileutils"
 require "option_parser"
 require "./lib/GritJiraIssue"
 
