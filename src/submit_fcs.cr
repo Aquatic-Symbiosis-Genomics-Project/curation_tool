@@ -1,23 +1,9 @@
 #!/bin/env crystal
 
 require "option_parser"
-require "html"
-require "http/client"
-require "./lib/CurationTool"
-
-include CurationTool
+require "./lib/GritJiraIssue"
 
 class FCSIssue < GritJiraIssue
-  def get_taxonomy
-    common_name = self.get_scientific_name.gsub(/\s/, "%20")
-
-    r = HTTP::Client.get("https://www.ebi.ac.uk/ena/taxonomy/rest/scientific-name/#{common_name}", headers: HTTP::Headers{"Accept" => "application/json"})
-    raise "cannot get the taxonomy" unless r.success?
-
-    json = JSON.parse(r.body)
-    json[0]["taxId"].as_s
-  end
-
   def get_files
     files = [] of String
     ["primary", "haplotigs"].each { |key|

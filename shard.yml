@@ -9,7 +9,9 @@ targets:
     main: src/curation_tool.cr
   fcs_submit:
     main: src/submit_fcs.cr
+  btk_submit:
+    main: src/submit_btk.cr
 
-crystal: 1.7.2
+crystal: 1.8.2
 
 license: MIT
