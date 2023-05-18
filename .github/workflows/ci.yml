@@ -40,6 +40,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: curation_tools
-          path: bin/
+          path: bin/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
