@@ -46,7 +46,7 @@ HERE
 
       # Make new pretext map.
       cmd = <<-HERE
-  /software/grit/projects/vgp_curation_scripts/Pretext_HiC_pipeline.sh -i #{id}.curated_primary.no_mt.unscrubbed.fa -s #{id} -k #{y.hic_read_dir} -d `pwd`
+  /software/grit/projects/vgp_curation_scripts/Pretext_HiC_pipeline.sh -g -i #{id}.curated_primary.no_mt.unscrubbed.fa -s #{id} -k #{y.hic_read_dir} -d `pwd`
   HERE
       puts `#{cmd}`
       raise "something went wrong" unless $?.success?
