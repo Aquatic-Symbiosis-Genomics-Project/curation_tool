@@ -1,6 +1,5 @@
 #!/bin/env crystal
 
-
 require "option_parser"
 require "./lib/GritJiraIssue"
 
