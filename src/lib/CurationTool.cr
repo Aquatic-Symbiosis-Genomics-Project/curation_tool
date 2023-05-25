@@ -54,7 +54,7 @@ HERE
       # gfasta
       cmd = <<-HERE
 ~mh6/AGPcorrect.py original.fa #{id}.pretext.agp_1 > corrected.agp ;
-/software/grit/projects/gfastats/gfastats original.fasta -a corrected.agp -o curated.fasta
+/software/grit/projects/gfastats/gfastats original.fa -a corrected.agp -o curated.fasta
 HERE
 
       puts `#{cmd}`
