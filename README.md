@@ -4,7 +4,7 @@
 [![CI](https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/actions/workflows/ci.yml/badge.svg)](https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/actions?query=workflow%3ACI)
 [![Latest Release](https://img.shields.io/github/v/release/Aquatic-Symbiosis-Genomics-Project/curation_tool.svg)](https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/releases)
 
-simple commandline tool to organise curation files using the GRIT JIRA
+simple commandline tools to organise curation files using the GRIT JIRA
 
 ## Installation
 
@@ -29,6 +29,28 @@ Usage: curation_tool --issue JIRA_ID [options]
     -w, --setup_working_dir          create initial curation files and directory
     -r, --build_release              create pretext and release files
     -q, --copy_qc                    copy from DIR to curation for QC
+    -g, --highres                    build a highres pretext
+    -h, --help                       show this help
+```
+
+```
+Usage: submit_fcs --issue JIRA_ID
+
+don't forget to setup your environment:
+
+export MODULEPATH=/software/treeoflife/shpc/current/views/grit:/software/treeoflife/custom-installs/modules:/software/modules
+module load nextflow/23.04.0-5857
+module load ISG/singularity/3.10.0
+module load ISG/python/
+
+the options are:
+    -i JIRA_ID, --issue JIRA_ID      JIRA ID
+    -h, --help                       show this help
+```
+
+```
+Usage: submit_fcs --issue JIRA_ID 
+    -i JIRA_ID, --issue JIRA_ID      JIRA ID
     -h, --help                       show this help
 ```
 
