@@ -29,7 +29,7 @@ HERE
   def build_release(y, highres = false)
     id = y.sample_version
     wd = y.working_dir
-    highres_option = highres ? "--highRes" : ""
+    highres_option = highres ? "-g" : ""
 
     Dir.cd(wd) do
       id = y.tol_id unless File.exists?("#{id}.pretext.agp_1")
@@ -47,7 +47,7 @@ HERE
 
       # Make new pretext map.
       cmd = <<-HERE
-  /software/grit/projects/vgp_curation_scripts/Pretext_HiC_pipeline.sh -g -i #{id}.curated_primary.no_mt.unscrubbed.fa -s #{id} -k #{y.hic_read_dir} -d `pwd` #{highres_option}
+  /software/grit/projects/vgp_curation_scripts/Pretext_HiC_pipeline.sh -i #{id}.curated_primary.no_mt.unscrubbed.fa -s #{id} -k #{y.hic_read_dir} -d `pwd` #{highres_option}
   HERE
       puts `#{cmd}`
       raise "something went wrong" unless $?.success?
