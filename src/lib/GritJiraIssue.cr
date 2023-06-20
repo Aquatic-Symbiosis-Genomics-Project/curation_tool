@@ -96,7 +96,7 @@ class GritJiraIssue
     File.each_line(Path["~/.netrc"].expand(home: true)) { |line|
       line = line.chomp
       columns = line.split
-      return columns[-1].to_s if /#{@@url}/.match(line)
+      return columns[-1].to_s if /\s+#{@@url}\s+login\s+token\s+password/.match(line)
     }
     raise "cannot get token for #{@@url}"
   end
