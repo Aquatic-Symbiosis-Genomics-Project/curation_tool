@@ -67,10 +67,23 @@ HERE
           HERE
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
-         
-          build_pretext(y,XXX,id+"HAP"+i,highres_option)
+       
+          build_pretext(y,id+"_HAP1.curated_primary.no_mt.unscrubbed.fa",id+"_HAP1",highres_option)
         }
-      
+        2.upto(4){|i|
+          next unless File.exists?("#{id}_HAP#{i}.curated_primary.no_mt.unscrubbed.fa")
+          # might need bsubbing, which could be bsub -K -M 8000 -R'select[mem>8000] rusage[mem=8000]'
+          cmd=<<-HERE
+          hap2_hap1_ID_mapping.sh #{id}_HAP1.curated_primary.no_mt.unscrubbed.fa #{id}_HAP#{i}.curated_primary.no_mt.unscrubbed.fa ;
+          mv hap2_hap1.tsv hap#{i}_hap1.tsv ;
+          update_mapping.rb -f #{id}_HAP#{i}.curated_primary.no_mt.unscrubbed.fa -t hap#{i}_hap1.tsv -c #{id}_HAP#{i}.updated_chromosome.list -n hap#{i}.remapping > #{id}_HAP#{i}.curated_primary.no_mt.unscrubbed.updated.fa ;
+          build_pretext(y,id+"_HAP"+i+".curated_primary.no_mt.unscrubbed.fa",id+"_HAP"+i,highres_option) ;
+          HERE
+          puts `#{cmd}`
+          raise "something went wrong" unless $?.success?
+          build_pretext(y,id+"_HAP"+i+".curated_primary.no_mt.unscrubbed.fa",id+"_HAP"+i,highres_option)
+        }
+
       else
 	cmd = <<-HERE
 	[ -s haps_rapid_prtxt_XL.tpf ] && rapid_join.pl -fa original.fa -tpf haps_rapid_prtxt_XL.tpf -out #{id} -hap ;
