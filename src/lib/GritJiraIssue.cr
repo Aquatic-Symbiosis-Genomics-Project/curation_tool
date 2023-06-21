@@ -123,7 +123,7 @@ class GritJiraIssue
     json = JSON.parse(r.body)
 
     if json.as_a.size < 1
-      r = HTTP::Client.get("https://www.ebi.ac.uk/ena/taxonomy/rest/scientific-name/#{common_name}", headers: HTTP::Headers{"Accept" => "application/json"})
+      r = HTTP::Client.get("https://www.ebi.ac.uk/ena/taxonomy/rest/any-name/#{common_name}", headers: HTTP::Headers{"Accept" => "application/json"})
       raise "cannot get the taxonomy" unless r.success?
 
       json = JSON.parse(r.body)
