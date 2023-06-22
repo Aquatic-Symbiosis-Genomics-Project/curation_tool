@@ -109,7 +109,7 @@ HERE
 
     cmd = <<-HERE
 touch #{wd}/notes;
-scp #{ENV["USER"]}@tol:nfs/treeoflife-01/teams/grit/data/pretext_maps/#{y.tol_id}*.pretext #{wd}/
+scp #{ENV["USER"]}@tol:/nfs/treeoflife-01/teams/grit/data/pretext_maps/#{y.tol_id}*.pretext #{wd}/
 HERE
     puts `#{cmd}`
     raise "something went wrong" unless $?.success?
