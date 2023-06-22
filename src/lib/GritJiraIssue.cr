@@ -72,10 +72,11 @@ class GritJiraIssue
 
   def pretext_dir
     prefix = self.tol_id[0]
-    dir = Dir["/nfs/team135/curated_pretext_maps/#{prefix}*"].select { |f| File.directory?(f) }
+    pretext_root = "/nfs/treeoflife-01/teams/grit/data/curated_pretext_maps"
+    dir = Dir["#{pretext_root}/#{prefix}*"].select { |f| File.directory?(f) }
     if prefix == 'i'
       second = self.tol_id[1]
-      dir = Dir["/nfs/team135/curated_pretext_maps/#{prefix}_*/#{second}_*"].select { |f| File.directory?(f) }
+      dir = Dir["#{pretext_root}/#{prefix}_*/#{second}_*"].select { |f| File.directory?(f) }
     end
     dir[0]
   end
