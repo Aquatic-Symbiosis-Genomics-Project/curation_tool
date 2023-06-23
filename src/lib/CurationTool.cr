@@ -43,7 +43,7 @@ HERE
       puts o
       raise "something went wrong" unless $?.success?
 
-      File.write(wd + "/#{y.sample_version}.curation_stats", o)
+      File.write(wd + "/#{id}.curation_stats", o)
 
       # Make new pretext map.
       cmd = <<-HERE
