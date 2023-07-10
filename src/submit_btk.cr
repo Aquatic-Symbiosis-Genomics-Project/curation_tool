@@ -23,7 +23,7 @@ class BTKIssue < GritJiraIssue
       if self.yaml.as_h.has_key?(key)
         f = self.yaml[key].to_s
         pacbio = Dir.glob("#{self.yaml["pacbio_read_dir"]}/fasta/*.filtered.fasta.gz")[0]
-        puts `bsub -n1 -q basement -R"span[hosts=1]" -o #{f}_#{key}_ascc.out -e #{f}_#{key}_ascc.err -M5000 -R 'select[mem>5000] rusage[mem=5000]' "/software/team311/ea10/20230526_ascc/cobiontcheck/ascc.py #{f} --static_config_path /software/team311/ea10/20230526_ascc/cobiontcheck/static_settings.config --pacbio_reads_path #{pacbio} --assembly_title #{tolid}_#{key} --sci_name '#{self.get_scientific_name}' --taxid #{self.get_taxonomy} --steps tiara coverage fcs-gx fcs-adaptor create_btk_dataset btk_busco autofilter_assembly --threads 24 --pipeline_run_folder #{self.decon_dir}/#{tolid}_#{key}_ascc_minimal"`
+        puts `bsub -n1 -q basement -R"span[hosts=1]" -o #{f}_#{key}_ascc.out -e #{f}_#{key}_ascc.err -M5000 -R 'select[mem>5000] rusage[mem=5000]' "/software/team311/ea10/20230616_ascc/cobiontcheck/ascc.py #{f} --static_config_path /software/team311/ea10/20230526_ascc/cobiontcheck/static_settings.config --pacbio_reads_path #{pacbio} --assembly_title #{tolid}_#{key} --sci_name '#{self.get_scientific_name}' --taxid #{self.get_taxonomy} --steps tiara coverage fcs-gx fcs-adaptor create_btk_dataset btk_busco autofilter_assembly --threads 24 --pipeline_run_folder #{self.decon_dir}/#{tolid}_#{key}_ascc_minimal"`
       end
     }
   end
