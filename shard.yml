@@ -12,6 +12,6 @@ targets:
   btk_submit:
     main: src/submit_btk.cr
 
-crystal: 1.9.0
+crystal: 1.9.1
 
 license: MIT
