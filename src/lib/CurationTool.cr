@@ -14,8 +14,11 @@ module CurationTool
     fasta_gz = "zcat " + fasta_gz
 
     # if a merged file exists
-    merged_fasta = "/lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/*/#{y.sample_version}/raw/merged.fa" # needs a glob[0]
-    fasta_gz = "cat " + merged_fasta if File.exists?(merged_fasta)
+    merged_fasta = Dir.glob([
+      "/lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/*/#{y.sample_version}/raw/merged.fa",
+      "/lustre/scratch123/tol/teams/tola/treeval_runs/VGP/#{y.sample_version}/raw/ref.fa",
+    ])[0]
+    fasta_gz = "cat " + merged_fasta unless merged_fasta
 
     raise Exception.new("scaffolds.tpf in working #{wd} already exists") if File.exists?(wd + "/scaffolds.tpf")
 
