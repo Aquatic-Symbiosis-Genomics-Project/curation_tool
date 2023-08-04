@@ -61,7 +61,7 @@ class GritJiraIssue
     if g.blank?
       "#{self.tol_id}_#{self.release_version}"
     else
-      g.split("_")[2..-1].join("_")
+      g.split("_")[-2..-1].join("_")
     end
   end
 
@@ -72,10 +72,11 @@ class GritJiraIssue
 
   def pretext_dir
     prefix = self.tol_id[0]
-    dir = Dir["/nfs/team135/curated_pretext_maps/#{prefix}*"].select { |f| File.directory?(f) }
+    pretext_root = "/nfs/treeoflife-01/teams/grit/data/curated_pretext_maps"
+    dir = Dir["#{pretext_root}/#{prefix}*"].select { |f| File.directory?(f) }
     if prefix == 'i'
       second = self.tol_id[1]
-      dir = Dir["/nfs/team135/curated_pretext_maps/#{prefix}_*/#{second}_*"].select { |f| File.directory?(f) }
+      dir = Dir["#{pretext_root}/#{prefix}_*/#{second}_*"].select { |f| File.directory?(f) }
     end
     dir[0]
   end
@@ -121,6 +122,16 @@ class GritJiraIssue
     raise "cannot get the taxonomy" unless r.success?
 
     json = JSON.parse(r.body)
+
+    if json.as_a.size < 1
+      r = HTTP::Client.get("https://www.ebi.ac.uk/ena/taxonomy/rest/any-name/#{common_name}", headers: HTTP::Headers{"Accept" => "application/json"})
+      raise "cannot get the taxonomy" unless r.success?
+
+      json = JSON.parse(r.body)
+    end
+
+    raise "cannot get the taxonomy" if json.as_a.size < 1
+
     json[0]["taxId"].as_s
   end
 end

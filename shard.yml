@@ -1,5 +1,5 @@
 name: curation_tool
-version: 0.1.0
+version: 0.4.13
 
 authors:
   - epaule <mh6@sanger.ac.uk>
@@ -12,6 +12,6 @@ targets:
   btk_submit:
     main: src/submit_btk.cr
 
-crystal: 1.8.2
+crystal: 1.9.2
 
 license: MIT

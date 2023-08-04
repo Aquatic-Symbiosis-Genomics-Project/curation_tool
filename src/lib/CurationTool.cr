@@ -52,7 +52,7 @@ HERE
       o = `#{cmd}`
       puts o
       raise "something went wrong" unless $?.success?
-      File.write(wd + "/#{y.sample_version}.curation_stats", o)
+      File.write(wd + "/#{id}.curation_stats", o)
 
       # if a HAP1 tpf exists
       if File.exists?("HAP1.tpf")
@@ -153,7 +153,7 @@ HERE
 
     cmd = <<-HERE
 touch #{wd}/notes;
-scp #{ENV["USER"]}@tol:/nfs/team135/pretext_maps/#{y.tol_id}*.pretext #{wd}/
+scp #{ENV["USER"]}@tol:/nfs/treeoflife-01/teams/grit/data/pretext_maps/#{y.tol_id}*.pretext #{wd}/
 HERE
     puts `#{cmd}`
     raise "something went wrong" unless $?.success?
