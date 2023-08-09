@@ -57,12 +57,7 @@ class GritJiraIssue
 
   # in the form of tol_id _ version
   def sample_version
-    g = self.geval_db
-    if g.blank?
-      "#{self.tol_id}_#{self.release_version}"
-    else
-      g.split("_")[-2..-1].join("_")
-    end
+    "#{self.tol_id}_#{self.release_version}"
   end
 
   # curation working directory

@@ -32,7 +32,6 @@ HERE
     highres_option = highres ? "-g" : ""
 
     Dir.cd(wd) do
-      id = y.tol_id unless File.exists?("#{id}.pretext.agp_1")
       cmd = <<-HERE
 touch #{id}.additional_haplotigs.unscrubbed.fa ;
 rapid_pretext2tpf_XL.py scaffolds.tpf #{id}.pretext.agp_1 ;
