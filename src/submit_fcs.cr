@@ -17,7 +17,7 @@ class FCSIssue < GritJiraIssue
   end
 
   def submit_to_lsf
-    cmd = "bsub -o /dev/null -M 500000 -n 16 -R'select[mem>500000, tmp>500G] rusage[mem=500000, tmp=600G]' bash  /lustre/scratch123/tol/teams/grit/mh6/ncbi-decon/gx_pipeline/gx_map_wrapper.bash -o #{self.decon_dir} -t #{self.get_taxonomy}"
+    cmd = "bsub -o #{decon_dir}/fcs.log -M 500000 -n 16 -R'select[mem>500000, tmp>500G] rusage[mem=500000, tmp=600G]' bash  /lustre/scratch123/tol/teams/grit/mh6/ncbi-decon/gx_pipeline/gx_map_wrapper.bash -o #{self.decon_dir} -t #{self.get_taxonomy}"
     self.get_files.each { |f| cmd += " -f #{f}" if File.exists?(f) }
     puts `#{cmd}`
   end
