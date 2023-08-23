@@ -65,8 +65,7 @@ ARGV.each { |jira_id|
     bed_ids = parse_bed_file(bed_file)
 
     # fasta would be s/.contamination/.fa.gz/
-    fasta_file = bed_file.gsub(".contamination", ".fa.gz")
-    puts fasta_file
+    fasta_file = c.gsub(".contamination", ".fa.gz")
     next unless File.exists?(fasta_file)
     l, g = length_and_gc(fasta_file)
     true_positives = contamination_ids & bed_ids
