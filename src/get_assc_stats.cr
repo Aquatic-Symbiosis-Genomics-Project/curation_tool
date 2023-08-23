@@ -29,6 +29,7 @@ ARGV.each { |jira_id|
   puts ".con #{contamination_ids}"
 
   bed_file = "{y.decon_file}.bed"
+  puts bed_file
   next unless File.exists?(bed_file)
   bed_ids = parse_bed_file(bed_file)
   puts ".bed #{bed_ids}"
