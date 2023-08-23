@@ -11,6 +11,8 @@ targets:
     main: src/submit_fcs.cr
   btk_submit:
     main: src/submit_btk.cr
+  ascc_stats:
+    main: src/get_assc_stats.cr
 
 crystal: 1.9.2
 
