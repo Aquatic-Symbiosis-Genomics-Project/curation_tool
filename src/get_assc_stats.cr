@@ -44,7 +44,7 @@ def length_and_gc(f)
   return(l, g)
 end
 
-def av(l : Array(Int32|Float64) )
+def av(l : Array(Int32 | Float64))
   items = l.size
   total = 0
   l.each { |i| total += i }
@@ -52,7 +52,7 @@ def av(l : Array(Int32|Float64) )
 end
 
 def get_ave(h, l : Array(String))
-  av(l.map{|k| h[k] })
+  av(l.map { |k| h[k] })
 end
 
 ARGV.each { |jira_id|
