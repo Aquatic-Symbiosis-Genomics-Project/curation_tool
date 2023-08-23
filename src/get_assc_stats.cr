@@ -30,5 +30,5 @@ ARGV.each { |jira_id|
   next unless File.exists?(bed_file)
   bed_ids = parse_bed_file(bed_file)
 
-  puts [y.tol_id, contamination_ids & bed_ids, puts contamination_ids - bed_ids, bed_ids - contamination_ids].join("\t")
+  puts "#{y.tol_id} #{contamination_ids & bed_ids} #{contamination_ids - bed_ids} #{bed_ids - contamination_ids}"
 }
