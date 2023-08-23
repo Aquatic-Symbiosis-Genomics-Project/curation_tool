@@ -39,7 +39,7 @@ def length_and_gc(f)
   fx = FastxReader.new(fp)
   fx.each { |e|
     l[e.name] = e.seq.size
-    g[e.name] = e.seq.size/e.seq.count("gcGC")
+    g[e.name] = e.seq.count("gcGC")/e.seq.size
   }
   return(l, g)
 end
@@ -72,6 +72,6 @@ ARGV.each { |jira_id|
     false_positives = bed_ids - contamination_ids
     false_negatives = contamination_ids - bed_ids
 
-    puts "#{y.tol_id} #{c} #{true_positives.size} #{get_ave(g, true_positives)} #{get_ave(l, true_positives)} #{false_positives.size} #{get_ave(g, false_positives)} #{get_ave(l, false_positives)} #{false_negatives.size} #{get_ave(g, false_negatives)} #{get_ave(l, false_negatives)}"
+    puts "#{y.tol_id} #{File.basename(c)} #{true_positives.size} #{get_ave(g, true_positives)} #{get_ave(l, true_positives)} #{false_positives.size} #{get_ave(g, false_positives)} #{get_ave(l, false_positives)} #{false_negatives.size} #{get_ave(g, false_negatives)} #{get_ave(l, false_negatives)}"
   }
 }
