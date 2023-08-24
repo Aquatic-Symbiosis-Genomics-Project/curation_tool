@@ -58,6 +58,8 @@ end
 ARGV.each { |jira_id|
   y = StatIssue.new(jira_id)
 
+  puts ["tolID", "fasta file", "average gc", "average length", "true positives", "average gc tp", "average len tp", "false positives", "average gc fp", "average len fp", "false negatives", "average gc fn", "average len fn"].join("\t")
+
   Dir.glob("#{y.decon_dir}/*.contamination").each { |c|
     contamination_ids = parse_decon_file(c)
     bed_file = "#{c}.bed"
@@ -70,8 +72,6 @@ ARGV.each { |jira_id|
     true_positives = contamination_ids & bed_ids
     false_positives = bed_ids - contamination_ids
     false_negatives = contamination_ids - bed_ids
-
-    puts ["tolID", "fasta file", "average gc", "average length", "true positives", "average gc tp", "average len tp", "false positives", "average gc fp", "average len fp", "false negatives", "average gc fn", "average len fn"].join("\t")
 
     columns = [y.tol_id, File.basename(c), av(gc.values), av(ln.values)]
 
