@@ -46,8 +46,8 @@ end
 
 def av(l : Array(Int32 | Float64))
   items = l.size
-  total = 0
-  l.each { |i| total += i }
+  total = 0_f64
+  l.each { |i| total += i.to_f }
   total/items
 end
 
