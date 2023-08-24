@@ -46,9 +46,15 @@ end
 
 def av(l : Array(Int32 | Float64))
   items = l.size
-  total = 0_f64
-  l.each { |i| total += i.to_f }
-  total/items
+  if l.is_a?(Array(Float64))
+    total = 0_f64
+    l.each { |i| total += i.to_f }
+    total/items
+  else
+    total = 0_u64
+    l.each { |i| total += i }
+    total/items
+  end
 end
 
 def get_ave(h, l : Array(String))
