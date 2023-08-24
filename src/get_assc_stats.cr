@@ -64,14 +64,22 @@ ARGV.each { |jira_id|
     next unless File.exists?(bed_file)
     bed_ids = parse_bed_file(bed_file)
 
-    # fasta would be s/.contamination/.fa.gz/
     fasta_file = c.gsub(".contamination", ".fa.gz")
     next unless File.exists?(fasta_file)
-    l, g = length_and_gc(fasta_file)
+    ln, gc = length_and_gc(fasta_file)
     true_positives = contamination_ids & bed_ids
     false_positives = bed_ids - contamination_ids
     false_negatives = contamination_ids - bed_ids
 
-    puts "#{y.tol_id} #{File.basename(c)} #{true_positives.size} #{get_ave(g, true_positives)} #{get_ave(l, true_positives)} #{false_positives.size} #{get_ave(g, false_positives)} #{get_ave(l, false_positives)} #{false_negatives.size} #{get_ave(g, false_negatives)} #{get_ave(l, false_negatives)}"
+    puts ["tolID", "fasta file", "average gc", "average length", "true positives", "average gc tp", "average len tp", "false positives", "average gc fp", "average len fp", "false negatives", "average gc fn", "average len fn"].join("\t")
+
+    columns = [y.tol_id, File.basename(c), av(gc.values), av(ln.values)]
+
+    [true_positives, false_positives, false_negatives].each { |s|
+      columns << s.size
+      columns << get_ave(gc, s)
+      columns << get_ave(ln, s)
+    }
+    puts columns.join("\t")
   }
 }
