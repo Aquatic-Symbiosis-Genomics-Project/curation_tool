@@ -55,10 +55,10 @@ def get_ave(h, l : Array(String))
   av(l.map { |k| h[k] })
 end
 
+puts ["tolID", "fasta file", "average gc", "average length", "true positives", "average gc tp", "average len tp", "false positives", "average gc fp", "average len fp", "false negatives", "average gc fn", "average len fn"].join("\t")
+
 ARGV.each { |jira_id|
   y = StatIssue.new(jira_id)
-
-  puts ["tolID", "fasta file", "average gc", "average length", "true positives", "average gc tp", "average len tp", "false positives", "average gc fp", "average len fp", "false negatives", "average gc fn", "average len fn"].join("\t")
 
   Dir.glob("#{y.decon_dir}/*.contamination").each { |c|
     contamination_ids = parse_decon_file(c)
