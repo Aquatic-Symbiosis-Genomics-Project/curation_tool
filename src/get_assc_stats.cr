@@ -82,7 +82,7 @@ ARGV.each { |jira_id|
 
     masked_file = fasta_file + ".masked.gz"
     unless File.exists?(masked_file)
-      `zcat #{fasta_file}.gz | /software/grit/bin/ncbi-blast-2.10.0+/bin/dustmasker -outfmt fasta | gzip -9 -c #{masked_file}`
+      `zcat #{fasta_file}.gz | /software/grit/bin/ncbi-blast-2.10.0+/bin/dustmasker -outfmt fasta | gzip -9 -c > #{masked_file}`
       raise "couldn't create #{masked_file}" unless $?.success?
     end
 
