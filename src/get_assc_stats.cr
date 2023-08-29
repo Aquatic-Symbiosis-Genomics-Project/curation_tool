@@ -41,7 +41,7 @@ def length_and_gc(f)
   fx.each { |e|
     l[e.name] = e.seq.size
     g[e.name] = e.seq.count("gcGC")/e.seq.size
-    r[e.name] = e.seq.count("[a-z]")/e.seq.size
+    r[e.name] = e.seq.count("acgtn")/e.seq.size
   }
   return(l, g, r)
 end
@@ -91,7 +91,7 @@ ARGV.each { |jira_id|
     false_positives = bed_ids - contamination_ids
     false_negatives = contamination_ids - bed_ids
 
-    columns = [y.tol_id, File.basename(c), av(gc.values), av(ln.values)]
+    columns = [y.tol_id, File.basename(c), av(gc.values), av(ln.values), av(rep.values)]
 
     [true_positives, false_positives, false_negatives].each { |s|
       columns << s.size
