@@ -35,15 +35,17 @@ end
 def length_and_gc(f)
   l = Hash(String, Int32).new
   g = Hash(String, Float64).new
+  s = Hash(String, Float64).new
   r = Hash(String, Float64).new
   fp = GzipReader.new(f)
   fx = FastxReader.new(fp)
   fx.each { |e|
     l[e.name] = e.seq.size
     g[e.name] = e.seq.count("gcGC")/e.seq.size
+    s[e.name] = e.seq.scan(/TGA|TAG|TAA|TTA|CTA|TCA/i).length/e.seq.size
     r[e.name] = e.seq.count("acgtn")/e.seq.size
   }
-  return(l, g, r)
+  return(l, g, r, s)
 end
 
 def av(l : Array(Int32 | Float64))
@@ -63,10 +65,10 @@ def get_ave(h, l : Array(String))
   av(l.map { |k| h[k] })
 end
 
-puts ["tolID", "fasta file", "average gc", "average length", "average repeat",
-      "true positives", "average gc tp", "average len tp", "average repeat tp",
-      "false positives", "average gc fp", "average len fp", "average repeat fp",
-      "false negatives", "average gc fn", "average len fn", "average repeat fn"].join("\t")
+puts ["tolID", "fasta file", "average gc", "average length", "average repeat", "average stops",
+      "true positives", "average gc tp", "average len tp", "average repeat tp", "average stops tp",
+      "false positives", "average gc fp", "average len fp", "average repeat fp", "average stops fp",
+      "false negatives", "average gc fn", "average len fn", "average repeat fn", "average stops dn"].join("\t")
 
 ARGV.each { |jira_id|
   y = StatIssue.new(jira_id)
@@ -86,18 +88,19 @@ ARGV.each { |jira_id|
       raise "couldn't create #{masked_file}" unless $?.success?
     end
 
-    ln, gc, rep = length_and_gc(masked_file)
+    ln, gc, rep, stops = length_and_gc(masked_file)
     true_positives = contamination_ids & bed_ids
     false_positives = bed_ids - contamination_ids
     false_negatives = contamination_ids - bed_ids
 
-    columns = [y.tol_id, File.basename(c), av(gc.values), av(ln.values), av(rep.values)]
+    columns = [y.tol_id, File.basename(c), av(gc.values), av(ln.values), av(rep.values), av(stops.values)]
 
     [true_positives, false_positives, false_negatives].each { |s|
       columns << s.size
       columns << get_ave(gc, s)
       columns << get_ave(ln, s)
       columns << get_ave(rep, s)
+      columns << get_ave(stops, s)
     }
     puts columns.join("\t")
   }
