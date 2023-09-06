@@ -42,7 +42,7 @@ def length_and_gc(f)
   fx.each { |e|
     l[e.name] = e.seq.size
     g[e.name] = e.seq.count("gcGC")/e.seq.size
-    s[e.name] = e.seq.scan(/TGA|TAG|TAA|TTA|CTA|TCA/i).length/e.seq.size
+    s[e.name] = e.seq.scan(/TGA|TAG|TAA|TTA|CTA|TCA/i).size/e.seq.size
     r[e.name] = e.seq.count("acgtn")/e.seq.size
   }
   return(l, g, r, s)
