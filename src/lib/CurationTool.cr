@@ -11,7 +11,7 @@ module CurationTool
     Dir.mkdir_p(wd)
 
     fasta_gz = y.decon_file.sub("contamination", "decontaminated.fa.gz")
-    fasta_gz = y.decon_file.sub("contamination.bed", "decontaminated.fa.gz")
+    fasta_gz = fasta_gz.sub("contamination.bed", "decontaminated.fa.gz")
 
     raise Exception.new("scaffolds.tpf in working #{wd} already exists") if File.exists?(wd + "/scaffolds.tpf")
 
