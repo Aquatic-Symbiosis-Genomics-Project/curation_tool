@@ -11,6 +11,7 @@ module CurationTool
     Dir.mkdir_p(wd)
 
     fasta_gz = y.decon_file.sub("contamination", "decontaminated.fa.gz")
+    fasta_gz = y.decon_file.sub("contamination.bed", "decontaminated.fa.gz")
 
     raise Exception.new("scaffolds.tpf in working #{wd} already exists") if File.exists?(wd + "/scaffolds.tpf")
 
@@ -34,7 +35,7 @@ HERE
     Dir.cd(wd) do
       cmd = <<-HERE
 touch #{id}.additional_haplotigs.unscrubbed.fa ;
-rapid_pretext2tpf_XL.py scaffolds.tpf #{id}.pretext.agp_1 ;
+rapid_pretext2tpf_XL.py scaffolds.tpf #{id}*.pretext.agp_1 ;
 [ -s haps_rapid_prtxt_XL.tpf ] && rapid_join.pl -fa original.fa -tpf haps_rapid_prtxt_XL.tpf -out #{id} -hap ;
 rapid_join.pl -csv chrs.csv -fa original.fa -tpf rapid_prtxt_XL.tpf -out #{id} ;
 HERE
