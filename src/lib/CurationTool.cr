@@ -44,6 +44,15 @@ HERE
 
       File.write(wd + "/#{id}.curation_stats", o)
 
+      # trim contamination
+      cmd = <<-HERE
+/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.curated_primary.no_mt.unscrubbed.fa -c #{y.decon_file}
+mv  #{id}.curated_primary.no_mt.unscrubbed.fa_cleand  #{id}.curated_primary.no_mt.unscrubbed.fa
+HERE
+
+      puts `#{cmd}`
+      raise "something went wrong" unless $?.success?
+
       # Make new pretext map.
       cmd = <<-HERE
   /software/grit/projects/vgp_curation_scripts/Pretext_HiC_pipeline.sh -i #{id}.curated_primary.no_mt.unscrubbed.fa -s #{id} -k #{y.hic_read_dir} -d `pwd` #{highres_option}
@@ -62,34 +71,73 @@ HERE
     end
   end
 
+  # IMPLEMENTATION for SOP 1/2024
+  # make files from the preetxt agp and build a new pretext
+  def build_release(y, highres = false)
+    id = y.sample_version
+    wd = y.working_dir
+
+    highres_option = highres ? "-g" : ""
+
+    Dir.cd(wd) do
+      cmd = <<-HERE
+touch #{id}.additional_haplotigs.unscrubbed.fa ;
+rapid_pretext2tpf_XL.py scaffolds.tpf #{id}*.pretext.agp_1 ;
+[ -s haps_rapid_prtxt_XL.tpf ] && rapid_join.pl -fa original.fa -tpf haps_rapid_prtxt_XL.tpf -out #{id} -hap ;
+rapid_join.pl -csv chrs.csv -fa original.fa -tpf rapid_prtxt_XL.tpf -out #{id} ;
+HERE
+      o = `#{cmd}`
+      puts o
+      raise "something went wrong" unless $?.success?
+
+      File.write(wd + "/#{id}.curation_stats", o)
+
+      # trim contamination
+      if y.decon_file.includes?(".bed")
+        cmd = <<-HERE
+/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.curated_primary.no_mt.unscrubbed.fa -c #{y.decon_file}
+mv  #{id}.curated_primary.no_mt.unscrubbed.fa_cleaned  #{id}.curated_primary.no_mt.unscrubbed.fa
+HERE
+
+        puts `#{cmd}`
+        raise "something went wrong" unless $?.success?
+      end
+
+      # Make new pretext map.
+      cmd = <<-HERE
+  /software/grit/projects/vgp_curation_scripts/Pretext_HiC_pipeline.sh -i #{id}.curated_primary.no_mt.unscrubbed.fa -s #{id} -k #{y.hic_read_dir} -d `pwd` #{highres_option}
+  HERE
+      puts `#{cmd}`
+      raise "something went wrong" unless $?.success?
+    end
+  end
+
   # copy files into the curated directory for QC
   def copy_qc(y)
     target_dir = y.curated_dir
     wd = y.working_dir
     input_id = y.sample_version
+    dot_id = y.sample_dot_version
+
     FileUtils.mkdir_p(target_dir)
 
     Dir.cd(wd) do
-      # sample_id + release_version | or from geval database
-      input_id = y.tol_id unless File.exists?("#{input_id}.curated_primary.no_mt.unscrubbed.fa")
-
       # required files
       files = [
-        "rapid_prtxt_XL.tpf",
-        "haps_rapid_prtxt_XL.tpf",
-        "#{input_id}.curated_primary.no_mt.unscrubbed.fa",
-        "#{input_id}.inter.csv",
-        "#{input_id}.chromosome.list.csv",
+        ["rapid_prtxt_XL.tpf", "rapid_prtxt_XL.tpf"],
+        ["haps_rapid_prtxt_XL.tpf", "haps_rapid_prtxt_XL.tpf"],
+        ["#{input_id}.curated_primary.no_mt.unscrubbed.fa", "#{dot_id}.primary.curated.fa"],
+        ["#{input_id}.inter.csv", "#{input_id}.inter.csv"],
+        ["#{input_id}.chromosome.list.csv", "#{dot_id}.primary.chromosome.list.csv"],
+        ["#{input_id}.additional_haplotigs.unscrubbed.fa", "#{dot_id}.additional_haplotigs.curated.fa"],
+        ["#{input_id}.curation_stats", "#{input_id}.curation_stats"],
       ]
 
-      # optional files
-      ["#{input_id}.additional_haplotigs.unscrubbed.fa",
-       "#{input_id}.curation_stats",
-      ].each { |f| files << f if File.exists?(f) }
-
       files.each { |f|
-        puts "copying #{wd}/#{f} => #{target_dir}/#{f}"
-        FileUtils.cp("#{wd}/#{f}", "#{target_dir}/#{f}")
+        if File.exists?(f[0])
+          puts "copying #{wd}/#{f[0]} => #{target_dir}/#{f[1]}"
+          FileUtils.cp("#{wd}/#{f[0]}", "#{target_dir}/#{f[1]}")
+        end
       }
 
       # copy pretext
