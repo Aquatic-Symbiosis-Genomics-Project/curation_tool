@@ -60,6 +60,11 @@ class GritJiraIssue
     "#{self.tol_id}_#{self.release_version}"
   end
 
+  # in the form of tol_id . version
+  def sample_dot_version
+    "#{self.tol_id}.#{self.release_version}"
+  end
+
   # curation working directory
   def working_dir
     "/lustre/scratch123/tol/teams/grit/#{ENV["USER"]}/#{self.tol_id}_#{self.release_version}"
