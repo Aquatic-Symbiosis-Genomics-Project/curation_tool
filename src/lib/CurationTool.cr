@@ -71,7 +71,6 @@ HERE
   def copy_qc(y)
     target_dir = y.curated_dir
     wd = y.working_dir
-    input_id = y.sample_version
     id = y.sample_dot_version
 
     FileUtils.mkdir_p(target_dir)
@@ -80,7 +79,7 @@ HERE
       # required files
       files = [
         "rapid_prtxt_XL.tpf", "haps_rapid_prtxt_XL.tpf", "#{id}.primary.curated.fa", "#{id}.inter.csv",
-        "#{id}.primary.chromosome.list.csv", "#{id}.additional_haplotigs.curated.fa","#{id}.curation_stats"
+        "#{id}.primary.chromosome.list.csv", "#{id}.additional_haplotigs.curated.fa", "#{id}.curation_stats",
       ]
 
       files.each { |f|
