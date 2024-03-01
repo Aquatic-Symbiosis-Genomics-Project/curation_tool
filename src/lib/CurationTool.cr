@@ -27,14 +27,16 @@ HERE
 
   # make files from the preetxt agp and build a new pretext
   def build_release(y, highres = false)
-    id = y.sample_version
+    old_id = y.sample_version
+    id = y.sample_dot_version
     wd = y.working_dir
+
     highres_option = highres ? "-g" : ""
 
     Dir.cd(wd) do
       cmd = <<-HERE
-touch #{id}.additional_haplotigs.unscrubbed.fa ;
-rapid_pretext2tpf_XL.py scaffolds.tpf #{id}*.pretext.agp_1 ;
+touch #{id}.additional_haplotigs.curated.fa ;
+rapid_pretext2tpf_XL.py scaffolds.tpf #{old_id}*.pretext.agp_1 ;
 [ -s haps_rapid_prtxt_XL.tpf ] && rapid_join.pl -fa original.fa -tpf haps_rapid_prtxt_XL.tpf -out #{id} -hap ;
 rapid_join.pl -csv chrs.csv -fa original.fa -tpf rapid_prtxt_XL.tpf -out #{id} ;
 HERE
@@ -43,60 +45,13 @@ HERE
       raise "something went wrong" unless $?.success?
 
       File.write(wd + "/#{id}.curation_stats", o)
-
-      # trim contamination
-      cmd = <<-HERE
-/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.curated_primary.no_mt.unscrubbed.fa -c #{y.decon_file}
-mv  #{id}.curated_primary.no_mt.unscrubbed.fa_cleand  #{id}.curated_primary.no_mt.unscrubbed.fa
-HERE
-
-      puts `#{cmd}`
-      raise "something went wrong" unless $?.success?
-
-      # Make new pretext map.
-      cmd = <<-HERE
-  /software/grit/projects/vgp_curation_scripts/Pretext_HiC_pipeline.sh -i #{id}.curated_primary.no_mt.unscrubbed.fa -s #{id} -k #{y.hic_read_dir} -d `pwd` #{highres_option}
-  HERE
-      puts `#{cmd}`
-      raise "something went wrong" unless $?.success?
-
-      # gfasta
-      cmd = <<-HERE
-~mh6/AGPcorrect.py original.fa #{id}*.pretext.agp_1 > corrected.agp ;
-/software/grit/projects/gfastats/gfastats original.fa -a corrected.agp -o curated.fasta
-HERE
-
-      puts `#{cmd}`
-      raise "something went wrong" unless $?.success?
-    end
-  end
-
-  # IMPLEMENTATION for SOP 1/2024
-  # make files from the preetxt agp and build a new pretext
-  def build_release(y, highres = false)
-    id = y.sample_version
-    wd = y.working_dir
-
-    highres_option = highres ? "-g" : ""
-
-    Dir.cd(wd) do
-      cmd = <<-HERE
-touch #{id}.additional_haplotigs.unscrubbed.fa ;
-rapid_pretext2tpf_XL.py scaffolds.tpf #{id}*.pretext.agp_1 ;
-[ -s haps_rapid_prtxt_XL.tpf ] && rapid_join.pl -fa original.fa -tpf haps_rapid_prtxt_XL.tpf -out #{id} -hap ;
-rapid_join.pl -csv chrs.csv -fa original.fa -tpf rapid_prtxt_XL.tpf -out #{id} ;
-HERE
-      o = `#{cmd}`
-      puts o
-      raise "something went wrong" unless $?.success?
-
-      File.write(wd + "/#{id}.curation_stats", o)
+      primary = "#{id}.primary.curated.fa"
 
       # trim contamination
       if y.decon_file.includes?(".bed")
         cmd = <<-HERE
-/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.curated_primary.no_mt.unscrubbed.fa -c #{y.decon_file}
-mv  #{id}.curated_primary.no_mt.unscrubbed.fa_cleaned  #{id}.curated_primary.no_mt.unscrubbed.fa
+/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary} -c #{y.decon_file}
+mv  #{primary}_cleaned  #{primary}
 HERE
 
         puts `#{cmd}`
@@ -105,7 +60,7 @@ HERE
 
       # Make new pretext map.
       cmd = <<-HERE
-  /software/grit/projects/vgp_curation_scripts/Pretext_HiC_pipeline.sh -i #{id}.curated_primary.no_mt.unscrubbed.fa -s #{id} -k #{y.hic_read_dir} -d `pwd` #{highres_option}
+  /software/grit/projects/vgp_curation_scripts/Pretext_HiC_pipeline.sh -i #{primary} -s #{id} -k #{y.hic_read_dir} -d `pwd` #{highres_option}
   HERE
       puts `#{cmd}`
       raise "something went wrong" unless $?.success?
@@ -116,35 +71,29 @@ HERE
   def copy_qc(y)
     target_dir = y.curated_dir
     wd = y.working_dir
-    input_id = y.sample_version
-    dot_id = y.sample_dot_version
+    id = y.sample_dot_version
 
     FileUtils.mkdir_p(target_dir)
 
     Dir.cd(wd) do
       # required files
       files = [
-        ["rapid_prtxt_XL.tpf", "rapid_prtxt_XL.tpf"],
-        ["haps_rapid_prtxt_XL.tpf", "haps_rapid_prtxt_XL.tpf"],
-        ["#{input_id}.curated_primary.no_mt.unscrubbed.fa", "#{dot_id}.primary.curated.fa"],
-        ["#{input_id}.inter.csv", "#{input_id}.inter.csv"],
-        ["#{input_id}.chromosome.list.csv", "#{dot_id}.primary.chromosome.list.csv"],
-        ["#{input_id}.additional_haplotigs.unscrubbed.fa", "#{dot_id}.additional_haplotigs.curated.fa"],
-        ["#{input_id}.curation_stats", "#{input_id}.curation_stats"],
+        "rapid_prtxt_XL.tpf", "haps_rapid_prtxt_XL.tpf", "#{id}.primary.curated.fa", "#{id}.inter.csv",
+        "#{id}.primary.chromosome.list.csv", "#{id}.additional_haplotigs.curated.fa", "#{id}.curation_stats",
       ]
 
       files.each { |f|
-        if File.exists?(f[0])
-          puts "copying #{wd}/#{f[0]} => #{target_dir}/#{f[1]}"
-          FileUtils.cp("#{wd}/#{f[0]}", "#{target_dir}/#{f[1]}")
+        if File.exists?(f)
+          puts "copying #{wd}/#{f} => #{target_dir}/#{f}"
+          FileUtils.cp("#{wd}/#{f}", "#{target_dir}/#{f}")
         end
       }
 
       # copy pretext
       pretext = Dir["#{wd}/*/*.pretext"].sort_by { |f| File.info(f).modification_time }[-1]
       if pretext
-        puts "copying #{pretext} => #{y.pretext_dir}/#{input_id}.curated.pretext"
-        FileUtils.cp(pretext, "#{y.pretext_dir}/#{input_id}.curated.pretext")
+        puts "copying #{pretext} => #{y.pretext_dir}/#{id}.curated.pretext"
+        FileUtils.cp(pretext, "#{y.pretext_dir}/#{id}.primary.curated.pretext")
       end
     end
   end

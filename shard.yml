@@ -1,5 +1,5 @@
 name: curation_tool
-version: 0.5.0
+version: 0.6.0
 
 authors:
   - epaule <mh6@sanger.ac.uk>
@@ -14,6 +14,6 @@ targets:
   ascc_stats:
     main: src/get_assc_stats.cr
 
-crystal: 1.11.1
+crystal: 1.11.2
 
 license: MIT
