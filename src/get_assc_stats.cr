@@ -1,6 +1,6 @@
 #!/bin/env crystal
 
-require "./lib/GritJiraIssue"
+require "./lib/grit_jira_issue"
 require "klib"
 
 include Klib
@@ -73,13 +73,13 @@ puts ["tolID", "fasta file", "average gc", "average length", "average repeat", "
 ARGV.each { |jira_id|
   y = StatIssue.new(jira_id)
 
-  Dir.glob("#{y.decon_dir}/*.contamination").each { |c|
-    contamination_ids = parse_decon_file(c)
-    bed_file = "#{c}.bed"
+  Dir.glob("#{y.decon_dir}/*.contamination").each { |file|
+    contamination_ids = parse_decon_file(file)
+    bed_file = "#{file}.bed"
     next unless File.exists?(bed_file)
     bed_ids = parse_bed_file(bed_file)
 
-    fasta_file = c.gsub(".contamination", ".fa")
+    fasta_file = file.gsub(".contamination", ".fa")
     next unless File.exists?(fasta_file + ".gz")
 
     masked_file = fasta_file + ".masked.gz"
@@ -93,14 +93,14 @@ ARGV.each { |jira_id|
     false_positives = bed_ids - contamination_ids
     false_negatives = contamination_ids - bed_ids
 
-    columns = [y.tol_id, File.basename(c), av(gc.values), av(ln.values), av(rep.values), av(stops.values)]
+    columns = [y.tol_id, File.basename(file), av(gc.values), av(ln.values), av(rep.values), av(stops.values)]
 
-    [true_positives, false_positives, false_negatives].each { |s|
-      columns << s.size
-      columns << get_ave(gc, s)
-      columns << get_ave(ln, s)
-      columns << get_ave(rep, s)
-      columns << get_ave(stops, s)
+    [true_positives, false_positives, false_negatives].each { |number|
+      columns << number.size
+      columns << get_ave(gc, number)
+      columns << get_ave(ln, number)
+      columns << get_ave(rep, number)
+      columns << get_ave(stops, number)
     }
     puts columns.join("\t")
   }

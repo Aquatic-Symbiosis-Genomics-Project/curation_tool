@@ -1,6 +1,4 @@
-# TODO: Write documentation for `CurationTool`
-
-require "./GritJiraIssue"
+require "./grit_jira_issue"
 require "file_utils"
 
 module CurationTool
@@ -82,15 +80,15 @@ HERE
         "#{id}.primary.chromosome.list.csv", "#{id}.additional_haplotigs.curated.fa", "#{id}.curation_stats",
       ]
 
-      files.each { |f|
-        if File.exists?(f)
-          puts "copying #{wd}/#{f} => #{target_dir}/#{f}"
-          FileUtils.cp("#{wd}/#{f}", "#{target_dir}/#{f}")
+      files.each { |file|
+        if File.exists?(file)
+          puts "copying #{wd}/#{file} => #{target_dir}/#{file}"
+          FileUtils.cp("#{wd}/#{file}", "#{target_dir}/#{file}")
         end
       }
 
       # copy pretext
-      pretext = Dir["#{wd}/*/*.pretext"].sort_by { |f| File.info(f).modification_time }[-1]
+      pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
       if pretext
         puts "copying #{pretext} => #{y.pretext_dir}/#{id}.curated.pretext"
         FileUtils.cp(pretext, "#{y.pretext_dir}/#{id}.primary.curated.pretext")
