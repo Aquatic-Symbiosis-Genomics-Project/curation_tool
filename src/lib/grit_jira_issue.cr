@@ -51,7 +51,7 @@ class GritJiraIssue
     self.yaml["specimen"].as_s
   end
 
-  def get_scientific_name
+  def scientific_name
     self.yaml["species"].as_s
   end
 
@@ -116,7 +116,7 @@ class GritJiraIssue
   end
 
   def taxonomy
-    common_name = self.get_scientific_name.gsub(/\s/, "%20")
+    common_name = self.scientific_name.gsub(/\s/, "%20")
 
     r = HTTP::Client.get("https://www.ebi.ac.uk/ena/taxonomy/rest/scientific-name/#{common_name}", headers: HTTP::Headers{"Accept" => "application/json"})
     raise "cannot get the taxonomy" unless r.success?
