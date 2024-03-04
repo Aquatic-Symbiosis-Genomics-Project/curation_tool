@@ -93,7 +93,7 @@ ARGV.each { |jira_id|
     false_positives = bed_ids - contamination_ids
     false_negatives = contamination_ids - bed_ids
 
-    columns = [y.tol_id, File.basename(c), av(gc.values), av(ln.values), av(rep.values), av(stops.values)]
+    columns = [y.tol_id, File.basename(file), av(gc.values), av(ln.values), av(rep.values), av(stops.values)]
 
     [true_positives, false_positives, false_negatives].each { |number|
       columns << number.size
