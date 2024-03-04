@@ -73,13 +73,13 @@ puts ["tolID", "fasta file", "average gc", "average length", "average repeat", "
 ARGV.each { |jira_id|
   y = StatIssue.new(jira_id)
 
-  Dir.glob("#{y.decon_dir}/*.contamination").each { |c|
-    contamination_ids = parse_decon_file(c)
-    bed_file = "#{c}.bed"
+  Dir.glob("#{y.decon_dir}/*.contamination").each { |file|
+    contamination_ids = parse_decon_file(file)
+    bed_file = "#{file}.bed"
     next unless File.exists?(bed_file)
     bed_ids = parse_bed_file(bed_file)
 
-    fasta_file = c.gsub(".contamination", ".fa")
+    fasta_file = file.gsub(".contamination", ".fa")
     next unless File.exists?(fasta_file + ".gz")
 
     masked_file = fasta_file + ".masked.gz"

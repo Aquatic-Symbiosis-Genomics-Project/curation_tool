@@ -4,7 +4,7 @@ require "option_parser"
 require "./lib/grit_jira_issue"
 
 class BTKIssue < GritJiraIssue
-  def get_files
+  def files
     files = [] of String
     ["primary", "haplotigs"].each { |key|
       files << self.yaml[key].to_s if self.yaml.as_h.has_key?(key)
@@ -13,7 +13,7 @@ class BTKIssue < GritJiraIssue
   end
 
   def decon_dir
-    Path[self.get_files[0]].parent.to_s
+    Path[self.files[0]].parent.to_s
   end
 
   def submit_to_lsf
