@@ -1,6 +1,6 @@
 #!/bin/env crystal
 
-require "./lib/GritJiraIssue"
+require "./lib/grit_jira_issue"
 require "klib"
 
 include Klib
@@ -95,12 +95,12 @@ ARGV.each { |jira_id|
 
     columns = [y.tol_id, File.basename(c), av(gc.values), av(ln.values), av(rep.values), av(stops.values)]
 
-    [true_positives, false_positives, false_negatives].each { |s|
-      columns << s.size
-      columns << get_ave(gc, s)
-      columns << get_ave(ln, s)
-      columns << get_ave(rep, s)
-      columns << get_ave(stops, s)
+    [true_positives, false_positives, false_negatives].each { |number|
+      columns << number.size
+      columns << get_ave(gc, number)
+      columns << get_ave(ln, number)
+      columns << get_ave(rep, number)
+      columns << get_ave(stops, number)
     }
     puts columns.join("\t")
   }
