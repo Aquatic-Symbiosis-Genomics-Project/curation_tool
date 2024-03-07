@@ -15,7 +15,7 @@ module CurationTool
     cmd = <<-HERE
 cd #{wd} ;
 zcat #{fasta_gz} > original.fa ;
-perl /software/grit/projects/vgp_curation_scripts/rapid_split.pl -fa original.fa ;
+rapid_split.pl -fa original.fa ;
 mv -f original.fa.tpf original.tpf ;
 cp original.tpf scaffolds.tpf;
 HERE
@@ -58,7 +58,7 @@ HERE
 
       # Make new pretext map.
       cmd = <<-HERE
-  /software/grit/projects/vgp_curation_scripts/Pretext_HiC_pipeline.sh -i #{primary} -s #{id} -k #{y.hic_read_dir} -d `pwd` #{highres_option}
+  Pretext_HiC_pipeline.sh -i #{primary} -s #{id} -k #{y.hic_read_dir} -d `pwd` #{highres_option}
   HERE
       puts `#{cmd}`
       raise "something went wrong" unless $?.success?
