@@ -20,7 +20,7 @@ module CurationTool
 
     cmd = <<-HERE
 cd #{wd} ;
-zcat #{fasta_gz} > original.fa ;
+zcat -f #{fasta_gz} > original.fa ;
 rapid_split.pl -fa original.fa ;
 mv -f original.fa.tpf original.tpf ;
 cp original.tpf scaffolds.tpf;
