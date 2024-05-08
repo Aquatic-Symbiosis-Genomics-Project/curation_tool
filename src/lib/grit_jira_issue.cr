@@ -51,13 +51,21 @@ class GritJiraIssue
     self.yaml["specimen"].as_s
   end
 
-  def get_scientific_name
+  def scientific_name
     self.yaml["species"].as_s
   end
 
   # in the form of tol_id _ version
   def sample_version
     "#{self.tol_id}_#{self.release_version}"
+<<<<<<< HEAD:src/lib/GritJiraIssue.cr
+=======
+  end
+
+  # in the form of tol_id . version
+  def sample_dot_version
+    "#{self.tol_id}.#{self.release_version}"
+>>>>>>> main:src/lib/grit_jira_issue.cr
   end
 
   # curation working directory
@@ -68,10 +76,10 @@ class GritJiraIssue
   def pretext_dir
     prefix = self.tol_id[0]
     pretext_root = "/nfs/treeoflife-01/teams/grit/data/curated_pretext_maps"
-    dir = Dir["#{pretext_root}/#{prefix}*"].select { |f| File.directory?(f) }
+    dir = Dir["#{pretext_root}/#{prefix}*"].select { |file| File.directory?(file) }
     if prefix == 'i'
       second = self.tol_id[1]
-      dir = Dir["#{pretext_root}/#{prefix}_*/#{second}_*"].select { |f| File.directory?(f) }
+      dir = Dir["#{pretext_root}/#{prefix}_*/#{second}_*"].select { |file| File.directory?(file) }
     end
     dir[0]
   end
@@ -110,8 +118,8 @@ class GritJiraIssue
     @yaml = YAML.parse(r.body)
   end
 
-  def get_taxonomy
-    common_name = self.get_scientific_name.gsub(/\s/, "%20")
+  def taxonomy
+    common_name = self.scientific_name.gsub(/\s/, "%20")
 
     r = HTTP::Client.get("https://www.ebi.ac.uk/ena/taxonomy/rest/scientific-name/#{common_name}", headers: HTTP::Headers{"Accept" => "application/json"})
     raise "cannot get the taxonomy" unless r.success?

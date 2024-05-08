@@ -1,7 +1,7 @@
 #!/bin/env crystal
 
 require "option_parser"
-require "./lib/CurationTool"
+require "./lib/curation_tool"
 
 include CurationTool
 

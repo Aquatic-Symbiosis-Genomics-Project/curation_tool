@@ -22,6 +22,7 @@ shards build
 
 ## Usage
 
+### curation_tool
 ```
 Usage: curation_tool --issue JIRA_ID [options]
     -i JIRA_ID, --issue JIRA_ID      JIRA ID
@@ -33,6 +34,7 @@ Usage: curation_tool --issue JIRA_ID [options]
     -h, --help                       show this help
 ```
 
+### submit_fcs
 ```
 Usage: submit_fcs --issue JIRA_ID
 
