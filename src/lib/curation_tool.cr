@@ -10,6 +10,10 @@ module CurationTool
 
     fasta_gz = y.decon_file.sub(/contamination.*/, "decontaminated.fa.gz")
 
+    if y.merged
+      fasta_gz = # largestdna.ref in the assembly/draft/treeval directory
+    end
+
     raise Exception.new("scaffolds.tpf in working #{wd} already exists") if File.exists?(wd + "/scaffolds.tpf")
 
     cmd = <<-HERE

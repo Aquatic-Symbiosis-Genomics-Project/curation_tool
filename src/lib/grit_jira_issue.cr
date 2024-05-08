@@ -9,10 +9,12 @@ require "file_utils"
 class GritJiraIssue
   @@url = "jira.sanger.ac.uk"
   @token : String?
+  property merged : Bool
 
-  def initialize(name : String)
+  def initialize(name : String, merged : Bool)
     @id = name
     @token = self.get_token
+    @merged = merged
   end
 
   def json
