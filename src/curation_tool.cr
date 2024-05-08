@@ -1,5 +1,3 @@
-#!/bin/env crystal
-
 require "option_parser"
 require "./lib/curation_tool"
 
@@ -19,7 +17,7 @@ OptionParser.parse do |parser|
   parser.on("-w", "--setup_working_dir", "create initial curation files and directory") { tol = true }
   parser.on("-r", "--build_release", "create pretext and release files") { release = true }
   parser.on("-q", "--copy_qc", "copy from DIR to curation for QC") { qc = true }
-  parser.on("-m", "--merged", "build files based on a merged map") {merged = true}
+  parser.on("-m", "--merged", "build files based on a merged map") { merged = true }
   parser.on("-g", "--highres", "build a highres pretext") { highres = true }
 
   parser.on("-h", "--help", "show this help") do
@@ -40,7 +38,7 @@ OptionParser.parse do |parser|
   end
 end
 
-y = GritJiraIssue.new(issue,merged)
+y = GritJiraIssue.new(issue, merged)
 
 # puts y.json.to_pretty_json
 

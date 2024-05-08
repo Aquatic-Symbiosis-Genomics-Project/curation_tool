@@ -1,5 +1,3 @@
-#!/bin/env crystal
-
 require "http/client"
 require "html"
 require "json"
@@ -9,12 +7,12 @@ require "file_utils"
 class GritJiraIssue
   @@url = "jira.sanger.ac.uk"
   @token : String?
-  property merged : Bool
 
-  def initialize(name : String, merged : Bool)
+  getter merged
+
+  def initialize(name : String, @merged : Bool = false)
     @id = name
     @token = self.get_token
-    @merged = merged
   end
 
   def json
@@ -60,14 +58,11 @@ class GritJiraIssue
   # in the form of tol_id _ version
   def sample_version
     "#{self.tol_id}_#{self.release_version}"
-<<<<<<< HEAD:src/lib/GritJiraIssue.cr
-=======
   end
 
   # in the form of tol_id . version
   def sample_dot_version
     "#{self.tol_id}.#{self.release_version}"
->>>>>>> main:src/lib/grit_jira_issue.cr
   end
 
   # curation working directory

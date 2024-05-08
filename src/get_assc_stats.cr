@@ -71,7 +71,7 @@ puts ["tolID", "fasta file", "average gc", "average length", "average repeat", "
       "false negatives", "average gc fn", "average len fn", "average repeat fn", "average stops dn"].join("\t")
 
 ARGV.each { |jira_id|
-  y = StatIssue.new(jira_id)
+  y = StatIssue.new(jira_id, false)
 
   Dir.glob("#{y.decon_dir}/*.contamination").each { |file|
     contamination_ids = parse_decon_file(file)
