@@ -13,7 +13,15 @@ module CurationTool
     if y.merged
       # largest dna.ref in the assembly/draft/treeval directory
       treeval_dir = y.decon_file.sub(/draft.*/, "/draft/treeval/")
-      fasta_gz = Dir["#{treeval_dir}/*/data/ref.fa"].sort_by { |file| File.info(file).size }[-1]
+      # fasta_gz = Dir["#{treeval_dir}/*/data/ref.fa","#{treeval_dir}/*/merged.fa"].sort_by { |file| File.info(file).size }[-1]
+      if y.yaml.as_h.has_key?("hap1")
+        fasta_gz = y.yaml["hap1"].as_s+" "+y.yaml["hap2"].as_s
+      elsif y.yaml.as_h.has_key?("maternal")
+        fasta_gz = y.yaml["maternal"].as_s+" "+y.yaml["paternal"].as_s
+      else
+        fasta_gz = y.yaml["primary"].as_s+" "+y.yaml["haplotigs"].as_s
+      end
+      fasta_gz = fasta_gz.gsub(".fa.gz",".decontaminated.fa.gz")
     end
 
     raise Exception.new("scaffolds.tpf in working #{wd} already exists") if File.exists?(wd + "/scaffolds.tpf")
