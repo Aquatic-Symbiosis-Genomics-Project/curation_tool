@@ -45,10 +45,11 @@ HERE
       puts o
       raise "something went wrong" unless $?.success?
 
+      bsub = "bsub -G grit-grp -K -M 16G -R'select[meme>16G] rusage[mem=16G]'"
       # create fasta
       if y.merged
         ["HAP1", "HAP2"].each { |label|
-          cmd = "rapid_join.pl -tpf *#{label}.tpf -csv chrs_#{label}.csv -o #{id}.#{label} -f original.fa"
+          cmd = "#{bsub} rapid_join.pl -tpf *#{label}.tpf -csv chrs_#{label}.csv -o #{id}.#{label} -f original.fa"
           o = `#{cmd}`
           puts o
           raise "something went wrong" unless $?.success?
@@ -56,8 +57,8 @@ HERE
       else
         cmd = <<-HERE
 touch #{id}.additional_haplotigs.curated.fa ;
-rapid_join.pl -tpf #{id}.tpf -csv chrs.csv -o #{id} -f original.fa ;
-[ -s #{id}_Haplotigs.tpf ] && rapid_join.pl -tpf #{id}_Haplotigs.tpf -o #{id} -f original.fa -hap ;
+#{bsub} rapid_join.pl -tpf #{id}.tpf -csv chrs.csv -o #{id} -f original.fa ;
+[ -s #{id}_Haplotigs.tpf ] && #{bsub} rapid_join.pl -tpf #{id}_Haplotigs.tpf -o #{id} -f original.fa -hap ;
 HERE
         o = `#{cmd}`
         puts o
