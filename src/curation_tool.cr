@@ -8,7 +8,6 @@ setup = false
 qc = false
 tol = false
 release = false
-highres = false
 merged = false
 OptionParser.parse do |parser|
   parser.banner = "Usage: curation_tool --issue JIRA_ID [options]"
@@ -18,7 +17,6 @@ OptionParser.parse do |parser|
   parser.on("-r", "--build_release", "create pretext and release files") { release = true }
   parser.on("-q", "--copy_qc", "copy from DIR to curation for QC") { qc = true }
   parser.on("-m", "--merged", "build files based on a merged map") { merged = true }
-  parser.on("-g", "--highres", "build a highres pretext") { highres = true }
 
   parser.on("-h", "--help", "show this help") do
     puts parser
@@ -50,7 +48,7 @@ elsif tol
   setup_tol(y)
 elsif release
   puts "building release files and pretext => #{y.working_dir}"
-  build_release(y, highres)
+  build_release(y)
 elsif qc
   puts "stage for QC => #{y.curated_dir}"
   copy_qc(y)

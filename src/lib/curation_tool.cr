@@ -35,42 +35,32 @@ HERE
   end
 
   # make files from the preetxt agp and build a new pretext
-  def build_release(y, highres = false)
+  def build_release(y)
     old_id = y.sample_version
     id = y.sample_dot_version
     wd = y.working_dir
 
-    highres_option = highres ? "-g" : ""
-
     Dir.cd(wd) do
-      cmd = <<-HERE
-touch #{id}.additional_haplotigs.curated.fa ;
-rapid_pretext2tpf_XL.py scaffolds.tpf #{old_id}*.pretext.agp_1 ;
-[ -s haps_rapid_prtxt_XL.tpf ] && rapid_join.pl -fa original.fa -tpf haps_rapid_prtxt_XL.tpf -out #{id} -hap ;
-rapid_join.pl -csv chrs.csv -fa original.fa -tpf rapid_prtxt_XL.tpf -out #{id} ;
-HERE
+      cmd = "pretext-to-tpf -a original.tpf -p *.agp_1 -o #{id}.tpf -w -f"
       o = `#{cmd}`
       puts o
       raise "something went wrong" unless $?.success?
 
-      File.write(wd + "/#{id}.curation_stats", o)
-      primary = "#{id}.primary.curated.fa"
-
-      # trim contamination
-      if y.decon_file.includes?(".bed")
-        cmd = <<-HERE
-/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary} -c #{y.decon_file}
-mv  #{primary}_cleaned  #{primary}
-HERE
-
-        puts `#{cmd}`
-        raise "something went wrong" unless $?.success?
-      end
+      # create fasta
+      ["HAP1","HAP2"].each{|label|
+         cmd = "rapid_join.pl -tpf *#{label}.tpf -csv chrs_#{label}.csv -o #{id}.#{label} -f original.fa"
+         o = `#{cmd}`
+         puts o
+         raise "something went wrong" unless $?.success?
+      }
 
       # Make new pretext map.
       cmd = <<-HERE
-  Pretext_HiC_pipeline.sh -i #{primary} -s #{id} -k #{y.hic_read_dir} -d `pwd` #{highres_option}
-  HERE
+for f in *primary.curated.fa
+do
+  Pretext_HiC_pipeline.sh -i $f -s $f -d .  -k /lustre/scratch122/tol/data/b/f/f/e/2/8/Larus_argentatus/genomic_data/bLarArg3/hic-arima2 &
+done
+HERE
       puts `#{cmd}`
       raise "something went wrong" unless $?.success?
     end
