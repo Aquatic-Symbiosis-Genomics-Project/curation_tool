@@ -89,7 +89,7 @@ HERE
       pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
       if pretext
         puts "copying #{pretext} => #{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
-        FileUtils.cp(pretext, "#{y.pretext_dir}/#{id}.primary.curated.pretext")
+        FileUtils.cp(pretext, "#{y.pretext_dir}/#{y.sample_dot_version}.primary.curated.pretext")
       end
     end
   end
