@@ -57,7 +57,7 @@ HERE
         cmd = <<-HERE
 touch #{id}.additional_haplotigs.curated.fa ;
 rapid_join.pl -tpf #{id}.tpf -csv chrs.csv -o #{id} -f original.fa ;
-[-s #{id}_Haplotigs.tpf ] && rapid_join.pl -tpf #{id}_Haplotigs.tpf -o #{id} -f original.fa -hap ;
+[ -s #{id}_Haplotigs.tpf ] && rapid_join.pl -tpf #{id}_Haplotigs.tpf -o #{id} -f original.fa -hap ;
 HERE
         o = `#{cmd}`
         puts o
