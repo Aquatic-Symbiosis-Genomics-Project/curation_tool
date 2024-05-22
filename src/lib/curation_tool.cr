@@ -91,21 +91,24 @@ HERE
           /\S+_(\w+)(\.primary.*)/.match(file)
           new_file = "#{y.tol_id}.#{$1.to_s.downcase}.#{y.release_version}.#{$2}"
         end
-        puts "copying #{wd}/#{file} => #{target_dir}/#{new_file}"
-        FileUtils.cp("#{wd}/#{file}", "#{target_dir}/#{new_file}")
+        target = "#{target_dir}/#{new_file}"
+        puts "copying #{wd}/#{file} => #{target}"
+        FileUtils.cp("#{wd}/#{file}", target)
       }
 
       # copy pretext
       if y.merged
         ["HAP1", "HAP2"].each { |hap|
           pretext = Dir["#{wd}/*/*#{hap}*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
-          puts "copying #{pretext} => #{y.pretext_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.curated.pretext"
-          FileUtils.cp(pretext, "#{y.pretext_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.curated.pretext")
+          target = "#{y.pretext_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.curated.pretext"
+          puts "copying #{pretext} => #{target}"
+          FileUtils.cp(pretext, target)
         }
       else
         pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
-        puts "copying #{pretext} => #{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
-        FileUtils.cp(pretext, "#{y.pretext_dir}/#{y.sample_dot_version}.primary.curated.pretext")
+        target = "#{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
+        puts "copying #{pretext} => #{target}"
+        FileUtils.cp(pretext, target)
       end
     end
   end
