@@ -36,7 +36,6 @@ HERE
 
   # make files from the preetxt agp and build a new pretext
   def build_release(y)
-    old_id = y.sample_version
     id = y.sample_dot_version
     wd = y.working_dir
 
@@ -47,11 +46,11 @@ HERE
       raise "something went wrong" unless $?.success?
 
       # create fasta
-      ["HAP1","HAP2"].each{|label|
-         cmd = "rapid_join.pl -tpf *#{label}.tpf -csv chrs_#{label}.csv -o #{id}.#{label} -f original.fa"
-         o = `#{cmd}`
-         puts o
-         raise "something went wrong" unless $?.success?
+      ["HAP1", "HAP2"].each { |label|
+        cmd = "rapid_join.pl -tpf *#{label}.tpf -csv chrs_#{label}.csv -o #{id}.#{label} -f original.fa"
+        o = `#{cmd}`
+        puts o
+        raise "something went wrong" unless $?.success?
       }
 
       # Make new pretext map.
@@ -70,22 +69,17 @@ HERE
   def copy_qc(y)
     target_dir = y.curated_dir
     wd = y.working_dir
-    id = y.sample_dot_version
 
     FileUtils.mkdir_p(target_dir)
 
     Dir.cd(wd) do
-      # required files
-      files = [
-        "rapid_prtxt_XL.tpf", "haps_rapid_prtxt_XL.tpf", "#{id}.primary.curated.fa", "#{id}.inter.csv",
-        "#{id}.primary.chromosome.list.csv", "#{id}.additional_haplotigs.curated.fa", "#{id}.curation_stats",
-      ]
+      files = Dir["*.primary.curated.fa", "*.primary.chromosome.list.csv"]
 
       files.each { |file|
-        if File.exists?(file)
-          puts "copying #{wd}/#{file} => #{target_dir}/#{file}"
-          FileUtils.cp("#{wd}/#{file}", "#{target_dir}/#{file}")
-        end
+        /\S+_(\w+)(\.primary.*)/.match(file)
+        new_file = "#{y.tol_id}.#{$1.to_s.downcase}.#{y.release_version}.#{$2}"
+        puts "copying #{wd}/#{file} => #{target_dir}/#{new_file}"
+        FileUtils.cp("#{wd}/#{file}", "#{target_dir}/#{new_file}")
       }
 
       # copy pretext
