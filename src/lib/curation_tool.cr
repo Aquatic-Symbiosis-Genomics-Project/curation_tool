@@ -46,21 +46,29 @@ HERE
       raise "something went wrong" unless $?.success?
 
       # create fasta
-      # needs some logic for non-hap1/2 cases
-      ["HAP1", "HAP2"].each { |label|
-        cmd = "rapid_join.pl -tpf *#{label}.tpf -csv chrs_#{label}.csv -o #{id}.#{label} -f original.fa"
+      if y.merged
+        ["HAP1", "HAP2"].each { |label|
+          cmd = "rapid_join.pl -tpf *#{label}.tpf -csv chrs_#{label}.csv -o #{id}.#{label} -f original.fa"
+          o = `#{cmd}`
+          puts o
+          raise "something went wrong" unless $?.success?
+        }
+      else
+        cmd = <<-HERE
+touch #{id}.additional_haplotigs.curated.fa ;
+rapid_join.pl -tpf #{id}.tpf -csv chrs.csv -o #{id} -f original.fa ;
+[-s #{id}_Haplotigs.tpf ] && rapid_join.pl -tpf #{id}_Haplotigs.tpf -o #{id} -f original.fa -hap ;
+HERE
         o = `#{cmd}`
         puts o
         raise "something went wrong" unless $?.success?
-      }
-
-      # create haps fasta if needed
+      end
 
       # Make new pretext map.
       cmd = <<-HERE
-for f in *primary.curated.fa
+for f in *primary.curated.fa ;
 do
-  Pretext_HiC_pipeline.sh -i $f -s $f -d .  -k /lustre/scratch122/tol/data/b/f/f/e/2/8/Larus_argentatus/genomic_data/bLarArg3/hic-arima2 &
+  Pretext_HiC_pipeline.sh -i $f -s $f -d .  -k #{y.hic_read_dir} &
 done
 HERE
       puts `#{cmd}`
@@ -76,18 +84,26 @@ HERE
     FileUtils.mkdir_p(target_dir)
 
     Dir.cd(wd) do
-      files = Dir["*.primary.curated.fa", "*.primary.chromosome.list.csv"]
-
+      files = Dir["*.primary.curated.fa", "*.primary.chromosome.list.csv", "*_haplotigs.curated.fa"]
       files.each { |file|
-        /\S+_(\w+)(\.primary.*)/.match(file)
-        new_file = "#{y.tol_id}.#{$1.to_s.downcase}.#{y.release_version}.#{$2}"
+        new_file = file
+        if y.merged
+          /\S+_(\w+)(\.primary.*)/.match(file)
+          new_file = "#{y.tol_id}.#{$1.to_s.downcase}.#{y.release_version}.#{$2}"
+        end
         puts "copying #{wd}/#{file} => #{target_dir}/#{new_file}"
         FileUtils.cp("#{wd}/#{file}", "#{target_dir}/#{new_file}")
       }
 
       # copy pretext
-      pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
-      if pretext
+      if y.merged
+        ["HAP1", "HAP2"].each { |hap|
+          pretext = Dir["#{wd}/*/*#{hap}*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
+          puts "copying #{pretext} => #{y.pretext_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.curated.pretext"
+          FileUtils.cp(pretext, "#{y.pretext_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.curated.pretext")
+        }
+      else
+        pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
         puts "copying #{pretext} => #{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
         FileUtils.cp(pretext, "#{y.pretext_dir}/#{y.sample_dot_version}.primary.curated.pretext")
       end
