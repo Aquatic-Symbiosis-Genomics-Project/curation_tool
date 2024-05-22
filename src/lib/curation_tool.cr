@@ -46,12 +46,15 @@ HERE
       raise "something went wrong" unless $?.success?
 
       # create fasta
+      # needs some logic for non-hap1/2 cases
       ["HAP1", "HAP2"].each { |label|
         cmd = "rapid_join.pl -tpf *#{label}.tpf -csv chrs_#{label}.csv -o #{id}.#{label} -f original.fa"
         o = `#{cmd}`
         puts o
         raise "something went wrong" unless $?.success?
       }
+
+      # create haps fasta if needed
 
       # Make new pretext map.
       cmd = <<-HERE
@@ -85,7 +88,7 @@ HERE
       # copy pretext
       pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
       if pretext
-        puts "copying #{pretext} => #{y.pretext_dir}/#{id}.curated.pretext"
+        puts "copying #{pretext} => #{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
         FileUtils.cp(pretext, "#{y.pretext_dir}/#{id}.primary.curated.pretext")
       end
     end
