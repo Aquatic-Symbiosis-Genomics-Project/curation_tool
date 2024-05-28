@@ -101,13 +101,13 @@ HERE
       if y.merged
         ["HAP1", "HAP2"].each { |hap|
           pretext = Dir["#{wd}/*/*#{hap}*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
-          target = "#{y.pretext_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.curated.pretext"
+          target = "#{y.pretext_dir}/#{y.tol_id}.#{hap.downcase}.#{y.release_version}.curated.pretext"
           puts "copying #{pretext} => #{target}"
           FileUtils.cp(pretext, target)
         }
       else
         pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
-        target = "#{y.pretext_dir}/#{y.sample_dot_version}.primary.curated.pretext"
+        target = "#{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
         puts "copying #{pretext} => #{target}"
         FileUtils.cp(pretext, target)
       end
