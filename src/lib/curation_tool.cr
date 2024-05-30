@@ -88,7 +88,7 @@ HERE
       files = Dir["*.primary.curated.fa", "*.primary.chromosome.list.csv", "*_haplotigs.curated.fa"]
       files.each { |file|
         new_file = file
-        if y.merged &&  file.match(/\S+\.(\w+)\.(primary.*)/)
+        if y.merged && file.match(/\S+\.(\w+)\.(primary.*)/)
           new_file = "#{y.tol_id}.#{$1.to_s.downcase}.#{y.release_version}.#{$2}"
         end
         target = "#{target_dir}/#{new_file}"
