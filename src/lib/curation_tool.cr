@@ -54,9 +54,10 @@ HERE
         }
         if y.decon_file.includes?(".bed")
           decon_file = y.decon_file.sub("hap1", label.downcase)
+          primary_fa = "#{id}.#{label}.curated.fa"
           cmd = <<-HERE
-/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.#{label}.curated.fa -c #{decon_file} ;
-mv  #{primary}_cleaned  #{primary}
+/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} ;
+mv  #{id}.#{primary_fa}_cleaned #{primary_fa}
 HERE
           puts `cmd`
           raise "something went wrong" unless $?.success?
@@ -72,9 +73,10 @@ HERE
 
         # trim contamination
         if y.decon_file.includes?(".bed")
+          primary_fa = "#{id}.curated.fa"
           cmd = <<-HERE
-/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.curated.fa -c #{y.decon_file} ;
-mv  #{primary}_cleaned  #{primary}
+/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{y.decon_file} ;
+mv  #{primary_fa}_cleaned  #{primary_fa}
 HERE
           puts `cmd`
           raise "something went wrong" unless $?.success?
