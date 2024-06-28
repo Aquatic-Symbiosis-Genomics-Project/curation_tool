@@ -52,6 +52,15 @@ HERE
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         }
+        if y.decon_file.includes?(".bed")
+          decon_file = y.decon_file.sub("hap1", label.downcase)
+          cmd = <<-HERE
+/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.#{label}.curated.fa -c #{decon_file} ;
+mv  #{primary}_cleaned  #{primary}
+HERE
+          puts `cmd`
+          raise "something went wrong" unless $?.success?
+        end
       else
         cmd = <<-HERE
 touch #{id}.additional_haplotigs.curated.fa ;
@@ -60,6 +69,16 @@ touch #{id}.additional_haplotigs.curated.fa ;
 HERE
         puts `#{cmd}`
         raise "something went wrong" unless $?.success?
+
+        # trim contamination
+        if y.decon_file.includes?(".bed")
+          cmd = <<-HERE
+/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.curated.fa -c #{y.decon_file} ;
+mv  #{primary}_cleaned  #{primary}
+HERE
+          puts `cmd`
+          raise "something went wrong" unless $?.success?
+        end
       end
 
       # Make new pretext map.
