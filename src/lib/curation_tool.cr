@@ -41,8 +41,7 @@ HERE
 
     Dir.cd(wd) do
       cmd = "pretext-to-tpf -a original.tpf -p *.agp_1 -o #{id}.tpf -w -f"
-      o = `#{cmd}`
-      puts o
+      puts `#{cmd}`
       raise "something went wrong" unless $?.success?
 
       bsub = "bsub -G grit-grp -K -M 16G -R'select[mem>16G] rusage[mem=16G]' -o /dev/null"
@@ -50,8 +49,7 @@ HERE
       if y.merged
         ["HAP1", "HAP2"].each { |label|
           cmd = "#{bsub} rapid_join.pl -tpf *#{label}.tpf -csv chrs_#{label}.csv -o #{id}.#{label} -f original.fa"
-          o = `#{cmd}`
-          puts o
+          puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         }
       else
@@ -60,8 +58,7 @@ touch #{id}.additional_haplotigs.curated.fa ;
 #{bsub} rapid_join.pl -tpf #{id}.tpf -csv chrs.csv -o #{id} -f original.fa ;
 [ -s #{id}_Haplotigs.tpf ] && #{bsub} rapid_join.pl -tpf #{id}_Haplotigs.tpf -o #{id} -f original.fa -hap ;
 HERE
-        o = `#{cmd}`
-        puts o
+        puts `#{cmd}`
         raise "something went wrong" unless $?.success?
       end
 
