@@ -59,7 +59,7 @@ HERE
 /nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} ;
 mv  #{id}.#{primary_fa}_cleaned #{primary_fa}
 HERE
-            puts `cmd`
+            puts `#{cmd}`
             raise "something went wrong with #{cmd}" unless $?.success?
           end
         }
@@ -74,7 +74,7 @@ HERE
 
         # trim contamination
         if y.decon_file.includes?(".bed")
-          primary_fa = "#{id}.curated.fa"
+          primary_fa = "#{id}.primary.curated.fa"
           cmd = <<-HERE
 /nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{y.decon_file} ;
 mv  #{primary_fa}_cleaned  #{primary_fa}
