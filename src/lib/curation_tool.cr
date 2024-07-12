@@ -60,7 +60,7 @@ HERE
 mv  #{id}.#{primary_fa}_cleaned #{primary_fa}
 HERE
             puts `cmd`
-            raise "something went wrong" unless $?.success?
+            raise "something went wrong with #{cmd}" unless $?.success?
           end
         }
       else
@@ -79,8 +79,8 @@ HERE
 /nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{y.decon_file} ;
 mv  #{primary_fa}_cleaned  #{primary_fa}
 HERE
-          puts `cmd`
-          raise "something went wrong" unless $?.success?
+          puts `#{cmd}`
+          raise "something went wrong with #{cmd}" unless $?.success?
         end
       end
 
