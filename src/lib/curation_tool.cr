@@ -123,6 +123,12 @@ HERE
           puts "copying #{pretext} => #{target}"
           FileUtils.cp(pretext, target)
         }
+        # create empty hap files for post-processing
+        ["hap1", "hap2"].each { |hap|
+          target = "#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.fa"
+          puts "creating empty hap file at => #{target}"
+          File.touch(target)
+        }
       else
         pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
         target = "#{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
