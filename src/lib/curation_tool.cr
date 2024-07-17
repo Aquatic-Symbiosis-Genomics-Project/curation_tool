@@ -66,11 +66,11 @@ HERE
       else
         cmd = <<-HERE
 touch #{id}.additional_haplotigs.curated.fa ;
-#{bsub} rapid_join.pl -tpf #{id}.tpf -csv chrs.csv -o #{id} -f original.fa ;
 [ -s #{id}_Haplotigs.tpf ] && #{bsub} rapid_join.pl -tpf #{id}_Haplotigs.tpf -o #{id} -f original.fa -hap ;
+#{bsub} rapid_join.pl -tpf #{id}.tpf -csv chrs.csv -o #{id} -f original.fa ;
 HERE
         puts `#{cmd}`
-        raise "something went wrong" unless $?.success?
+        raise "something went wrong with #{cmd}" unless $?.success?
 
         # trim contamination
         if y.decon_file.includes?(".bed")
