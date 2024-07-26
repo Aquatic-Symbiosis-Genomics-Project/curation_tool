@@ -125,7 +125,7 @@ HERE
         }
         # create empty hap files for post-processing
         ["hap1", "hap2"].each { |hap|
-          target = "#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.fa"
+          target = "#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa"
           puts "creating empty hap file at => #{target}"
           File.touch(target)
         }
