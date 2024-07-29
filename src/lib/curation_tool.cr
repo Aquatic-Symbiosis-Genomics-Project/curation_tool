@@ -44,7 +44,7 @@ HERE
       puts `#{cmd}`
       raise "something went wrong" unless $?.success?
 
-      bsub = "bsub -G grit-grp -K -M 16G -R'select[mem>16G] rusage[mem=16G]' -o /dev/null"
+      bsub = "bsub -K -M 16G -R'select[mem>16G] rusage[mem=16G]' -o /dev/null"
       # create fasta
       if y.merged
         ["HAP1", "HAP2"].each { |label|
