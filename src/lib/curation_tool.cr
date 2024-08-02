@@ -10,11 +10,22 @@ module CurationTool
 
     fasta_gz = y.decon_file.sub(/contamination.*/, "decontaminated.fa.gz")
 
+    if y.merged
+      if y.yaml.as_h.has_key?("hap1")
+        fasta_gz = y.yaml["hap1"].as_s + " " + y.yaml["hap2"].as_s
+      elsif y.yaml.as_h.has_key?("maternal")
+        fasta_gz = y.yaml["maternal"].as_s + " " + y.yaml["paternal"].as_s
+      else
+        fasta_gz = y.yaml["primary"].as_s + " " + y.yaml["haplotigs"].as_s
+      end
+      fasta_gz = fasta_gz.gsub(".fa.gz", ".decontaminated.fa.gz")
+    end
+
     raise Exception.new("scaffolds.tpf in working #{wd} already exists") if File.exists?(wd + "/scaffolds.tpf")
 
     cmd = <<-HERE
 cd #{wd} ;
-zcat #{fasta_gz} > original.fa ;
+zcat -f #{fasta_gz} > original.fa ;
 rapid_split.pl -fa original.fa ;
 mv -f original.fa.tpf original.tpf ;
 cp original.tpf scaffolds.tpf;
@@ -24,42 +35,62 @@ HERE
   end
 
   # make files from the preetxt agp and build a new pretext
-  def build_release(y, highres = false)
-    old_id = y.sample_version
+  def build_release(y)
     id = y.sample_dot_version
     wd = y.working_dir
 
-    highres_option = highres ? "-g" : ""
-
     Dir.cd(wd) do
-      cmd = <<-HERE
-touch #{id}.additional_haplotigs.curated.fa ;
-rapid_pretext2tpf_XL.py scaffolds.tpf #{old_id}*.pretext.agp_1 ;
-[ -s haps_rapid_prtxt_XL.tpf ] && rapid_join.pl -fa original.fa -tpf haps_rapid_prtxt_XL.tpf -out #{id} -hap ;
-rapid_join.pl -csv chrs.csv -fa original.fa -tpf rapid_prtxt_XL.tpf -out #{id} ;
-HERE
-      o = `#{cmd}`
-      puts o
+      cmd = "pretext-to-tpf -a original.tpf -p *.agp_1 -o #{id}.tpf -w -f"
+      puts `#{cmd}`
       raise "something went wrong" unless $?.success?
 
-      File.write(wd + "/#{id}.curation_stats", o)
-      primary = "#{id}.primary.curated.fa"
+      bsub = "bsub -K -M 16G -R'select[mem>16G] rusage[mem=16G]' -o /dev/null"
+      # create fasta
+      if y.merged
+        ["HAP1", "HAP2"].each { |label|
+          cmd = "#{bsub} rapid_join.pl -tpf *#{label}.tpf -csv chrs_#{label}.csv -o #{id}.#{label} -f original.fa"
+          puts `#{cmd}`
+          raise "something went wrong with #{cmd}" unless $?.success?
 
-      # trim contamination
-      if y.decon_file.includes?(".bed")
-        cmd = <<-HERE
-/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary} -c #{y.decon_file}
-mv  #{primary}_cleaned  #{primary}
+          if y.decon_file.includes?(".bed")
+            decon_file = y.decon_file.sub("hap1", label.downcase)
+            primary_fa = "#{id}.#{label}.primary.curated.fa"
+            cmd = <<-HERE
+/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} ;
+mv  #{primary_fa}_cleaned #{primary_fa}
 HERE
-
+            puts `#{cmd}`
+            raise "something went wrong with #{cmd}" unless $?.success?
+          end
+        }
+      else
+        cmd = <<-HERE
+touch #{id}.additional_haplotigs.curated.fa ;
+[ -s #{id}_Haplotigs.tpf ] && #{bsub} rapid_join.pl -tpf #{id}_Haplotigs.tpf -o #{id} -f original.fa -hap ;
+#{bsub} rapid_join.pl -tpf #{id}.tpf -csv chrs.csv -o #{id} -f original.fa ;
+HERE
         puts `#{cmd}`
-        raise "something went wrong" unless $?.success?
+        raise "something went wrong with #{cmd}" unless $?.success?
+
+        # trim contamination
+        if y.decon_file.includes?(".bed")
+          primary_fa = "#{id}.primary.curated.fa"
+          cmd = <<-HERE
+/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{y.decon_file} ;
+mv  #{primary_fa}_cleaned  #{primary_fa}
+HERE
+          puts `#{cmd}`
+          raise "something went wrong with #{cmd}" unless $?.success?
+        end
       end
 
       # Make new pretext map.
       cmd = <<-HERE
-  Pretext_HiC_pipeline.sh -i #{primary} -s #{id} -k #{y.hic_read_dir} -d `pwd` #{highres_option}
-  HERE
+for f in *primary.curated.fa ;
+do
+  Pretext_HiC_pipeline.sh -i $f -s $f -d .  -k #{y.hic_read_dir} &
+done
+HERE
       puts `#{cmd}`
       raise "something went wrong" unless $?.success?
     end
@@ -69,29 +100,40 @@ HERE
   def copy_qc(y)
     target_dir = y.curated_dir
     wd = y.working_dir
-    id = y.sample_dot_version
 
     FileUtils.mkdir_p(target_dir)
 
     Dir.cd(wd) do
-      # required files
-      files = [
-        "rapid_prtxt_XL.tpf", "haps_rapid_prtxt_XL.tpf", "#{id}.primary.curated.fa", "#{id}.inter.csv",
-        "#{id}.primary.chromosome.list.csv", "#{id}.additional_haplotigs.curated.fa", "#{id}.curation_stats",
-      ]
-
+      files = Dir["*.primary.curated.fa", "*.primary.chromosome.list.csv", "*_haplotigs.curated.fa"]
       files.each { |file|
-        if File.exists?(file)
-          puts "copying #{wd}/#{file} => #{target_dir}/#{file}"
-          FileUtils.cp("#{wd}/#{file}", "#{target_dir}/#{file}")
+        new_file = file
+        if y.merged && file.match(/\S+\.(\w+)\.(primary.*)/)
+          new_file = "#{y.tol_id}.#{$1.to_s.downcase}.#{y.release_version}.#{$2}"
         end
+        target = "#{target_dir}/#{new_file}"
+        puts "copying #{wd}/#{file} => #{target}"
+        FileUtils.cp("#{wd}/#{file}", target)
       }
 
       # copy pretext
-      pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
-      if pretext
-        puts "copying #{pretext} => #{y.pretext_dir}/#{id}.curated.pretext"
-        FileUtils.cp(pretext, "#{y.pretext_dir}/#{id}.primary.curated.pretext")
+      if y.merged
+        ["HAP1", "HAP2"].each { |hap|
+          pretext = Dir["#{wd}/*/*#{hap}*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
+          target = "#{y.pretext_dir}/#{y.tol_id}.#{hap.downcase}.#{y.release_version}.curated.pretext"
+          puts "copying #{pretext} => #{target}"
+          FileUtils.cp(pretext, target)
+        }
+        # create empty hap files for post-processing
+        ["hap1", "hap2"].each { |hap|
+          target = "#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa"
+          puts "creating empty hap file at => #{target}"
+          File.touch(target)
+        }
+      else
+        pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
+        target = "#{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
+        puts "copying #{pretext} => #{target}"
+        FileUtils.cp(pretext, target)
       end
     end
   end

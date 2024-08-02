@@ -48,6 +48,6 @@ OptionParser.parse do |parser|
 end
 
 issues.each { |issue|
-  y = FCSIssue.new(issue)
+  y = FCSIssue.new(issue, false)
   y.submit_to_lsf
 }

@@ -67,5 +67,5 @@ __HERE__
   end
 end
 
-y = BTKIssue.new(issue)
+y = BTKIssue.new(issue, false)
 y.submit_to_lsf
