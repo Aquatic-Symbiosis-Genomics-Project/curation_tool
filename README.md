@@ -30,7 +30,7 @@ Usage: curation_tool --issue JIRA_ID [options]
     -w, --setup_working_dir          create initial curation files and directory
     -r, --build_release              create pretext and release files
     -q, --copy_qc                    copy from DIR to curation for QC
-    -g, --highres                    build a highres pretext
+    -m, --merged                     work on a merged curation & pretext
     -h, --help                       show this help
 ```
 
