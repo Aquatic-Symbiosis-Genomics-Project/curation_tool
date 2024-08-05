@@ -108,11 +108,35 @@ class GritJiraIssue
     @json = JSON.parse(r.body)
   end
 
-  def get_yaml
+  def _get_yaml
     yaml_url = self.json["fields"]["attachment"].as_a.map { |e| e["content"] }.select { |elem| /.*\.(yaml|yml)/.match(elem.as_s) }[0]
     r = HTTP::Client.get("#{yaml_url}", headers: HTTP::Headers{"Authorization" => "Bearer #{@token}"})
     raise "cannot get the yaml" unless r.success?
     @yaml = YAML.parse(r.body)
+  end
+
+  def get_yaml
+    if self.json["fields"]["customfield_13408"].as_s?
+      yaml_path = self.json["fields"]["customfield_13408"].as_s
+      if File.exists?(yaml_path)
+        yaml = YAML.parse(File.read(yaml_path))
+      else
+        file_name = File.basename(yaml_path)
+        `scp tol22:#{yaml_path} /tmp/#{file_name}`
+        if File.exists?("/tmp/#{file_name}")
+          yaml = YAML.parse(File.read("/tmp/#{file_name}"))
+          File.delete("/tmp/#{file_name}")
+        end
+      end
+    end
+    if yaml.nil?
+      yaml_url = self.json["fields"]["attachment"].as_a.map { |e| e["content"] }.select { |elem| /.*\.(yaml|yml)/.match(elem.as_s) }[0]
+      r = HTTP::Client.get("#{yaml_url}", headers: HTTP::Headers{"Authorization" => "Bearer #{@token}"})
+      raise "cannot get the yaml" unless r.success?
+      yaml = YAML.parse(r.body)
+    end
+    raise "cannot get the yaml" if yaml.nil?
+    @yaml = yaml
   end
 
   def taxonomy
