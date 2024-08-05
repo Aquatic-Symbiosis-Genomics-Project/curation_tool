@@ -7,6 +7,7 @@ require "file_utils"
 class GritJiraIssue
   @@url = "jira.sanger.ac.uk"
   @token : String?
+  @yaml : (YAML::Any | Nil)
 
   getter merged
 
@@ -108,12 +109,6 @@ class GritJiraIssue
     @json = JSON.parse(r.body)
   end
 
-  def _get_yaml
-    yaml_url = self.json["fields"]["attachment"].as_a.map { |e| e["content"] }.select { |elem| /.*\.(yaml|yml)/.match(elem.as_s) }[0]
-    r = HTTP::Client.get("#{yaml_url}", headers: HTTP::Headers{"Authorization" => "Bearer #{@token}"})
-    raise "cannot get the yaml" unless r.success?
-    @yaml = YAML.parse(r.body)
-  end
 
   def get_yaml
     if self.json["fields"]["customfield_13408"].as_s?
@@ -129,13 +124,15 @@ class GritJiraIssue
         end
       end
     end
+
+    # if the file doesn't work, get it from Jira
     if yaml.nil?
       yaml_url = self.json["fields"]["attachment"].as_a.map { |e| e["content"] }.select { |elem| /.*\.(yaml|yml)/.match(elem.as_s) }[0]
       r = HTTP::Client.get("#{yaml_url}", headers: HTTP::Headers{"Authorization" => "Bearer #{@token}"})
-      raise "cannot get the yaml" unless r.success?
+      raise "cannot get the YAML from Jira" unless r.success?
       yaml = YAML.parse(r.body)
     end
-    raise "cannot get the yaml" if yaml.nil?
+    raise "cannot get the YAML data" if yaml.nil?
     @yaml = yaml
   end
 
