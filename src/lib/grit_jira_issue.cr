@@ -109,7 +109,6 @@ class GritJiraIssue
     @json = JSON.parse(r.body)
   end
 
-
   def get_yaml
     if self.json["fields"]["customfield_13408"].as_s?
       yaml_path = self.json["fields"]["customfield_13408"].as_s
