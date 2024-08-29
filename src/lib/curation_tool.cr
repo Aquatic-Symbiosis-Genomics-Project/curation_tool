@@ -50,38 +50,28 @@ HERE
       bsub = "bsub -K -M 16G -R'select[mem>16G] rusage[mem=16G]' -o /dev/null"
       # create fasta
       if y.merged
-        ["HAP1", "HAP2"].each { |label|
-          cmd = "#{bsub} rapid_join.pl -tpf *#{label}.tpf -csv chrs_#{label}.csv -o #{id}.#{label} -f original.fa"
-          puts `#{cmd}`
-          raise "something went wrong with #{cmd}" unless $?.success?
+        cmd = "#{bsub} multi_join.py --tpf HAP1.tpf --tpf2 HAP2.tpf --csv chrs_HAP1.csv --csv2 chrs_HAP2.csv --out #{id} --fasta original.fa"
+        puts `#{cmd}`
+        raise "something went wrong with #{cmd}" unless $?.success?
 
+        ["hap1", "hap2"].each { |label|
           if y.decon_file.includes?(".bed")
             decon_file = y.decon_file.sub("hap1", label.downcase)
             primary_fa = "#{id}.#{label}.primary.curated.fa"
-            cmd = <<-HERE
-/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} ;
-mv  #{primary_fa}_cleaned #{primary_fa}
-HERE
+            cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv  #{primary_fa}_cleaned #{primary_fa}"
             puts `#{cmd}`
             raise "something went wrong with #{cmd}" unless $?.success?
           end
         }
       else
-        cmd = <<-HERE
-touch #{id}.additional_haplotigs.curated.fa ;
-[ -s #{id}_Haplotigs.tpf ] && #{bsub} rapid_join.pl -tpf #{id}_Haplotigs.tpf -o #{id} -f original.fa -hap ;
-#{bsub} rapid_join.pl -tpf #{id}.tpf -csv chrs.csv -o #{id} -f original.fa ;
-HERE
+        cmd = "touch #{id}.additional_haplotigs.curated.fa && #{bsub} multi_join.py --tpf #{id}.tpf --csv chrs.csv --out #{id} --fasta original.fa"
         puts `#{cmd}`
         raise "something went wrong with #{cmd}" unless $?.success?
 
         # trim contamination
         if y.decon_file.includes?(".bed")
           primary_fa = "#{id}.primary.curated.fa"
-          cmd = <<-HERE
-/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{y.decon_file} ;
-mv  #{primary_fa}_cleaned  #{primary_fa}
-HERE
+          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{y.decon_file} && mv  #{primary_fa}_cleaned #{primary_fa}"
           puts `#{cmd}`
           raise "something went wrong with #{cmd}" unless $?.success?
         end
@@ -120,14 +110,12 @@ HERE
 
       # copy pretext
       if y.merged
-        ["HAP1", "HAP2"].each { |hap|
+        ["hap1", "hap2"].each { |hap|
           pretext = Dir["#{wd}/*/*#{hap}*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
-          target = "#{y.pretext_dir}/#{y.tol_id}.#{hap.downcase}.#{y.release_version}.curated.pretext"
+          target = "#{y.pretext_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.curated.pretext"
           puts "copying #{pretext} => #{target}"
           FileUtils.cp(pretext, target)
-        }
-        # create empty hap files for post-processing
-        ["hap1", "hap2"].each { |hap|
+
           target = "#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa"
           puts "creating empty hap file at => #{target}"
           File.touch(target)
