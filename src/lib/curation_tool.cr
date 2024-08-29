@@ -40,7 +40,6 @@ HERE
     wd = y.working_dir
 
     Dir.cd(wd) do
-
       agp = Dir["#{wd}/*/*.agp_1"].sort_by { |file| File.info(file).modification_time }[-1]
 
       cmd = "pretext-to-tpf -a original.tpf -p #{agp} -o #{id}.tpf -w -f"
