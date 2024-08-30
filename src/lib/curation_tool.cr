@@ -40,7 +40,7 @@ HERE
     wd = y.working_dir
 
     Dir.cd(wd) do
-      agp = Dir["#{wd}/*/*.agp_1"].sort_by { |file| File.info(file).modification_time }[-1]
+      agp = Dir["#{wd}/*.agp_1"].sort_by { |file| File.info(file).modification_time }[-1]
 
       cmd = "pretext-to-tpf -a original.tpf -p #{agp} -o #{id}.tpf -w -f"
       puts `#{cmd}`
@@ -49,14 +49,14 @@ HERE
       bsub = "bsub -K -M 16G -R'select[mem>16G] rusage[mem=16G]' -o /dev/null"
       # create fasta
       if y.merged
-        cmd = "#{bsub} multi_join.py --tpf HAP1.tpf --tpf2 HAP2.tpf --csv chrs_HAP1.csv --csv2 chrs_HAP2.csv --out #{id} --fasta original.fa"
+        cmd = "#{bsub} multi_join.py --tpf #{id}_HAP1.tpf --tpf2 #{id}_HAP2.tpf --csv chrs_HAP1.csv --csv2 chrs_HAP2.csv --out #{y.tol_id} --fasta original.fa"
         puts `#{cmd}`
         raise "something went wrong with #{cmd}" unless $?.success?
 
         ["hap1", "hap2"].each { |label|
           if y.decon_file.includes?(".bed")
             decon_file = y.decon_file.sub("hap1", label.downcase)
-            primary_fa = "#{id}.#{label}.primary.curated.fa"
+            primary_fa = "#{y.tol_id}.#{label}.1.primary.curated.fa"
             cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv  #{primary_fa}_cleaned #{primary_fa}"
             puts `#{cmd}`
             raise "something went wrong with #{cmd}" unless $?.success?
@@ -98,11 +98,7 @@ HERE
     Dir.cd(wd) do
       files = Dir["*.primary.curated.fa", "*.primary.chromosome.list.csv", "*_haplotigs.curated.fa"]
       files.each { |file|
-        new_file = file
-        if y.merged && file.match(/\S+\.(\w+)\.(primary.*)/)
-          new_file = "#{y.tol_id}.#{$1.to_s.downcase}.#{y.release_version}.#{$2}"
-        end
-        target = "#{target_dir}/#{new_file}"
+        target = "#{target_dir}/#{file}"
         puts "copying #{wd}/#{file} => #{target}"
         FileUtils.cp("#{wd}/#{file}", target)
       }
