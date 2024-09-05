@@ -63,14 +63,14 @@ HERE
           end
         }
       else
-        cmd = "touch #{id}.additional_haplotigs.curated.fa && #{bsub} multi_join.py --tpf #{id}.tpf --csv chrs.csv --out #{id} --fasta original.fa"
+        cmd = "touch #{id}.additional_haplotigs.curated.fa && #{bsub} multi_join.py --tpf #{id}.tpf --csv chrs.csv --out #{y.tol_id} --fasta original.fa"
         puts `#{cmd}`
         raise "something went wrong with #{cmd}" unless $?.success?
 
         # trim contamination
         if y.decon_file.includes?(".bed")
           primary_fa = "#{id}.primary.curated.fa"
-          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{y.decon_file} && mv  #{primary_fa}_cleaned #{primary_fa}"
+          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{y.tol_id}.1.primary.curated.fa -c #{y.decon_file} && mv  #{primary_fa}_cleaned #{primary_fa}"
           puts `#{cmd}`
           raise "something went wrong with #{cmd}" unless $?.success?
         end
