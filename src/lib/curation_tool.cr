@@ -63,7 +63,9 @@ HERE
           end
         }
       else
-        cmd = "touch #{id}.additional_haplotigs.curated.fa && #{bsub} multi_join.py --tpf #{id}.tpf --csv chrs.csv --out #{y.tol_id} --fasta original.fa"
+        cmd = "touch #{id}.additional_haplotigs.curated.fa && touch #{id}_Haplotigs.tpf"
+        puts `#{cmd}`
+        cmd = "#{bsub} multi_join.py --tpf #{id}.tpf --csv chrs.csv --out #{y.tol_id} --fasta original.fa --hap #{id}_Haplotigs.tpf"
         puts `#{cmd}`
         raise "something went wrong with #{cmd}" unless $?.success?
 
