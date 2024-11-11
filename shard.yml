@@ -13,6 +13,8 @@ targets:
     main: src/submit_btk.cr
   ascc_stats:
     main: src/get_assc_stats.cr
+  submit_curation_pretext:
+    main: src/submit_curation_pretext.cr
 
 crystal: 1.11.2
 

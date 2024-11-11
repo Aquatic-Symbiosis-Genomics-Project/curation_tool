@@ -28,6 +28,10 @@ class GritJiraIssue
     self.yaml["hic_read_dir"].as_s
   end
 
+  def pacbio_read_dir
+    self.yaml["pacbio_read_dir"].as_s
+  end
+
   def projects
     self.yaml["projects"].as_a
   end
