@@ -2,7 +2,7 @@ require "./grit_jira_issue"
 require "file_utils"
 
 module CurationTool
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
 
   def setup_tol(y)
     wd = y.working_dir
@@ -23,15 +23,11 @@ module CurationTool
 
     raise Exception.new("scaffolds.tpf in working #{wd} already exists") if File.exists?(wd + "/scaffolds.tpf")
 
-    cmd = <<-HERE
-cd #{wd} ;
-zcat -f #{fasta_gz} > original.fa ;
-rapid_split.pl -fa original.fa ;
-mv -f original.fa.tpf original.tpf ;
-cp original.tpf scaffolds.tpf;
-HERE
-    puts `#{cmd}`
-    raise "something went wrong" unless $?.success?
+    Dir.cd(wd) do
+      cmd = "zcat -f #{fasta_gz} > original.fa"
+      puts `#{cmd}`
+      raise "something went wrong" unless $?.success?
+    end
   end
 
   # make files from the preetxt agp and build a new pretext
@@ -42,51 +38,35 @@ HERE
     Dir.cd(wd) do
       agp = Dir["#{wd}/*.agp_1"].sort_by { |file| File.info(file).modification_time }[-1]
 
-      cmd = "pretext-to-tpf -a original.tpf -p #{agp} -o #{id}.tpf -w -f"
-      puts `#{cmd}`
-      raise "something went wrong" unless $?.success?
-
-      bsub = "bsub -K -M 16G -R'select[mem>16G] rusage[mem=16G]' -o /dev/null"
       # create fasta
-      if y.merged
-        cmd = "#{bsub} multi_join.py --tpf #{id}_HAP1.tpf --tpf2 #{id}_HAP2.tpf --csv chrs_HAP1.csv --csv2 chrs_HAP2.csv --out #{y.tol_id} --fasta original.fa"
-        puts `#{cmd}`
-        raise "something went wrong with #{cmd}" unless $?.success?
+      cmd = "pretext-to-asm -a original.fa -o #{id}.fa -p #{agp}"
+      puts `#{cmd}`
+      raise "something went wrong with #{cmd}" unless $?.success?
 
-        ["hap1", "hap2"].each { |label|
-          if y.decon_file.includes?(".bed")
+      # trim contamination
+      if y.decon_file.includes?(".bed")
+        if y.merged?
+          ["hap1", "hap2"].each { |hap|
             decon_file = y.decon_file.sub("hap1", label.downcase)
-            primary_fa = "#{y.tol_id}.#{label}.1.primary.curated.fa"
-            cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv  #{primary_fa}_cleaned #{primary_fa}"
+            primary_fa = "#{id}.#{hap}.fa"
+            cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv #{primary_fa}_cleaned #{primary_fa}"
             puts `#{cmd}`
             raise "something went wrong with #{cmd}" unless $?.success?
-          end
-        }
-      else
-        cmd = "touch #{id}.additional_haplotigs.curated.fa && touch #{id}_Haplotigs.tpf"
-        puts `#{cmd}`
-        cmd = "#{bsub} multi_join.py --tpf #{id}.tpf --csv chrs.csv --out #{y.tol_id} --fasta original.fa --hap #{id}_Haplotigs.tpf"
-        puts `#{cmd}`
-        raise "something went wrong with #{cmd}" unless $?.success?
-
-        # trim contamination
-        if y.decon_file.includes?(".bed")
-          primary_fa = "#{id}.primary.curated.fa"
-          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{y.tol_id}.1.primary.curated.fa -c #{y.decon_file} && mv  #{primary_fa}_cleaned #{primary_fa}"
+            # Make new pretext map.
+            cmd = "Pretext_HiC_pipeline.sh -i #{primary_fa} -s #{id}.#{hap} -d .  -k #{y.hic_read_dir} &"
+            puts `#{cmd}`
+            raise "something went wrong" unless $?.success?
+          }
+        else
+          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.fa -c #{y.decon_file} && mv #{id}.fa_cleaned #{id}.fa"
           puts `#{cmd}`
           raise "something went wrong with #{cmd}" unless $?.success?
+          # Make new pretext map.
+          cmd = "Pretext_HiC_pipeline.sh -i #{id}.fa -s #{id} -d .  -k #{y.hic_read_dir} &"
+          puts `#{cmd}`
+          raise "something went wrong" unless $?.success?
         end
       end
-
-      # Make new pretext map.
-      cmd = <<-HERE
-for f in *primary.curated.fa ;
-do
-  Pretext_HiC_pipeline.sh -i $f -s $f -d .  -k #{y.hic_read_dir} &
-done
-HERE
-      puts `#{cmd}`
-      raise "something went wrong" unless $?.success?
     end
   end
 
@@ -96,11 +76,29 @@ HERE
     wd = y.working_dir
 
     FileUtils.mkdir_p(target_dir)
+    id = y.sample_dot_version
 
     Dir.cd(wd) do
-      files = Dir["*.primary.curated.fa", "*.primary.chromosome.list.csv", "*_haplotigs.curated.fa"]
-      files.each { |file|
-        target = "#{target_dir}/#{file}"
+      files = Array(Array(String))
+      if y.merged
+        files = [["#{id}.hap1.fa", "#{id}.hap1.primary.curated.fa"],
+                 ["#{id}.hap2.fa", "#{id}.hap2.primary.curated.fa"],
+                 ["#{id}.hap1.chromosome.list.csv", "#{id}.hap1.primary.chromosome.list.csv"],
+                 ["#{id}.hap2.chromosome.list.csv", "#{id}.hap2.primary.chromosome.list.csv"],
+        ]
+        ["hap1", "hap2"].each { |hap|
+          FileUtils.touch("#{target_dir}/#{id}.#{hap}.#{empty_file}.all_haplotigs.fa")
+        }
+      else
+        files = [["#{id}.fa", "#{id}.primary.curated.fa"],
+                 ["#{id}.chromosome.list.csv", "#{id}.primary.chromosome.list.csv"],
+                 ["#{id}.haplotigs.fa", "#{id}.additional_haplotigs.curated.fa"],
+        ]
+      end
+      files.each { |file_path|
+        target_file = file_path[1]
+        file = file_path[0]
+        target = "#{target_dir}/#{target_file}"
         puts "copying #{wd}/#{file} => #{target}"
         FileUtils.cp("#{wd}/#{file}", target)
       }
