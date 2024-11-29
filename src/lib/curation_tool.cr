@@ -57,7 +57,7 @@ module CurationTool
           cmd = <<-HERE
           for f in #{id}.hap*.fa ;
           do
-             Pretext_HiC_pipeline.sh -i $f -s $f -d . -k #{y.hic_read_dir} &"
+             Pretext_HiC_pipeline.sh -i $f -s $f -d . -k #{y.hic_read_dir} &
           done
           HERE
           puts `#{cmd}`
@@ -89,8 +89,8 @@ module CurationTool
       if y.merged
         files = [["#{id}.hap1.fa", "#{id}.hap1.primary.curated.fa"],
                  ["#{id}.hap2.fa", "#{id}.hap2.primary.curated.fa"],
-                 ["#{id}.hap1.chromosome.list.csv", "#{id}.hap1.primary.chromosome.list.csv"],
-                 ["#{id}.hap2.chromosome.list.csv", "#{id}.hap2.primary.chromosome.list.csv"],
+                 ["#{id}.hap1.chromsome.list.csv", "#{id}.hap1.primary.chromosome.list.csv"],
+                 ["#{id}.hap2.chromsome.list.csv", "#{id}.hap2.primary.chromosome.list.csv"]
         ]
         ["hap1", "hap2"].each { |hap|
           FileUtils.touch("#{target_dir}/#{id}.#{hap}.#{hap}.all_haplotigs.fa")
@@ -98,7 +98,7 @@ module CurationTool
       else
         files = [["#{id}.fa", "#{id}.primary.curated.fa"],
                  ["#{id}.chromosome.list.csv", "#{id}.primary.chromosome.list.csv"],
-                 ["#{id}.haplotigs.fa", "#{id}.additional_haplotigs.curated.fa"],
+                 ["#{id}.haplotigs.fa", "#{id}.additional_haplotigs.curated.fa"]
         ]
       end
       files.each { |file_path|
