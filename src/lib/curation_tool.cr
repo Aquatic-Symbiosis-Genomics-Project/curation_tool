@@ -88,8 +88,8 @@ module CurationTool
       if y.merged
         files = [["#{id}.hap1.fa", "#{id}.hap1.primary.curated.fa"],
                  ["#{id}.hap2.fa", "#{id}.hap2.primary.curated.fa"],
-                 ["#{id}.hap1.chromsome.list.csv", "#{id}.hap1.primary.chromosome.list.csv"],
-                 ["#{id}.hap2.chromsome.list.csv", "#{id}.hap2.primary.chromosome.list.csv"],
+                 ["#{id}.hap1.chromosome.list.csv", "#{id}.hap1.primary.chromosome.list.csv"],
+                 ["#{id}.hap2.chromosome.list.csv", "#{id}.hap2.primary.chromosome.list.csv"],
         ]
         ["hap1", "hap2"].each { |hap|
           FileUtils.touch("#{target_dir}/#{id}.#{hap}.#{hap}.all_haplotigs.fa")
