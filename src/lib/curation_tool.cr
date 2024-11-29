@@ -62,7 +62,6 @@ module CurationTool
           HERE
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
-
         else
           cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.fa -c #{y.decon_file} && mv #{id}.fa_cleaned #{id}.fa"
           puts `#{cmd}`
@@ -90,7 +89,7 @@ module CurationTool
         files = [["#{id}.hap1.fa", "#{id}.hap1.primary.curated.fa"],
                  ["#{id}.hap2.fa", "#{id}.hap2.primary.curated.fa"],
                  ["#{id}.hap1.chromsome.list.csv", "#{id}.hap1.primary.chromosome.list.csv"],
-                 ["#{id}.hap2.chromsome.list.csv", "#{id}.hap2.primary.chromosome.list.csv"]
+                 ["#{id}.hap2.chromsome.list.csv", "#{id}.hap2.primary.chromosome.list.csv"],
         ]
         ["hap1", "hap2"].each { |hap|
           FileUtils.touch("#{target_dir}/#{id}.#{hap}.#{hap}.all_haplotigs.fa")
@@ -98,7 +97,7 @@ module CurationTool
       else
         files = [["#{id}.fa", "#{id}.primary.curated.fa"],
                  ["#{id}.chromosome.list.csv", "#{id}.primary.chromosome.list.csv"],
-                 ["#{id}.haplotigs.fa", "#{id}.additional_haplotigs.curated.fa"]
+                 ["#{id}.haplotigs.fa", "#{id}.additional_haplotigs.curated.fa"],
         ]
       end
       files.each { |file_path|
