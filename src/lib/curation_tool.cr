@@ -45,9 +45,9 @@ module CurationTool
 
       # trim contamination
       if y.decon_file.includes?(".bed")
-        if y.merged?
+        if y.merged
           ["hap1", "hap2"].each { |hap|
-            decon_file = y.decon_file.sub("hap1", label.downcase)
+            decon_file = y.decon_file.sub("hap1", hap.downcase)
             primary_fa = "#{id}.#{hap}.fa"
             cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv #{primary_fa}_cleaned #{primary_fa}"
             puts `#{cmd}`
@@ -87,7 +87,7 @@ module CurationTool
                  ["#{id}.hap2.chromosome.list.csv", "#{id}.hap2.primary.chromosome.list.csv"],
         ]
         ["hap1", "hap2"].each { |hap|
-          FileUtils.touch("#{target_dir}/#{id}.#{hap}.#{empty_file}.all_haplotigs.fa")
+          FileUtils.touch("#{target_dir}/#{id}.#{hap}.#{hap}.all_haplotigs.fa")
         }
       else
         files = [["#{id}.fa", "#{id}.primary.curated.fa"],
