@@ -52,11 +52,17 @@ module CurationTool
             cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv #{primary_fa}_cleaned #{primary_fa}"
             puts `#{cmd}`
             raise "something went wrong with #{cmd}" unless $?.success?
-            # Make new pretext map.
-            cmd = "Pretext_HiC_pipeline.sh -i #{primary_fa} -s #{id}.#{hap} -d .  -k #{y.hic_read_dir} &"
-            puts `#{cmd}`
-            raise "something went wrong" unless $?.success?
           }
+          # Make new pretext map.
+          cmd = <<-HERE
+          for f in #{id}.hap*.fa ;
+          do
+             Pretext_HiC_pipeline.sh -i $f -s $f -d . -k #{y.hic_read_dir} &"
+          done
+          HERE
+          puts `#{cmd}`
+          raise "something went wrong" unless $?.success?
+
         else
           cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.fa -c #{y.decon_file} && mv #{id}.fa_cleaned #{id}.fa"
           puts `#{cmd}`
