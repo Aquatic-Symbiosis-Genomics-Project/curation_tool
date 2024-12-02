@@ -86,10 +86,10 @@ module CurationTool
     Dir.cd(wd) do
       files = Array(Array(String))
       if y.merged
-        files = [["#{id}.hap1.fa", "#{id}.hap1.primary.curated.fa"],
-                 ["#{id}.hap2.fa", "#{id}.hap2.primary.curated.fa"],
-                 ["#{id}.hap1.chromosome.list.csv", "#{id}.hap1.primary.chromosome.list.csv"],
-                 ["#{id}.hap2.chromosome.list.csv", "#{id}.hap2.primary.chromosome.list.csv"],
+        files = [["#{id}.hap1.fa", "#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa"],
+                 ["#{id}.hap2.fa", "#{y.tol_id}.hap2.#{y.release_version}.primary.curated.fa"],
+                 ["#{id}.hap1.chromosome.list.csv", "#{y.tol_id}.hap1.#{y.release_version}.primary.chromosome.list.csv"],
+                 ["#{id}.hap2.chromosome.list.csv", "#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv"],
         ]
         ["hap1", "hap2"].each { |hap|
           FileUtils.touch("#{target_dir}/#{id}.#{hap}.#{hap}.all_haplotigs.fa")
