@@ -92,7 +92,7 @@ module CurationTool
                  ["#{id}.hap2.chromosome.list.csv", "#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv"],
         ]
         ["hap1", "hap2"].each { |hap|
-          FileUtils.touch("#{target_dir}/#{id}.#{hap}.#{hap}.all_haplotigs.fa")
+          FileUtils.touch("#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa")
         }
       else
         files = [["#{id}.fa", "#{id}.primary.curated.fa"],
@@ -115,10 +115,6 @@ module CurationTool
           target = "#{y.pretext_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.curated.pretext"
           puts "copying #{pretext} => #{target}"
           FileUtils.cp(pretext, target)
-
-          target = "#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa"
-          puts "creating empty hap file at => #{target}"
-          File.touch(target)
         }
       else
         pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
