@@ -50,7 +50,7 @@ module CurationTool
             decon_file = y.decon_file.sub("hap1", hap.downcase)
             primary_fa = "#{id}.#{hap}.fa"
             cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv #{primary_fa}_cleaned #{primary_fa}"
-            puts `#{cmd}`
+            puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
             raise "something went wrong with #{cmd}" unless $?.success?
           }
           # Make new pretext map.
@@ -64,7 +64,7 @@ module CurationTool
           raise "something went wrong" unless $?.success?
         else
           cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.fa -c #{y.decon_file} && mv #{id}.fa_cleaned #{id}.fa"
-          puts `#{cmd}`
+          puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]'#{cmd}`
           raise "something went wrong with #{cmd}" unless $?.success?
           # Make new pretext map.
           cmd = "Pretext_HiC_pipeline.sh -i #{id}.fa -s #{id} -d .  -k #{y.hic_read_dir} &"

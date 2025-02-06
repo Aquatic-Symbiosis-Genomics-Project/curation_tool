@@ -37,7 +37,7 @@ raise "input fasta file #{fasta} doesn't exist" unless File.exists?(fasta)
 
 y = GritJiraIssue.new(issue, false)
 puts <<-HERE
-curationpretext.sh -profile sanger,singularity --input #{Path["fasta"].expand} \
+curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
 --sample #{y.sample_dot_version} \
 --cram #{y.hic_read_dir} \
 --longread #{y.pacbio_read_dir}/fasta \
