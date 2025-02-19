@@ -64,7 +64,7 @@ module CurationTool
           raise "something went wrong" unless $?.success?
         else
           cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.fa -c #{y.decon_file} && mv #{id}.fa_cleaned #{id}.fa"
-          puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]'#{cmd}`
+          puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
           raise "something went wrong with #{cmd}" unless $?.success?
           # Make new pretext map.
           cmd = "Pretext_HiC_pipeline.sh -i #{id}.fa -s #{id} -d .  -k #{y.hic_read_dir} &"
