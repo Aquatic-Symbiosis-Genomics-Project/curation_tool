@@ -13,7 +13,7 @@ OptionParser.parse do |parser|
   parser.banner = "Usage: submit_fcs --issue JIRA_ID "
   parser.on("-i JIRA_ID", "--issue JIRA_ID", "JIRA ID") { |jira_id| issue = jira_id }
   parser.on("-f FASTA", "--fasta FASTA", "input fasta") { |file| fasta = file }
-  parser.on("-o OUTDIR", "--out OUTDIR", "output dir") { |file| output = file }
+  parser.on("-o OUTDIR", "--out OUTDIR", "output dir") { |dir| output = dir }
 
   parser.on("-h", "--help", "show this help") do
     puts parser
@@ -36,13 +36,4 @@ end
 raise "input fasta file #{fasta} doesn't exist" unless File.exists?(fasta)
 
 y = GritJiraIssue.new(issue, false)
-puts <<-HERE
-curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
---sample #{y.sample_dot_version} \
---cram #{y.hic_read_dir} \
---longread #{y.pacbio_read_dir}/fasta \
---outdir #{output} \
---map_order length \
--resume
-
-HERE
+puts y.curation_pretext(fasta, output)

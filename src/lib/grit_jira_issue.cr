@@ -139,6 +139,20 @@ class GritJiraIssue
     @yaml = yaml
   end
 
+  def curation_pretext(fasta, output)
+    raise "input fasta file #{fasta} doesn't exist" unless File.exists?(fasta)
+    <<-HERE
+curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
+--sample #{self.sample_dot_version} \
+--cram #{self.hic_read_dir} \
+--longread #{self.pacbio_read_dir}/fasta \
+--outdir #{output} \
+--map_order length \
+-resume
+
+HERE
+  end
+
   def taxonomy
     common_name = self.scientific_name.gsub(/\s/, "%20")
 

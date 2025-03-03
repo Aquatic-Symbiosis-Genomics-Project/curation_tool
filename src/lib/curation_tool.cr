@@ -54,12 +54,7 @@ module CurationTool
             raise "something went wrong with #{cmd}" unless $?.success?
           }
           # Make new pretext map.
-          cmd = <<-HERE
-          for f in #{id}.hap*.fa ;
-          do
-             Pretext_HiC_pipeline.sh -i $f -s $f -d . -k #{y.hic_read_dir} &
-          done
-          HERE
+          cmd = y.curation_pretext("#{id}.hap1.fa", "#{id}.hap1.pretext_nf")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         else
@@ -68,6 +63,7 @@ module CurationTool
           raise "something went wrong with #{cmd}" unless $?.success?
           # Make new pretext map.
           cmd = "Pretext_HiC_pipeline.sh -i #{id}.fa -s #{id} -d .  -k #{y.hic_read_dir} &"
+          cmd = y.curation_pretext("#{id}.fa", "#{id}.pretext_nf")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         end
@@ -89,7 +85,6 @@ module CurationTool
         files = [["#{id}.hap1.fa", "#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa"],
                  ["#{id}.hap2.fa", "#{y.tol_id}.hap2.#{y.release_version}.primary.curated.fa"],
                  ["#{id}.hap1.chromosome.list.csv", "#{y.tol_id}.hap1.#{y.release_version}.primary.chromosome.list.csv"],
-                 ["#{id}.hap2.chromosome.list.csv", "#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv"],
         ]
         ["hap1", "hap2"].each { |hap|
           FileUtils.touch("#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa")
@@ -110,12 +105,10 @@ module CurationTool
 
       # copy pretext
       if y.merged
-        ["hap1", "hap2"].each { |hap|
-          pretext = Dir["#{wd}/*/*#{hap}*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
-          target = "#{y.pretext_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.curated.pretext"
-          puts "copying #{pretext} => #{target}"
-          FileUtils.cp(pretext, target)
-        }
+        pretext = Dir["#{wd}/*/*hap1*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
+        target = "#{y.pretext_dir}/#{y.tol_id}.hap1.#{y.release_version}.curated.pretext"
+        puts "copying #{pretext} => #{target}"
+        FileUtils.cp(pretext, target)
       else
         pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
         target = "#{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
