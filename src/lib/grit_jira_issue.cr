@@ -44,6 +44,14 @@ class GritJiraIssue
     end
   end
 
+  def telomer
+    if self.json["fields"]["customfield_11650"].as_s?
+      self.json["fields"]["customfield_11650"].as_s
+    else
+      ""
+    end
+  end
+
   def decon_file
     self.json["fields"]["customfield_11677"].as_s
   end
@@ -141,6 +149,9 @@ class GritJiraIssue
 
   def curation_pretext(fasta, output)
     raise "input fasta file #{fasta} doesn't exist" unless File.exists?(fasta)
+
+    telo = self.telomer.size > 1 ? "--teloseq #{self.telomer}" : ""
+
     <<-HERE
 curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
 --sample #{self.sample_dot_version} \
@@ -148,7 +159,7 @@ curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
 --longread #{self.pacbio_read_dir}/fasta \
 --outdir #{output} \
 --map_order length \
--resume
+-resume #{telo}
 
 HERE
   end
