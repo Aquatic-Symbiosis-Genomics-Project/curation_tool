@@ -53,7 +53,7 @@ module CurationTool
             puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
             raise "something went wrong with #{cmd}" unless $?.success?
           }
-          # Make new pretext map.
+          # Make new pretext map for hap1.
           cmd = y.curation_pretext("#{id}.hap1.fa", "#{id}.hap1.curationpretext.#{Time.utc}")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
@@ -89,6 +89,7 @@ module CurationTool
         ["hap1", "hap2"].each { |hap|
           FileUtils.touch("#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa")
         }
+        FileUtils.touch("#{target_dir}/#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv")
       else
         files = [["#{id}.fa", "#{id}.primary.curated.fa"],
                  ["#{id}.chromosome.list.csv", "#{id}.primary.chromosome.list.csv"],
@@ -105,12 +106,12 @@ module CurationTool
 
       # copy pretext
       if y.merged
-        pretext = Dir["#{wd}/*/*hap1*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
+        pretext = Dir["#{wd}/#{id}.hap1.curationpretext.*/pretext_maps_processed/*normal.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
         target = "#{y.pretext_dir}/#{y.tol_id}.hap1.#{y.release_version}.curated.pretext"
         puts "copying #{pretext} => #{target}"
         FileUtils.cp(pretext, target)
       else
-        pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
+        pretext = Dir["#{wd}/#{id}.curationpretext.*/pretext_maps_processed/*normal.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
         target = "#{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
         puts "copying #{pretext} => #{target}"
         FileUtils.cp(pretext, target)
