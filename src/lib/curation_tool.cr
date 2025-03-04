@@ -54,7 +54,7 @@ module CurationTool
             raise "something went wrong with #{cmd}" unless $?.success?
           }
           # Make new pretext map for hap1.
-          cmd = y.curation_pretext("#{id}.hap1.fa", "#{id}.hap1.curationpretext.#{Time.utc}")
+          cmd = y.curation_pretext("#{id}.hap1.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         else
@@ -63,7 +63,7 @@ module CurationTool
           raise "something went wrong with #{cmd}" unless $?.success?
           # Make new pretext map.
           cmd = "Pretext_HiC_pipeline.sh -i #{id}.fa -s #{id} -d .  -k #{y.hic_read_dir} &"
-          cmd = y.curation_pretext("#{id}.fa", "#{id}.curationpretext.#{Time.utc}")
+          cmd = y.curation_pretext("#{id}.fa", "#{id}.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         end
