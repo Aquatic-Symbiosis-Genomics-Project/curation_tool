@@ -158,8 +158,8 @@ curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
 --cram #{self.hic_read_dir} \
 --longread #{self.pacbio_read_dir}/fasta \
 --outdir #{output} \
---map_order length #{telo} \
--cleanup
+--map_order length \
+-resume #{telo}
 
 HERE
   end
