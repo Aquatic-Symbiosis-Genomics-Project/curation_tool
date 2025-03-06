@@ -116,7 +116,7 @@ class GritJiraIssue
   end
 
   def get_json
-    r = HTTP::Client.get("https://jira.sanger.ac.uk/rest/api/2/issue/#{@id}", headers: HTTP::Headers{"Accept" => "application/json", "Authorization" => "Bearer #{@token}"})
+    r = HTTP::Client.get("https://#{@@url}/rest/api/2/issue/#{@id}", headers: HTTP::Headers{"Accept" => "application/json", "Authorization" => "Bearer #{@token}"})
     raise "cannot get the ticket" unless r.success?
     @json = JSON.parse(r.body)
   end
@@ -159,7 +159,7 @@ curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
 --longread #{self.pacbio_read_dir}/fasta \
 --outdir #{output} \
 --map_order length \
---email #{ENV["USER"]}@sanger.ac.uk \
+-N #{ENV["USER"]}@sanger.ac.uk \
 -c /nfs/users/nfs_m/mh6/clean.config #{telo}
 
 HERE
