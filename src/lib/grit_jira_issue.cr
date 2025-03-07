@@ -156,7 +156,7 @@ class GritJiraIssue
 curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
 --sample #{self.sample_dot_version} \
 --cram #{self.hic_read_dir} \
---longread #{self.pacbio_read_dir}/fasta \
+--reads #{self.pacbio_read_dir}/fasta \
 --outdir #{output} \
 --map_order length \
 -N #{ENV["USER"]}@sanger.ac.uk \
