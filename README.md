@@ -56,6 +56,17 @@ Usage: submit_fcs --issue JIRA_ID
     -h, --help                       show this help
 ```
 
+### submit_curation_pretext
+```
+Usage: submit_fcs --issue JIRA_ID 
+    -i JIRA_ID,   --issue JIRA_ID    JIRA ID
+    -n,           --no_email         don't send an email
+    -f FASTA,     --fasta FASTA      input fasta
+    -o OUTDIR,    --out OUTDIR       output dir
+    -h,           --help             show this help
+```
+
+
 ## Contributors
 
 - [epaule](https://github.com/epaule) - creator and maintainer
