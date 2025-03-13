@@ -152,6 +152,7 @@ class GritJiraIssue
 
     telo = self.telomer.size > 1 ? "--teloseq #{self.telomer}" : ""
     email = no_email ? "" : "-N #{ENV["USER"]}@sanger.ac.uk"
+
     <<-HERE
 curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
 --sample #{self.sample_dot_version} \
@@ -159,7 +160,6 @@ curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
 --reads #{self.pacbio_read_dir}/fasta \
 --outdir #{output} \
 --map_order length #{email} -c /nfs/users/nfs_m/mh6/clean.config #{telo}
-
 HERE
   end
 
