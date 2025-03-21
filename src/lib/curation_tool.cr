@@ -48,21 +48,21 @@ module CurationTool
         if y.merged
           ["hap1", "hap2"].each { |hap|
             decon_file = y.decon_file.sub("hap1", hap.downcase)
-            primary_fa = "#{id}.#{hap}.fa"
+            primary_fa = "#{id}.#{hap}.primary.curated.fa"
             cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv #{primary_fa}_cleaned #{primary_fa}"
             puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
             raise "something went wrong with #{cmd}" unless $?.success?
           }
           # Make new pretext map for hap1.
-          cmd = y.curation_pretext("#{id}.hap1.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
+          cmd = y.curation_pretext("#{id}.hap1.primnary.curated.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         else
-          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.fa -c #{y.decon_file} && mv #{id}.fa_cleaned #{id}.fa"
+          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.primary.curated.fa -c #{y.decon_file} && mv #{id}.primary.curated.fa_cleaned #{id}.fa"
           puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
           raise "something went wrong with #{cmd}" unless $?.success?
           # Make new pretext map.
-          cmd = y.curation_pretext("#{id}.fa", "#{id}.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
+          cmd = y.curation_pretext("#{id}.primary.curated.fa", "#{id}.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         end
@@ -81,18 +81,18 @@ module CurationTool
     Dir.cd(wd) do
       files = Array(Array(String))
       if y.merged
-        files = [["#{id}.hap1.fa", "#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa"],
-                 ["#{id}.hap2.fa", "#{y.tol_id}.hap2.#{y.release_version}.primary.curated.fa"],
-                 ["#{id}.hap1.chromosome.list.csv", "#{y.tol_id}.hap1.#{y.release_version}.primary.chromosome.list.csv"],
+        files = [["#{id}.hap1.primary.curated.fa", "#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa"],
+                 ["#{id}.hap2.primary.curated.fa", "#{y.tol_id}.hap2.#{y.release_version}.primary.curated.fa"],
+                 ["#{id}.hap1.primary.chromosome.list.csv", "#{y.tol_id}.hap1.#{y.release_version}.primary.chromosome.list.csv"],
         ]
         ["hap1", "hap2"].each { |hap|
           FileUtils.touch("#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa")
         }
         FileUtils.touch("#{target_dir}/#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv")
       else
-        files = [["#{id}.fa", "#{id}.primary.curated.fa"],
-                 ["#{id}.chromosome.list.csv", "#{id}.primary.chromosome.list.csv"],
-                 ["#{id}.haplotigs.fa", "#{id}.additional_haplotigs.curated.fa"],
+        files = [["#{id}.primary.curated.fa", "#{id}.primary.curated.fa"],
+                 ["#{id}.primary.chromosome.list.csv", "#{id}.primary.chromosome.list.csv"],
+                 ["#{id}.additional_haplotigs.curated.fa", "#{id}.additional_haplotigs.curated.fa"],
         ]
       end
       files.each { |file_path|
