@@ -79,28 +79,28 @@ module CurationTool
     id = y.sample_dot_version
 
     Dir.cd(wd) do
-      files = Array(Array(String))
       if y.merged
-        files = [["#{id}.hap1.primary.curated.fa", "#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa"],
-                 ["#{id}.hap2.primary.curated.fa", "#{y.tol_id}.hap2.#{y.release_version}.primary.curated.fa"],
-                 ["#{id}.hap1.primary.chromosome.list.csv", "#{y.tol_id}.hap1.#{y.release_version}.primary.chromosome.list.csv"],
-        ]
         ["hap1", "hap2"].each { |hap|
           FileUtils.touch("#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa")
         }
         FileUtils.touch("#{target_dir}/#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv")
-      else
-        files = [["#{id}.primary.curated.fa", "#{id}.primary.curated.fa"],
-                 ["#{id}.primary.chromosome.list.csv", "#{id}.primary.chromosome.list.csv"],
-                 ["#{id}.additional_haplotigs.curated.fa", "#{id}.additional_haplotigs.curated.fa"],
-        ]
       end
-      files.each { |file_path|
-        target_file = file_path[1]
-        file = file_path[0]
-        target = "#{target_dir}/#{target_file}"
-        puts "copying #{wd}/#{file} => #{target}"
-        FileUtils.cp("#{wd}/#{file}", target)
+
+      files = ["#{y.tol_id}.hap1.#{y.release_version}.fa",
+               "#{y.tol_id}.hap2.#{y.release_version}.fa",
+               "#{y.tol_id}.hap1.#{y.release_version}.chromosome.list.csv",
+               "#{id}.primary.curated.fa",
+               "#{id}.primary.chromosome.list.csv",
+               "#{id}.additional_haplotigs.fa",
+               "#{id}.all_haplotigs.fa",
+      ]
+
+      files.each { |file_name|
+        file = "#{wd}/#{file_name}"
+        target = "#{target_dir}/#{file_name}"
+        next unless File.exists?(file)
+        puts "#{file} => #{target}"
+        FileUtils.cp(file, target)
       }
 
       # copy pretext
