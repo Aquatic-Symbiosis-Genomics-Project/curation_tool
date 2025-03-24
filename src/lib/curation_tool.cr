@@ -91,7 +91,7 @@ module CurationTool
                "#{y.tol_id}.hap1.#{y.release_version}.chromosome.list.csv",
                "#{id}.primary.curated.fa",
                "#{id}.primary.chromosome.list.csv",
-               "#{id}.additional_haplotigs.fa",
+               "#{id}.additional_haplotigs.curated.fa",
                "#{id}.all_haplotigs.fa",
       ]
 
