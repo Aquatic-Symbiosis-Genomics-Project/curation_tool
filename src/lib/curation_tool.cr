@@ -54,7 +54,7 @@ module CurationTool
             raise "something went wrong with #{cmd}" unless $?.success?
           }
           # Make new pretext map for hap1.
-          cmd = y.curation_pretext("#{id}.hap1.primnary.curated.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
+          cmd = y.curation_pretext("#{id}.hap1.primary.curated.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         else
