@@ -54,7 +54,7 @@ module CurationTool
             raise "something went wrong with #{cmd}" unless $?.success?
           }
           # Make new pretext map for hap1.
-          cmd = y.curation_pretext("#{id}.hap1.primary.curated.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
+          cmd = y.curation_pretext("#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         else
@@ -86,9 +86,9 @@ module CurationTool
         FileUtils.touch("#{target_dir}/#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv")
       end
 
-      files = ["#{y.tol_id}.hap1.#{y.release_version}.fa",
-               "#{y.tol_id}.hap2.#{y.release_version}.fa",
-               "#{y.tol_id}.hap1.#{y.release_version}.chromosome.list.csv",
+      files = ["#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa",
+               "#{y.tol_id}.hap2.#{y.release_version}.primary.curated.fa",
+               "#{y.tol_id}.hap1.#{y.release_version}.primary.chromosome.list.csv",
                "#{id}.primary.curated.fa",
                "#{id}.primary.chromosome.list.csv",
                "#{id}.additional_haplotigs.curated.fa",
