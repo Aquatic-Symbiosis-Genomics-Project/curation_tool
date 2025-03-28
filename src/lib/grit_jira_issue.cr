@@ -152,7 +152,6 @@ class GritJiraIssue
 
     telo = self.telomer.size > 1 ? "--teloseq #{self.telomer}" : ""
     email = no_email ? "" : "-N #{ENV["USER"]}@sanger.ac.uk"
-
     <<-HERE
 curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
 --sample #{self.sample_dot_version} \
