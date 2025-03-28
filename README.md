@@ -36,18 +36,6 @@ Usage: curation_tool --issue JIRA_ID [options]
 
 ### submit_fcs
 ```
-Usage: submit_fcs --issue JIRA_ID
-
-don't forget to setup your environment:
-
-module load grit
-
-the options are:
-    -i JIRA_ID, --issue JIRA_ID      JIRA ID
-    -h, --help                       show this help
-```
-
-```
 Usage: submit_fcs --issue JIRA_ID 
     -i JIRA_ID, --issue JIRA_ID      JIRA ID
     -h, --help                       show this help
