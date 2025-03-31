@@ -49,7 +49,7 @@ module CurationTool
           ["hap1", "hap2"].each { |hap|
             decon_file = y.decon_file.sub("hap1", hap.downcase)
             primary_fa = "#{y.tol_id}.#{hap}.#{y.release_version}.primary.curated.fa"
-    
+
             cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv #{primary_fa}_cleaned #{primary_fa}"
             puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
             raise "something went wrong with #{cmd}" unless $?.success?
