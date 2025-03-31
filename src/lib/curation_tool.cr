@@ -48,26 +48,24 @@ module CurationTool
         if y.merged
           ["hap1", "hap2"].each { |hap|
             decon_file = y.decon_file.sub("hap1", hap.downcase)
-            primary_fa = "#{id}.#{hap}.fa"
+            primary_fa = "#{y.tol_id}.#{hap}.#{y.release_version}.primary.curated.fa"
+    
             cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv #{primary_fa}_cleaned #{primary_fa}"
             puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
             raise "something went wrong with #{cmd}" unless $?.success?
           }
-          # Make new pretext map.
-          cmd = <<-HERE
-          for f in #{id}.hap*.fa ;
-          do
-             Pretext_HiC_pipeline.sh -i $f -s $f -d . -k #{y.hic_read_dir} &
-          done
-          HERE
+
+          # Make new pretext map for hap1.
+          cmd = y.curation_pretext("#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         else
-          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.fa -c #{y.decon_file} && mv #{id}.fa_cleaned #{id}.fa"
+          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.primary.curated.fa -c #{y.decon_file} && mv #{id}.primary.curated.fa_cleaned #{id}.fa"
           puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
           raise "something went wrong with #{cmd}" unless $?.success?
           # Make new pretext map.
-          cmd = "Pretext_HiC_pipeline.sh -i #{id}.fa -s #{id} -d .  -k #{y.hic_read_dir} &"
+          cmd = y.curation_pretext("#{id}.primary.curated.fa", "#{id}.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
+
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         end
@@ -84,40 +82,40 @@ module CurationTool
     id = y.sample_dot_version
 
     Dir.cd(wd) do
-      files = Array(Array(String))
+      Utils.cp("#{wd}/#{file}", target)
+
       if y.merged
-        files = [["#{id}.hap1.fa", "#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa"],
-                 ["#{id}.hap2.fa", "#{y.tol_id}.hap2.#{y.release_version}.primary.curated.fa"],
-                 ["#{id}.hap1.chromosome.list.csv", "#{y.tol_id}.hap1.#{y.release_version}.primary.chromosome.list.csv"],
-                 ["#{id}.hap2.chromosome.list.csv", "#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv"],
-        ]
         ["hap1", "hap2"].each { |hap|
           FileUtils.touch("#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa")
         }
-      else
-        files = [["#{id}.fa", "#{id}.primary.curated.fa"],
-                 ["#{id}.chromosome.list.csv", "#{id}.primary.chromosome.list.csv"],
-                 ["#{id}.haplotigs.fa", "#{id}.additional_haplotigs.curated.fa"],
-        ]
+        FileUtils.touch("#{target_dir}/#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv")
       end
-      files.each { |file_path|
-        target_file = file_path[1]
-        file = file_path[0]
-        target = "#{target_dir}/#{target_file}"
-        puts "copying #{wd}/#{file} => #{target}"
-        FileUtils.cp("#{wd}/#{file}", target)
+
+      files = ["#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa",
+               "#{y.tol_id}.hap2.#{y.release_version}.primary.curated.fa",
+               "#{y.tol_id}.hap1.#{y.release_version}.primary.chromosome.list.csv",
+               "#{id}.primary.curated.fa",
+               "#{id}.primary.chromosome.list.csv",
+               "#{id}.additional_haplotigs.curated.fa",
+               "#{id}.all_haplotigs.fa",
+      ]
+
+      files.each { |file_name|
+        file = "#{wd}/#{file_name}"
+        target = "#{target_dir}/#{file_name}"
+        next unless File.exists?(file)
+        puts "#{file} => #{target}"
+        FileUtils.cp(file, target)
       }
 
       # copy pretext
       if y.merged
-        ["hap1", "hap2"].each { |hap|
-          pretext = Dir["#{wd}/*/*#{hap}*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
-          target = "#{y.pretext_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.curated.pretext"
-          puts "copying #{pretext} => #{target}"
-          FileUtils.cp(pretext, target)
-        }
+        pretext = Dir["#{wd}/#{id}.hap1.curationpretext.*/pretext_maps_processed/*normal.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
+        target = "#{y.pretext_dir}/#{y.tol_id}.hap1.#{y.release_version}.curated.pretext"
+        puts "copying #{pretext} => #{target}"
+        FileUtils.cp(pretext, target)
       else
-        pretext = Dir["#{wd}/*/*.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
+        pretext = Dir["#{wd}/#{id}.curationpretext.*/pretext_maps_processed/*normal.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
         target = "#{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
         puts "copying #{pretext} => #{target}"
         FileUtils.cp(pretext, target)

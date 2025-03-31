@@ -36,25 +36,21 @@ Usage: curation_tool --issue JIRA_ID [options]
 
 ### submit_fcs
 ```
-Usage: submit_fcs --issue JIRA_ID
-
-don't forget to setup your environment:
-
-export MODULEPATH=/software/treeoflife/shpc/current/views/grit:/software/treeoflife/custom-installs/modules:/software/modules
-module load nextflow/23.04.0-5857
-module load ISG/singularity/3.10.0
-module load ISG/python/
-
-the options are:
-    -i JIRA_ID, --issue JIRA_ID      JIRA ID
-    -h, --help                       show this help
-```
-
-```
 Usage: submit_fcs --issue JIRA_ID 
     -i JIRA_ID, --issue JIRA_ID      JIRA ID
     -h, --help                       show this help
 ```
+
+### submit_curation_pretext
+```
+Usage: submit_fcs --issue JIRA_ID 
+    -i JIRA_ID,   --issue JIRA_ID    JIRA ID
+    -n,           --no_email         don't send an email
+    -f FASTA,     --fasta FASTA      input fasta
+    -o OUTDIR,    --out OUTDIR       output dir
+    -h,           --help             show this help
+```
+
 
 ## Contributors
 

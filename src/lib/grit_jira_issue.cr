@@ -44,6 +44,14 @@ class GritJiraIssue
     end
   end
 
+  def telomer
+    if self.json["fields"]["customfield_11650"].as_s?
+      self.json["fields"]["customfield_11650"].as_s
+    else
+      ""
+    end
+  end
+
   def decon_file
     self.json["fields"]["customfield_11677"].as_s
   end
@@ -108,7 +116,7 @@ class GritJiraIssue
   end
 
   def get_json
-    r = HTTP::Client.get("https://jira.sanger.ac.uk/rest/api/2/issue/#{@id}", headers: HTTP::Headers{"Accept" => "application/json", "Authorization" => "Bearer #{@token}"})
+    r = HTTP::Client.get("https://#{@@url}/rest/api/2/issue/#{@id}", headers: HTTP::Headers{"Accept" => "application/json", "Authorization" => "Bearer #{@token}"})
     raise "cannot get the ticket" unless r.success?
     @json = JSON.parse(r.body)
   end
@@ -137,6 +145,21 @@ class GritJiraIssue
     end
     raise "cannot get the YAML data" if yaml.nil?
     @yaml = yaml
+  end
+
+  def curation_pretext(fasta, output, no_email = false)
+    raise "input fasta file #{fasta} doesn't exist" unless File.exists?(fasta)
+
+    telo = self.telomer.size > 1 ? "--teloseq #{self.telomer}" : ""
+    email = no_email ? "" : "-N #{ENV["USER"]}@sanger.ac.uk"
+    <<-HERE
+curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
+--sample #{self.sample_dot_version} \
+--cram #{self.hic_read_dir} \
+--reads #{self.pacbio_read_dir}/fasta \
+--outdir #{output} \
+--map_order length #{email} -c /nfs/users/nfs_m/mh6/clean.config #{telo}
+HERE
   end
 
   def taxonomy
