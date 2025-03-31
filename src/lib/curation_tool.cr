@@ -82,7 +82,6 @@ module CurationTool
     id = y.sample_dot_version
 
     Dir.cd(wd) do
-
       if y.merged
         ["hap1", "hap2"].each { |hap|
           FileUtils.touch("#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa")
