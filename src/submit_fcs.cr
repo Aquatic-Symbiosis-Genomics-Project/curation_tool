@@ -6,7 +6,7 @@ require "./lib/grit_jira_issue"
 class FCSIssue < GritJiraIssue
   def files
     files = [] of String
-    ["primary", "haplotigs","hap1","hap2"].each { |key|
+    ["primary", "haplotigs", "hap1", "hap2"].each { |key|
       files << self.yaml[key].to_s if self.yaml.as_h.has_key?(key)
     }
     files
