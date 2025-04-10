@@ -60,7 +60,7 @@ module CurationTool
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         else
-          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.primary.curated.fa -c #{y.decon_file} && mv #{id}.primary.curated.fa_cleaned #{id}.fa"
+          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.primary.curated.fa -c #{y.decon_file} && mv #{id}.primary.curated.fa_cleaned #{id}.primary.curated.fa"
           puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
           raise "something went wrong with #{cmd}" unless $?.success?
           # Make new pretext map.
