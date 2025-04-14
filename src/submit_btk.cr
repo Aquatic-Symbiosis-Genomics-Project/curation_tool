@@ -25,7 +25,7 @@ class BTKIssue < GritJiraIssue
         ascc = "/software/team311/ea10/ascc_latest/cobiontcheck"
         config = "/lustre/scratch123/tol/teams/grit/mh6/ascc_logs/static_settings.config2"
         steps = "tiara coverage fcs-gx create_btk_dataset btk_busco nt_blast nr_diamond uniprot_diamond autofilter_assembly"
-        pacbio = Dir.glob("#{self.yaml["pacbio_read_dir"]}/fasta/*.filtered.fasta.gz")[0]
+        pacbio = Dir.glob("#{self.yaml["pacbio_read_dir"]}/fasta/*.trim.fasta.gz")[0]
         puts `bsub -n1 -q basement -R"span[hosts=1]" -o #{f}_#{key}_ascc.out -e #{f}_#{key}_ascc.err -M5000 -R 'select[mem>5000] rusage[mem=5000]' "#{ascc}/ascc.py #{f} --static_config_path #{config} --pacbio_reads_path #{pacbio} --assembly_title #{tolid}_#{key} --sci_name '#{self.scientific_name}' --taxid #{self.taxonomy} --steps #{steps} --threads 24 --pipeline_run_folder #{self.decon_dir}/#{tolid}_#{key}_ascc_minimal --btk_busco_run_mode mandatory"`
       end
     }
