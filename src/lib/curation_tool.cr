@@ -48,6 +48,10 @@ module CurationTool
         if y.merged
           ["hap1", "hap2"].each { |hap|
             decon_file = y.decon_file.sub("hap1", hap.downcase)
+            # special case for partially phased assemblies
+            if hap == "hap2" && decon_file.includes?("primary")
+              decon_file = decon_file.sub("primary", "haplotigs")
+            end
             primary_fa = "#{y.tol_id}.#{hap}.#{y.release_version}.primary.curated.fa"
 
             cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv #{primary_fa}_cleaned #{primary_fa}"
