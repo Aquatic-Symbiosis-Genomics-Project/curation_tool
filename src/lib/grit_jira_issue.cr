@@ -87,7 +87,8 @@ class GritJiraIssue
   # curation working directory
   def working_dir
     # "/lustre/scratch123/tol/teams/grit/#{ENV["USER"]}/#{self.tol_id}_#{self.release_version}"
-    self.yaml["pacbio_read_dir"].to_s.sub(/genomic_data\/.*/, "working/#{ENV["USER"]}_curation")
+    dir = self.pacbio_read_dir || self.ont_read_dir
+    dir.to_s.sub(/genomic_data\/.*/, "working/#{ENV["USER"]}_curation")
   end
 
   def pretext_dir
