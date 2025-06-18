@@ -88,7 +88,7 @@ class GritJiraIssue
   def working_dir
     # "/lustre/scratch123/tol/teams/grit/#{ENV["USER"]}/#{self.tol_id}_#{self.release_version}"
     dir = self.pacbio_read_dir || self.ont_read_dir
-    dir.to_s.sub(/genomic_data\/.*/, "working/#{ENV["USER"]}_curation")
+    dir.to_s.sub(/genomic_data\/.*/, "working/#{self.tol_id}_#{ENV["USER"]}_curation")
   end
 
   def pretext_dir
