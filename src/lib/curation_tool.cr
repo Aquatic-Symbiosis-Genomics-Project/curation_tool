@@ -47,10 +47,16 @@ module CurationTool
       if y.decon_file.includes?(".bed")
         if y.merged
           ["hap1", "hap2"].each { |hap|
-            decon_file = y.decon_file.sub("hap1", hap.downcase)
+            decon_file = y.decon_file.sub("hap1", hap)
+
             # special case for partially phased assemblies
-            if hap == "hap2" && decon_file.includes?("primary")
-              decon_file = decon_file.sub("primary", "haplotigs")
+            if hap == "hap2" && !decon_file.includes?("hap2")
+              if decon_file.includes?("primary")
+                decon_file = decon_file.sub("primary", "haplotigs")
+              else
+                decon_file = decon_file.sub(".contamination", "alternate_contigs.contamination")
+              end
+              decon_file = y.decon_file unless File.exists?(decon_file)
             end
             primary_fa = "#{y.tol_id}.#{hap}.#{y.release_version}.primary.curated.fa"
 
