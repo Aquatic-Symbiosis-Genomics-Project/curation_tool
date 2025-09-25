@@ -95,7 +95,7 @@ class GritJiraIssue
     prefix = self.tol_id[0]
     pretext_root = "/nfs/treeoflife-01/teams/grit/data/curated_pretext_maps"
     dir = Dir["#{pretext_root}/#{prefix}*"].select { |file| File.directory?(file) }
-    if ['i', 'd', 'q', 't','c'].includes?(prefix)
+    if ['i', 'd', 'q', 't', 'c'].includes?(prefix)
       second = self.tol_id[1]
       dir = Dir["#{pretext_root}/#{prefix}_*/#{second}_*"].select { |file| File.directory?(file) }
     end
