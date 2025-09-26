@@ -25,7 +25,12 @@ class GritJiraIssue
   end
 
   def hic_read_dir
-    self.yaml["hic_read_dir"].as_s
+    if self.yaml["hic_read_dir"].as_a?
+      STDERR.puts "WARNING: hic_read_dir in the YAML containts more than one directory, using the first one"
+      self.yaml["hic_read_dir"][0].as_s
+    else
+      self.yaml["hic_read_dir"].as_s
+    end
   end
 
   def pacbio_read_dir
