@@ -172,7 +172,7 @@ curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
 --cram #{self.hic_read_dir} \
 --reads #{reads} \
 --outdir #{output} #{email} -c /nfs/users/nfs_m/mh6/clean.config #{telo} \
---split_telomere
+--split_telomere true
 HERE
   end
 
