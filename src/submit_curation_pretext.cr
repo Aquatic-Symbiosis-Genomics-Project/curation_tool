@@ -38,4 +38,7 @@ end
 raise "input fasta file #{fasta} doesn't exist" unless File.exists?(fasta)
 
 y = GritJiraIssue.new(issue, false)
+
+raise "input fasta doesn't contain the tolid" unless fasta.includes?(y.tol_id)
+
 puts y.curation_pretext(fasta, output, no_notification)
