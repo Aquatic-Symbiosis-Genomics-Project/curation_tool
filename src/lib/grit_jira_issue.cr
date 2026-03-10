@@ -157,7 +157,7 @@ class GritJiraIssue
     # if the file doesn't work, get it from Jira
     if yaml.nil?
       attachments = self.json["fields"]["attachment"].as_a
-        .map { |e| e["content"].as_s }
+        .map(&.["content"].as_s)
         .select { |url| /\.(yaml|yml)$/.match(url) }
       raise "no YAML attachment found on Jira issue #{@id}" if attachments.empty?
       r = HTTP::Client.get(attachments[0], headers: HTTP::Headers{"Authorization" => "Bearer #{@token}"})
