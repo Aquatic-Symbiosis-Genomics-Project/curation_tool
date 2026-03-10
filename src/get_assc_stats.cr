@@ -41,24 +41,19 @@ def length_and_gc(f)
   fx = FastxReader.new(fp)
   fx.each { |e|
     l[e.name] = e.seq.size
-    g[e.name] = e.seq.count("gcGC")/e.seq.size
-    s[e.name] = e.seq.scan(/TGA|TAG|TAA|TTA|CTA|TCA/i).size/e.seq.size
-    r[e.name] = e.seq.count("acgtn")/e.seq.size
+    g[e.name] = e.seq.count("gcGC").to_f/e.seq.size
+    s[e.name] = e.seq.scan(/TGA|TAG|TAA|TTA|CTA|TCA/i).size.to_f/e.seq.size
+    r[e.name] = e.seq.count("acgtn").to_f/e.seq.size
   }
   return(l, g, r, s)
 end
 
-def av(l : Array(Int32 | Float64))
-  items = l.size
-  if l.is_a?(Array(Float64))
-    total = 0_f64
-    l.each { |i| total += i.to_f }
-    total/items
-  else
-    total = 0_u64
-    l.each { |i| total += i }
-    total/items
-  end
+def av(l : Array(Float64)) : Float64
+  l.sum / l.size
+end
+
+def av(l : Array(Int32)) : Float64
+  l.sum(0.0) / l.size
 end
 
 def get_ave(h, l : Array(String))
@@ -68,7 +63,7 @@ end
 puts ["tolID", "fasta file", "average gc", "average length", "average repeat", "average stops",
       "true positives", "average gc tp", "average len tp", "average repeat tp", "average stops tp",
       "false positives", "average gc fp", "average len fp", "average repeat fp", "average stops fp",
-      "false negatives", "average gc fn", "average len fn", "average repeat fn", "average stops dn"].join("\t")
+      "false negatives", "average gc fn", "average len fn", "average repeat fn", "average stops fn"].join("\t")
 
 ARGV.each { |jira_id|
   y = StatIssue.new(jira_id, false)
@@ -96,7 +91,7 @@ ARGV.each { |jira_id|
     columns = [y.tol_id, File.basename(file), av(gc.values), av(ln.values), av(rep.values), av(stops.values)]
 
     [true_positives, false_positives, false_negatives].each { |number|
-      columns << number.size
+      columns << number.size.to_f
       columns << get_ave(gc, number)
       columns << get_ave(ln, number)
       columns << get_ave(rep, number)

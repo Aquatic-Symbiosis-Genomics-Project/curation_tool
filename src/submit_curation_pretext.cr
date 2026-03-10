@@ -12,7 +12,7 @@ no_notification = false
 name_check = true
 
 OptionParser.parse do |parser|
-  parser.banner = "Usage: submit_fcs --issue JIRA_ID "
+  parser.banner = "Usage: submit_curation_pretext --issue JIRA_ID --fasta FASTA --out OUTDIR"
   parser.on("-i JIRA_ID", "--issue JIRA_ID", "JIRA ID") { |jira_id| issue = jira_id }
   parser.on("-n", "--no_email", "don't send an email") { no_notification = true }
   parser.on("-c", "--no_name_check", "don't check the tolid") { name_check = false }
@@ -35,6 +35,11 @@ OptionParser.parse do |parser|
     STDERR.puts parser
     exit(1)
   end
+end
+
+if issue.empty? || fasta.empty? || output.empty?
+  STDERR.puts "ERROR: --issue, --fasta, and --out are required"
+  exit(1)
 end
 
 raise "input fasta file #{fasta} doesn't exist" unless File.exists?(fasta)

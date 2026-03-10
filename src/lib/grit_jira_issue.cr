@@ -26,7 +26,7 @@ class GritJiraIssue
 
   def hic_read_dir
     if self.yaml["hic_read_dir"].as_a?
-      STDERR.puts "WARNING: hic_read_dir in the YAML containts more than one directory, using the first one"
+      STDERR.puts "WARNING: hic_read_dir in the YAML contains more than one directory, using the first one"
       self.yaml["hic_read_dir"][0].as_s
     else
       self.yaml["hic_read_dir"].as_s
@@ -104,6 +104,7 @@ class GritJiraIssue
       second = self.tol_id[1]
       dir = Dir["#{pretext_root}/#{prefix}_*/#{second}_*"].select { |file| File.directory?(file) }
     end
+    raise "no pretext directory found for #{self.tol_id} under #{pretext_root}" if dir.empty?
     dir[0]
   end
 
@@ -141,19 +142,26 @@ class GritJiraIssue
         yaml = YAML.parse(File.read(yaml_path))
       else
         file_name = File.basename(yaml_path)
-        `scp tol22:#{yaml_path} /tmp/#{file_name}`
-        if File.exists?("/tmp/#{file_name}")
-          yaml = YAML.parse(File.read("/tmp/#{file_name}"))
-          File.delete("/tmp/#{file_name}")
+        tmp_path = "/tmp/#{file_name}"
+        STDERR.puts "WARNING: #{yaml_path} not found locally, trying scp from tol22"
+        `scp tol22:#{yaml_path} #{tmp_path}`
+        if $?.success? && File.exists?(tmp_path)
+          yaml = YAML.parse(File.read(tmp_path))
+          File.delete(tmp_path)
+        else
+          STDERR.puts "WARNING: scp of #{yaml_path} from tol22 failed, falling back to Jira attachment"
         end
       end
     end
 
     # if the file doesn't work, get it from Jira
     if yaml.nil?
-      yaml_url = self.json["fields"]["attachment"].as_a.map { |e| e["content"] }.select { |elem| /.*\.(yaml|yml)/.match(elem.as_s) }[0]
-      r = HTTP::Client.get("#{yaml_url}", headers: HTTP::Headers{"Authorization" => "Bearer #{@token}"})
-      raise "cannot get the YAML from Jira" unless r.success?
+      attachments = self.json["fields"]["attachment"].as_a
+        .map { |e| e["content"].as_s }
+        .select { |url| /\.(yaml|yml)$/.match(url) }
+      raise "no YAML attachment found on Jira issue #{@id}" if attachments.empty?
+      r = HTTP::Client.get(attachments[0], headers: HTTP::Headers{"Authorization" => "Bearer #{@token}"})
+      raise "cannot fetch YAML attachment from Jira (HTTP #{r.status_code})" unless r.success?
       yaml = YAML.parse(r.body)
     end
     raise "cannot get the YAML data" if yaml.nil?
