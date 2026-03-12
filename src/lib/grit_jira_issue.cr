@@ -26,10 +26,9 @@ class GritJiraIssue
 
   def hic_read_dir
     if self.yaml["hic_read_dir"].as_a?
-      STDERR.puts "WARNING: hic_read_dir in the YAML contains more than one directory, using the first one"
-      self.yaml["hic_read_dir"][0].as_s
+      self.yaml["hic_read_dir"][0].as_a
     else
-      self.yaml["hic_read_dir"].as_s
+      [self.yaml["hic_read_dir"].as_s]
     end
   end
 
@@ -176,7 +175,7 @@ class GritJiraIssue
     crams = self.hic_read_dir
     email = no_email ? "" : "-N #{ENV["USER"]}@sanger.ac.uk"
     read_files = Dir.glob("#{reads}/*.fasta.gz")
-    cram_files = Dir.glob("#{crams}/*.cram")
+    cram_files = crams.flat_map { |directory| Dir.glob("#{directory}/*.cram") }
     input_file = Path[fasta].expand
     yaml_file = "#{input_file}.yml"
 
