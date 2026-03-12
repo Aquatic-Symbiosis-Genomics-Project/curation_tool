@@ -184,7 +184,6 @@ class GritJiraIssue
       :all_output     => false,
       :skip_tracks    => "NONE",
       :run_hires      => false,
-      :run_ultra      => "force",
       :split_telomere => true,
       :input          => Path[fasta].expand,
       :reads          => read_files,
