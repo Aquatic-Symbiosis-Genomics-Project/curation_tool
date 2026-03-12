@@ -26,7 +26,7 @@ class GritJiraIssue
 
   def hic_read_dir
     if self.yaml["hic_read_dir"].as_a?
-      self.yaml["hic_read_dir"][0].as_a
+      self.yaml["hic_read_dir"].as_a
     else
       [self.yaml["hic_read_dir"].as_s]
     end
