@@ -66,8 +66,7 @@ module CurationTool
           }
 
           # Make new pretext map for hap1.
-          cmd, yml = y.curation_pretext("#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
-          File.write("STUB.yml", yml.to_yaml)
+          cmd = y.curation_pretext("#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         else
@@ -75,9 +74,7 @@ module CurationTool
           puts `bsub -K -o /dev/null -q small -M 32G -R'select[mem>32G] rusage[mem=32G]' #{cmd}`
           raise "something went wrong with #{cmd}" unless $?.success?
           # Make new pretext map.
-          cmd, yml = y.curation_pretext("#{id}.primary.curated.fa", "#{id}.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
-          File.write("STUB.yml", yml.to_yaml)
-
+          cmd = y.curation_pretext("#{id}.primary.curated.fa", "#{id}.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         end

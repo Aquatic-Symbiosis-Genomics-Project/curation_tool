@@ -50,6 +50,5 @@ if name_check
   raise "input fasta doesn't contain the tolid" unless fasta.includes?(y.tol_id)
 end
 
-cmd, yml = y.curation_pretext(fasta, output, no_notification)
+cmd = y.curation_pretext(fasta, output, no_notification)
 puts cmd
-File.write("STUB.yml", yml.to_yaml)

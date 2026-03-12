@@ -177,6 +177,8 @@ class GritJiraIssue
     email = no_email ? "" : "-N #{ENV["USER"]}@sanger.ac.uk"
     read_files = Dir.glob("#{reads}/*.fasta.gz")
     cram_files = Dir.glob("#{crams}/*.cram")
+    input_file = Path[fasta].expand
+    yaml_file = "#{input_file}.yml"
 
     params = {
       :sample         => self.sample_dot_version,
@@ -185,12 +187,13 @@ class GritJiraIssue
       :skip_tracks    => "NONE",
       :run_hires      => false,
       :split_telomere => true,
-      :input          => Path[fasta].expand,
+      :input          => input_file,
       :reads          => read_files,
       :cram           => cram_files,
     }
 
-    return "curationpretext.sh -profile sanger,singularity -params-file STUB.yml --outdir #{output} #{email} -c /nfs/users/nfs_m/mh6/clean.config", params
+    File.write(yaml_file, params.to_yaml)
+    "curationpretext.sh -profile sanger,singularity -params-file #{yaml_file} --outdir #{output} #{email} -c /nfs/users/nfs_m/mh6/clean.config"
   end
 
   def taxonomy
