@@ -10,7 +10,7 @@ jobs:
     container:
       image: crystallang/crystal
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Format
         run: crystal tool format --check
 
@@ -19,7 +19,7 @@ jobs:
     container:
       image: crystallang/crystal
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Crystal Ameba Linter
         uses: crystal-ameba/github-action@v0.12.0
@@ -31,7 +31,7 @@ jobs:
     container:
       image: crystallang/crystal:latest-alpine
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Install Shards 
         run: shards install 
       - name: Build
