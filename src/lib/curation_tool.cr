@@ -61,20 +61,22 @@ module CurationTool
             primary_fa = "#{y.tol_id}.#{hap}.#{y.release_version}.primary.curated.fa"
 
             cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv #{primary_fa}_cleaned #{primary_fa}"
-            puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
+            puts `bsub -K -o debug.log -q small -M 32G -R'select[mem>32G] rusage[mem=32G]' #{cmd}`
             raise "something went wrong with #{cmd}" unless $?.success?
           }
 
           # Make new pretext map for hap1.
-          cmd = y.curation_pretext("#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
+          cmd,yml = y.curation_pretext("#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
+          File.write("STUB.yml",yml.to_yaml)
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         else
           cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.primary.curated.fa -c #{y.decon_file} && mv #{id}.primary.curated.fa_cleaned #{id}.primary.curated.fa"
-          puts `bsub -K -o /dev/null -q small -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
+          puts `bsub -K -o /dev/null -q small -M 32G -R'select[mem>32G] rusage[mem=32G]' #{cmd}`
           raise "something went wrong with #{cmd}" unless $?.success?
           # Make new pretext map.
-          cmd = y.curation_pretext("#{id}.primary.curated.fa", "#{id}.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
+          cmd,yml = y.curation_pretext("#{id}.primary.curated.fa", "#{id}.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
+          File.write("STUB.yml",yml.to_yaml)
 
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?

@@ -191,7 +191,7 @@ class GritJiraIssue
       :cram           => cram_files,
     }
 
-    return "curationpretext.sh -profile sanger,singularity --params-file STUB.yml --outdir #{output} #{email} -c /nfs/users/nfs_m/mh6/clean.config", params
+    return "curationpretext.sh -profile sanger,singularity -params-file STUB.yml --outdir #{output} #{email} -c /nfs/users/nfs_m/mh6/clean.config", params
   end
 
   def taxonomy

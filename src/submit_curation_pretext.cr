@@ -51,4 +51,5 @@ if name_check
 end
 
 cmd, yml = y.curation_pretext(fasta, output, no_notification)
-puts cmd, "---------------", "STUB.yml", yml.to_yaml
+puts cmd
+File.write("STUB.yml", yml.to_yaml)
