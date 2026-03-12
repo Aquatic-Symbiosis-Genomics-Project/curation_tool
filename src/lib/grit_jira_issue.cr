@@ -171,17 +171,27 @@ class GritJiraIssue
   def curation_pretext(fasta, output, no_email = false)
     raise "input fasta file #{fasta} doesn't exist" unless File.exists?(fasta)
 
-    telo = self.telomer.size > 1 ? "--teloseq #{self.telomer}" : ""
+    telo = self.telomer.size > 1 ? self.telomer : ""
     reads = self.ont_read_dir || "#{self.pacbio_read_dir}/fasta"
+    crams = self.hic_read_dir
     email = no_email ? "" : "-N #{ENV["USER"]}@sanger.ac.uk"
-    <<-HERE
-curationpretext.sh -profile sanger,singularity --input #{Path[fasta].expand} \
---sample #{self.sample_dot_version} \
---cram #{self.hic_read_dir} \
---reads #{reads} \
---outdir #{output} #{email} -c /nfs/users/nfs_m/mh6/clean.config #{telo} \
---split_telomere true
-HERE
+    read_files = Dir.glob("#{reads}/*.fasta.gz")
+    cram_files = Dir.glob("#{crams}/*.cram")
+
+    params = {
+      :sample         => self.sample_dot_version,
+      :teloseq        => telo,
+      :all_output     => false,
+      :skip_tracks    => "NONE",
+      :run_hires      => false,
+      :run_ultra      => "force",
+      :split_telomere => true,
+      :input          => Path[fasta].expand,
+      :reads          => read_files,
+      :cram           => cram_files,
+    }
+
+    return "curationpretext.sh -profile sanger,singularity --params-file STUB.yml --outdir #{output} #{email} -c /nfs/users/nfs_m/mh6/clean.config", params
   end
 
   def taxonomy
