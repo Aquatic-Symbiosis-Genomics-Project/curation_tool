@@ -1,3 +1,12 @@
+# Main curation workflow orchestrator.
+#
+# Provides four operations controlled by CLI flags:
+# - `-p` / `--copy_pretext`: copy pretext maps from the `tol` server to the local workstation
+# - `-w` / `--setup_working_dir`: create the HPC working directory and decompress the assembly FASTA
+# - `-r` / `--build_release`: run `pretext-to-asm`, trim contamination, and regenerate pretext maps
+# - `-q` / `--copy_qc`: copy curated files to the curated directory for QC
+#
+# Use `-m` / `--merged` for dual-haplotype (hap1/hap2) assemblies.
 require "option_parser"
 require "./lib/curation_tool"
 

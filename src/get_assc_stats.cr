@@ -5,13 +5,17 @@ require "klib"
 
 include Klib
 
+# Extends `GritJiraIssue` to provide access to the decontamination directory
+# for comparing FCS-GX contamination calls against BED-based calls.
 class StatIssue < GritJiraIssue
-  def decon_dir
+  # Returns the parent directory of the decontamination file.
+  def decon_dir : String
     Path[self.decon_file].parent.to_s
   end
 end
 
-def parse_decon_file(f)
+# Parses a `.contamination` file and returns the sequence IDs marked as `REMOVE`.
+def parse_decon_file(f) : Array(String)
   i = [] of String
   File.each_line(f) do |line|
     if /^REMOVE\s+(\S+)/i.match(line)
@@ -21,7 +25,8 @@ def parse_decon_file(f)
   i
 end
 
-def parse_bed_file(f)
+# Parses a `.contamination.bed` file and returns the sequence IDs marked as `REMOVE`.
+def parse_bed_file(f) : Array(String)
   i = [] of String
   File.each_line(f) do |line|
     if /^(\S+)\s.*REMOVE/i.match(line)
@@ -31,8 +36,13 @@ def parse_bed_file(f)
   i
 end
 
-# length_and_gc_from_fasta
-def length_and_gc(f)
+# Computes per-sequence statistics from a gzipped FASTA file.
+# Returns a tuple of hashes keyed by sequence name:
+# - sequence length
+# - GC content (fraction of G/C bases)
+# - repeat fraction (fraction of lowercase/soft-masked bases)
+# - stop codon density (occurrences of stop codons per base)
+def length_and_gc(f) : Tuple(Hash(String, Int32), Hash(String, Float64), Hash(String, Float64), Hash(String, Float64))
   l = Hash(String, Int32).new
   g = Hash(String, Float64).new
   s = Hash(String, Float64).new
@@ -48,15 +58,18 @@ def length_and_gc(f)
   return(l, g, r, s)
 end
 
+# Returns the arithmetic mean of a Float64 array.
 def av(l : Array(Float64)) : Float64
   l.sum / l.size
 end
 
+# Returns the arithmetic mean of an Int32 array as Float64.
 def av(l : Array(Int32)) : Float64
   l.sum(0.0) / l.size
 end
 
-def get_ave(h, l : Array(String))
+# Returns the mean value from hash *h* for the keys in *l*.
+def get_ave(h, l : Array(String)) : Float64
   av(l.map { |k| h[k] })
 end
 

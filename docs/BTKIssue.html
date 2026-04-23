@@ -108,6 +108,20 @@
 
 
 
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Extends <code><a href="GritJiraIssue.html">GritJiraIssue</a></code> with ASCC/BlobToolKit contamination screening submission.</p>
+<p>Submits the ASCC pipeline to LSF for each haplotype (primary and haplotigs),
+running tiara, coverage, FCS-GX, BTK BUSCO, BLAST, and DIAMOND steps.
+Requires Nextflow, Singularity, and Python modules to be loaded.</p>
+
 
 
 
@@ -133,7 +147,7 @@
   </h2>
   
     
-      <a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_btk.cr#L6" target="_blank">
+      <a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_btk.cr#L11" target="_blank">
         submit_btk.cr
       </a>
     
@@ -162,17 +176,23 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#decon_dir-instance-method" class="signature"><strong>#decon_dir</strong></a>
+        <a href="#decon_dir%3AString-instance-method" class="signature"><strong>#decon_dir</strong> : String</a>
+        
+          <div class="summary"><p>Returns the parent directory of the first assembly file, used as the base for ASCC pipeline output directories.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#files-instance-method" class="signature"><strong>#files</strong></a>
+        <a href="#files%3AArray%28String%29-instance-method" class="signature"><strong>#files</strong> : Array(String)</a>
+        
+          <div class="summary"><p>Returns the list of assembly FASTA paths present in the specimen YAML.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#submit_to_lsf-instance-method" class="signature"><strong>#submit_to_lsf</strong></a>
+        <a href="#submit_to_lsf%3ANil-instance-method" class="signature"><strong>#submit_to_lsf</strong> : Nil</a>
+        
+          <div class="summary"><p>Submits the ASCC pipeline to LSF for each haplotype present in the YAML.</p></div>
         
       </li>
     
@@ -367,50 +387,69 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="decon_dir-instance-method">
+    <div class="entry-detail" id="decon_dir:String-instance-method">
       <div class="signature">
         
-        def <strong>decon_dir</strong>
+        def <strong>decon_dir</strong> : String
 
-        <a class="method-permalink" href="#decon_dir-instance-method">#</a>
+        <a class="method-permalink" href="#decon_dir%3AString-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Returns the parent directory of the first assembly file,
+used as the base for ASCC pipeline output directories.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_btk.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_btk.cr#L24" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="files-instance-method">
+    <div class="entry-detail" id="files:Array(String)-instance-method">
       <div class="signature">
         
-        def <strong>files</strong>
+        def <strong>files</strong> : Array(String)
 
-        <a class="method-permalink" href="#files-instance-method">#</a>
+        <a class="method-permalink" href="#files%3AArray%28String%29-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Returns the list of assembly FASTA paths present in the specimen YAML.
+Checks for <code>primary</code> and <code>haplotigs</code> keys.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_btk.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_btk.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="submit_to_lsf-instance-method">
+    <div class="entry-detail" id="submit_to_lsf:Nil-instance-method">
       <div class="signature">
         
-        def <strong>submit_to_lsf</strong>
+        def <strong>submit_to_lsf</strong> : Nil
 
-        <a class="method-permalink" href="#submit_to_lsf-instance-method">#</a>
+        <a class="method-permalink" href="#submit_to_lsf%3ANil-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Submits the ASCC pipeline to LSF for each haplotype present in the YAML.
+Each job runs in the <code>basement</code> queue with the full ASCC step chain
+(tiara, coverage, fcs-gx, btk_busco, nt_blast, nr_diamond, etc.).</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_btk.cr#L19" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_btk.cr#L31" target="_blank">View source</a>]
         
       </div>
     </div>

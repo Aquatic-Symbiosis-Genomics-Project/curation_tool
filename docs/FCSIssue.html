@@ -108,6 +108,19 @@
 
 
 
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Extends <code><a href="GritJiraIssue.html">GritJiraIssue</a></code> with FCS-GX contamination screening submission.</p>
+<p>Collects the assembly FASTA paths (primary, haplotigs, hap1, hap2) from the
+specimen YAML and submits the <code>gx_map_wrapper.bash</code> pipeline to LSF.</p>
+
 
 
 
@@ -133,7 +146,7 @@
   </h2>
   
     
-      <a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L6" target="_blank">
+      <a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L10" target="_blank">
         submit_fcs.cr
       </a>
     
@@ -162,17 +175,23 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#decon_dir-instance-method" class="signature"><strong>#decon_dir</strong></a>
+        <a href="#decon_dir%3AString-instance-method" class="signature"><strong>#decon_dir</strong> : String</a>
+        
+          <div class="summary"><p>Returns the parent directory of the first assembly file, used as the output directory for contamination screening results.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#files-instance-method" class="signature"><strong>#files</strong></a>
+        <a href="#files%3AArray%28String%29-instance-method" class="signature"><strong>#files</strong> : Array(String)</a>
+        
+          <div class="summary"><p>Returns the list of assembly FASTA paths present in the specimen YAML.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#submit_to_lsf-instance-method" class="signature"><strong>#submit_to_lsf</strong></a>
+        <a href="#submit_to_lsf%3ANil-instance-method" class="signature"><strong>#submit_to_lsf</strong> : Nil</a>
+        
+          <div class="summary"><p>Submits the FCS-GX contamination screening pipeline to LSF.</p></div>
         
       </li>
     
@@ -367,50 +386,69 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="decon_dir-instance-method">
+    <div class="entry-detail" id="decon_dir:String-instance-method">
       <div class="signature">
         
-        def <strong>decon_dir</strong>
+        def <strong>decon_dir</strong> : String
 
-        <a class="method-permalink" href="#decon_dir-instance-method">#</a>
+        <a class="method-permalink" href="#decon_dir%3AString-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Returns the parent directory of the first assembly file,
+used as the output directory for contamination screening results.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L23" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="files-instance-method">
+    <div class="entry-detail" id="files:Array(String)-instance-method">
       <div class="signature">
         
-        def <strong>files</strong>
+        def <strong>files</strong> : Array(String)
 
-        <a class="method-permalink" href="#files-instance-method">#</a>
+        <a class="method-permalink" href="#files%3AArray%28String%29-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Returns the list of assembly FASTA paths present in the specimen YAML.
+Checks for <code>primary</code>, <code>haplotigs</code>, <code>hap1</code>, and <code>hap2</code> keys.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L7" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="submit_to_lsf-instance-method">
+    <div class="entry-detail" id="submit_to_lsf:Nil-instance-method">
       <div class="signature">
         
-        def <strong>submit_to_lsf</strong>
+        def <strong>submit_to_lsf</strong> : Nil
 
-        <a class="method-permalink" href="#submit_to_lsf-instance-method">#</a>
+        <a class="method-permalink" href="#submit_to_lsf%3ANil-instance-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Submits the FCS-GX contamination screening pipeline to LSF.
+Builds a <code>bsub</code> command with the decon directory, taxonomy ID, and
+all existing assembly FASTA files as inputs.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L19" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L30" target="_blank">View source</a>]
         
       </div>
     </div>

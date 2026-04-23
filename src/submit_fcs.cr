@@ -3,8 +3,14 @@
 require "option_parser"
 require "./lib/grit_jira_issue"
 
+# Extends `GritJiraIssue` with FCS-GX contamination screening submission.
+#
+# Collects the assembly FASTA paths (primary, haplotigs, hap1, hap2) from the
+# specimen YAML and submits the `gx_map_wrapper.bash` pipeline to LSF.
 class FCSIssue < GritJiraIssue
-  def files
+  # Returns the list of assembly FASTA paths present in the specimen YAML.
+  # Checks for `primary`, `haplotigs`, `hap1`, and `hap2` keys.
+  def files : Array(String)
     files = [] of String
     ["primary", "haplotigs", "hap1", "hap2"].each { |key|
       files << self.yaml[key].to_s if self.yaml.as_h.has_key?(key)
@@ -12,11 +18,16 @@ class FCSIssue < GritJiraIssue
     files
   end
 
-  def decon_dir
+  # Returns the parent directory of the first assembly file,
+  # used as the output directory for contamination screening results.
+  def decon_dir : String
     Path[self.files[0]].parent.to_s
   end
 
-  def submit_to_lsf
+  # Submits the FCS-GX contamination screening pipeline to LSF.
+  # Builds a `bsub` command with the decon directory, taxonomy ID, and
+  # all existing assembly FASTA files as inputs.
+  def submit_to_lsf : Nil
     cmd = "bsub -o #{decon_dir}/fcs.log -M 500000 -n 16 -R'select[mem>500000, tmp>500G] rusage[mem=500000, tmp=600G]' bash  /data/tol/users/mh6/lustre/gx_pipeline/gx_map_wrapper.bash -o #{self.decon_dir} -t #{self.taxonomy}"
     self.files.each { |file| cmd += " -f #{file}" if File.exists?(file) }
     puts `#{cmd}`

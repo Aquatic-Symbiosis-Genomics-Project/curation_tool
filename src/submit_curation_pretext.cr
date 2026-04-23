@@ -1,5 +1,14 @@
 #!/usr/bin/env crystal
 
+# Standalone entry point for submitting the `curationpretext.sh` Nextflow pipeline.
+#
+# Accepts a JIRA issue ID, an input FASTA file, and an output directory.
+# Validates that the FASTA file exists and (by default) that its name contains
+# the specimen ToL ID. Prints the assembled pipeline command to stdout.
+#
+# Options:
+# - `-n` / `--no_email`: suppress the LSF completion email notification
+# - `-c` / `--no_name_check`: skip the ToL ID check against the FASTA filename
 require "option_parser"
 require "./lib/curation_tool"
 

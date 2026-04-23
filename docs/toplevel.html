@@ -181,32 +181,42 @@
       <li class="entry-summary">
         <a href="#av%28l%3AArray%28Float64%29%29%3AFloat64-class-method" class="signature"><strong>av</strong>(l : Array(Float64)) : Float64</a>
         
+          <div class="summary"><p>Returns the arithmetic mean of a Float64 array.</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#av%28l%3AArray%28Int32%29%29%3AFloat64-class-method" class="signature"><strong>av</strong>(l : Array(Int32)) : Float64</a>
         
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#get_ave%28h%2Cl%3AArray%28String%29%29-class-method" class="signature"><strong>get_ave</strong>(h, l : Array(String))</a>
+          <div class="summary"><p>Returns the arithmetic mean of an Int32 array as Float64.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#length_and_gc%28f%29-class-method" class="signature"><strong>length_and_gc</strong>(f)</a>
+        <a href="#get_ave%28h%2Cl%3AArray%28String%29%29%3AFloat64-class-method" class="signature"><strong>get_ave</strong>(h, l : Array(String)) : Float64</a>
         
-          <div class="summary"><p>length_and_gc_from_fasta</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#parse_bed_file%28f%29-class-method" class="signature"><strong>parse_bed_file</strong>(f)</a>
+          <div class="summary"><p>Returns the mean value from hash <em>h</em> for the keys in <em>l</em>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#parse_decon_file%28f%29-class-method" class="signature"><strong>parse_decon_file</strong>(f)</a>
+        <a href="#length_and_gc%28f%29%3ATuple%28Hash%28String%2CInt32%29%2CHash%28String%2CFloat64%29%2CHash%28String%2CFloat64%29%2CHash%28String%2CFloat64%29%29-class-method" class="signature"><strong>length_and_gc</strong>(f) : Tuple(Hash(String, Int32), Hash(String, Float64), Hash(String, Float64), Hash(String, Float64))</a>
+        
+          <div class="summary"><p>Computes per-sequence statistics from a gzipped FASTA file.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#parse_bed_file%28f%29%3AArray%28String%29-class-method" class="signature"><strong>parse_bed_file</strong>(f) : Array(String)</a>
+        
+          <div class="summary"><p>Parses a <code>.contamination.bed</code> file and returns the sequence IDs marked as <code>REMOVE</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#parse_decon_file%28f%29%3AArray%28String%29-class-method" class="signature"><strong>parse_decon_file</strong>(f) : Array(String)</a>
+        
+          <div class="summary"><p>Parses a <code>.contamination</code> file and returns the sequence IDs marked as <code>REMOVE</code>.</p></div>
         
       </li>
     
@@ -292,10 +302,15 @@
         <a class="method-permalink" href="#av%28l%3AArray%28Float64%29%29%3AFloat64-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Returns the arithmetic mean of a Float64 array.</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L51" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L62" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -308,79 +323,106 @@
         <a class="method-permalink" href="#av%28l%3AArray%28Int32%29%29%3AFloat64-class-method">#</a>
       </div>
       
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L55" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="get_ave(h,l:Array(String))-class-method">
-      <div class="signature">
-        
-        def <strong>get_ave</strong>(h, l : Array(String))
-
-        <a class="method-permalink" href="#get_ave%28h%2Cl%3AArray%28String%29%29-class-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L59" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="length_and_gc(f)-class-method">
-      <div class="signature">
-        
-        def <strong>length_and_gc</strong>(f)
-
-        <a class="method-permalink" href="#length_and_gc%28f%29-class-method">#</a>
-      </div>
-      
         <div class="doc">
           
-          <p>length_and_gc_from_fasta</p>
+          <p>Returns the arithmetic mean of an Int32 array as Float64.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L35" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L67" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="parse_bed_file(f)-class-method">
+    <div class="entry-detail" id="get_ave(h,l:Array(String)):Float64-class-method">
       <div class="signature">
         
-        def <strong>parse_bed_file</strong>(f)
+        def <strong>get_ave</strong>(h, l : Array(String)) : Float64
 
-        <a class="method-permalink" href="#parse_bed_file%28f%29-class-method">#</a>
+        <a class="method-permalink" href="#get_ave%28h%2Cl%3AArray%28String%29%29%3AFloat64-class-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Returns the mean value from hash <em>h</em> for the keys in <em>l</em>.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L24" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L72" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="parse_decon_file(f)-class-method">
+    <div class="entry-detail" id="length_and_gc(f):Tuple(Hash(String,Int32),Hash(String,Float64),Hash(String,Float64),Hash(String,Float64))-class-method">
       <div class="signature">
         
-        def <strong>parse_decon_file</strong>(f)
+        def <strong>length_and_gc</strong>(f) : Tuple(Hash(String, Int32), Hash(String, Float64), Hash(String, Float64), Hash(String, Float64))
 
-        <a class="method-permalink" href="#parse_decon_file%28f%29-class-method">#</a>
+        <a class="method-permalink" href="#length_and_gc%28f%29%3ATuple%28Hash%28String%2CInt32%29%2CHash%28String%2CFloat64%29%2CHash%28String%2CFloat64%29%2CHash%28String%2CFloat64%29%29-class-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>Computes per-sequence statistics from a gzipped FASTA file.
+Returns a tuple of hashes keyed by sequence name:</p>
+<ul>
+<li>sequence length</li>
+<li>GC content (fraction of G/C bases)</li>
+<li>repeat fraction (fraction of lowercase/soft-masked bases)</li>
+<li>stop codon density (occurrences of stop codons per base)</li>
+</ul>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L14" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L45" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="parse_bed_file(f):Array(String)-class-method">
+      <div class="signature">
+        
+        def <strong>parse_bed_file</strong>(f) : Array(String)
+
+        <a class="method-permalink" href="#parse_bed_file%28f%29%3AArray%28String%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Parses a <code>.contamination.bed</code> file and returns the sequence IDs marked as <code>REMOVE</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L29" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="parse_decon_file(f):Array(String)-class-method">
+      <div class="signature">
+        
+        def <strong>parse_decon_file</strong>(f) : Array(String)
+
+        <a class="method-permalink" href="#parse_decon_file%28f%29%3AArray%28String%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Parses a <code>.contamination</code> file and returns the sequence IDs marked as <code>REMOVE</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/get_assc_stats.cr#L18" target="_blank">View source</a>]
         
       </div>
     </div>

@@ -3,8 +3,15 @@
 require "option_parser"
 require "./lib/grit_jira_issue"
 
+# Extends `GritJiraIssue` with ASCC/BlobToolKit contamination screening submission.
+#
+# Submits the ASCC pipeline to LSF for each haplotype (primary and haplotigs),
+# running tiara, coverage, FCS-GX, BTK BUSCO, BLAST, and DIAMOND steps.
+# Requires Nextflow, Singularity, and Python modules to be loaded.
 class BTKIssue < GritJiraIssue
-  def files
+  # Returns the list of assembly FASTA paths present in the specimen YAML.
+  # Checks for `primary` and `haplotigs` keys.
+  def files : Array(String)
     files = [] of String
     ["primary", "haplotigs"].each { |key|
       files << self.yaml[key].to_s if self.yaml.as_h.has_key?(key)
@@ -12,11 +19,16 @@ class BTKIssue < GritJiraIssue
     files
   end
 
-  def decon_dir
+  # Returns the parent directory of the first assembly file,
+  # used as the base for ASCC pipeline output directories.
+  def decon_dir : String
     Path[self.files[0]].parent.to_s
   end
 
-  def submit_to_lsf
+  # Submits the ASCC pipeline to LSF for each haplotype present in the YAML.
+  # Each job runs in the `basement` queue with the full ASCC step chain
+  # (tiara, coverage, fcs-gx, btk_busco, nt_blast, nr_diamond, etc.).
+  def submit_to_lsf : Nil
     tolid = self.yaml["specimen"]
 
     ["primary", "haplotigs"].each { |key|
