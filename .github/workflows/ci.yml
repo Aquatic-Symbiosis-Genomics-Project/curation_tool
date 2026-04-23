@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: crystallang/crystal
+    env:
+      USER: TEST
     steps:
       - uses: actions/checkout@v6
       - name: Format
