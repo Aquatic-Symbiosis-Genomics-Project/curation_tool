@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="new_curation_pretext-dev">
+<meta name="crystal_docs.project_name" content="curation_tool">
+
+
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/doc.js"></script>
+
+  <meta name="repository-name" content="curation_tool">
+  <title>GritJiraIssue - curation_tool new_curation_pretext-dev</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="index.html">
+          curation_tool
+        </a>
+      </h1>
+
+      <span class="project-version">
+        new_curation_pretext-dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class=" " data-id="curation_tool/toplevel" data-name="top level namespace">
+      <a href="toplevel.html">Top Level Namespace</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/BTKIssue" data-name="btkissue">
+      <a href="BTKIssue.html">BTKIssue</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/CurationTool" data-name="curationtool">
+      <a href="CurationTool.html">CurationTool</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/FCSIssue" data-name="fcsissue">
+      <a href="FCSIssue.html">FCSIssue</a>
+      
+    </li>
+  
+  <li class=" current" data-id="curation_tool/GritJiraIssue" data-name="gritjiraissue">
+      <a href="GritJiraIssue.html">GritJiraIssue</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/StatIssue" data-name="statissue">
+      <a href="StatIssue.html">StatIssue</a>
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    class
+  </span> GritJiraIssue
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="GritJiraIssue.html">GritJiraIssue</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Represents a GRIT JIRA curation issue and provides access to all
+specimen metadata needed by the curation workflow tools.</p>
+<p>Authentication uses a Bearer token read from <code>~/.netrc</code> (entry for
+<code>jira.sanger.ac.uk</code>). Per-specimen metadata is loaded from a YAML file
+whose path is stored in JIRA custom field <code>customfield_13408</code>. If the
+file is not accessible locally it is fetched via <code>scp</code> from <code>tol22</code>, and
+as a last resort downloaded as a JIRA attachment.</p>
+<p>The <code><a href="GritJiraIssue.html#merged%3ABool-instance-method">#merged</a></code> flag indicates that both haplotypes should be treated as a
+single merged assembly (hap1/hap2 or maternal/paternal dual-output mode).</p>
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="direct-known-subclasses" class="anchor" href="#direct-known-subclasses">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Direct Known Subclasses
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type"><a href="BTKIssue.html">BTKIssue</a></li>
+    
+      <li class="other-type"><a href="FCSIssue.html">FCSIssue</a></li>
+    
+      <li class="other-type"><a href="StatIssue.html">StatIssue</a></li>
+    
+  </ul>
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      lib/grit_jira_issue.cr
+    
+    <br/>
+  
+
+
+
+
+
+  
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28name%3AString%2Cmerged%3ABool%3Dfalse%29-class-method" class="signature"><strong>.new</strong>(name : String, merged : Bool = <span class="n">false</span>)</a>
+        
+          <div class="summary"><p>Creates a new issue handle for <em>name</em> (e.g.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+  
+
+  
+
+  
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#curated_dir-instance-method" class="signature"><strong>#curated_dir</strong></a>
+        
+          <div class="summary"><p>Returns the target directory for curated output files.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#curation_pretext%28fasta%2Coutput%2Cno_email%3Dfalse%29-instance-method" class="signature"><strong>#curation_pretext</strong>(fasta, output, no_email = <span class="n">false</span>)</a>
+        
+          <div class="summary"><p>Builds and returns the shell command string to invoke the <code>curationpretext.sh</code> Nextflow pipeline for <em>fasta</em> (must exist), writing output to <em>output</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#decon_file-instance-method" class="signature"><strong>#decon_file</strong></a>
+        
+          <div class="summary"><p>Returns the decontamination file path from JIRA custom field <code>customfield_11677</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_json-instance-method" class="signature"><strong>#get_json</strong></a>
+        
+          <div class="summary"><p>Fetches the JIRA issue JSON via the REST API (<code>/rest/api/2/issue/&lt;id&gt;</code>).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_token%3AString-instance-method" class="signature"><strong>#get_token</strong> : String</a>
+        
+          <div class="summary"><p>Reads the Bearer token for <code>jira.sanger.ac.uk</code> from <code>~/.netrc</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#get_yaml-instance-method" class="signature"><strong>#get_yaml</strong></a>
+        
+          <div class="summary"><p>Loads and parses the per-specimen YAML.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#geval_db-instance-method" class="signature"><strong>#geval_db</strong></a>
+        
+          <div class="summary"><p>Returns the geval database name from JIRA custom field <code>customfield_11643</code>, or an empty string if not set.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#hic_read_dir-instance-method" class="signature"><strong>#hic_read_dir</strong></a>
+        
+          <div class="summary"><p>Returns the Hi-C read directory (or directories) as an array of strings.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#json-instance-method" class="signature"><strong>#json</strong></a>
+        
+          <div class="summary"><p>Returns the parsed JIRA issue JSON, fetching it on first access.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#merged%3ABool-instance-method" class="signature"><strong>#merged</strong> : Bool</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#ont_read_dir-instance-method" class="signature"><strong>#ont_read_dir</strong></a>
+        
+          <div class="summary"><p>Returns the ONT read directory, or <code>nil</code> if not present in the YAML.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pacbio_read_dir-instance-method" class="signature"><strong>#pacbio_read_dir</strong></a>
+        
+          <div class="summary"><p>Returns the PacBio read directory, or <code>nil</code> if not present in the YAML.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pretext_dir-instance-method" class="signature"><strong>#pretext_dir</strong></a>
+        
+          <div class="summary"><p>Returns the curated pretext map directory for this specimen under <code>/nfs/treeoflife-01/teams/grit/data/curated_pretext_maps</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#projects-instance-method" class="signature"><strong>#projects</strong></a>
+        
+          <div class="summary"><p>Returns the list of project names associated with this specimen (e.g.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#release_version-instance-method" class="signature"><strong>#release_version</strong></a>
+        
+          <div class="summary"><p>Returns the integer release version from JIRA custom field <code>customfield_11609</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sample_dot_version-instance-method" class="signature"><strong>#sample_dot_version</strong></a>
+        
+          <div class="summary"><p>Returns the specimen identifier in dot form: <code>&lt;tol_id&gt;.&lt;release_version&gt;</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sample_version-instance-method" class="signature"><strong>#sample_version</strong></a>
+        
+          <div class="summary"><p>Returns the specimen identifier in underscore form: <code>&lt;tol_id&gt;_&lt;release_version&gt;</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#scientific_name-instance-method" class="signature"><strong>#scientific_name</strong></a>
+        
+          <div class="summary"><p>Returns the scientific name of the specimen from the YAML <code>species</code> key.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#taxonomy-instance-method" class="signature"><strong>#taxonomy</strong></a>
+        
+          <div class="summary"><p>Looks up the NCBI taxonomy ID for this specimen via the EBI taxonomy REST API.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#telomer-instance-method" class="signature"><strong>#telomer</strong></a>
+        
+          <div class="summary"><p>Returns the telomere sequence from JIRA custom field <code>customfield_11650</code>, or an empty string if not set.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#tol_id-instance-method" class="signature"><strong>#tol_id</strong></a>
+        
+          <div class="summary"><p>Returns the ToL specimen ID (e.g.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#working_dir-instance-method" class="signature"><strong>#working_dir</strong></a>
+        
+          <div class="summary"><p>Returns the curation working directory on the HPC.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#yaml-instance-method" class="signature"><strong>#yaml</strong></a>
+        
+          <div class="summary"><p>Returns the parsed per-specimen YAML, fetching it on first access.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <div class="methods-inherited">
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+  </div>
+
+  
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(name:String,merged:Bool=false)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(name : String, merged : Bool = <span class="n">false</span>)
+
+        <a class="method-permalink" href="#new%28name%3AString%2Cmerged%3ABool%3Dfalse%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Creates a new issue handle for <em>name</em> (e.g. <code>&quot;RC-1234&quot;</code>).
+Set <em>merged</em> to <code>true</code> for dual-haplotype assemblies.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+  
+
+  
+
+  
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="curated_dir-instance-method">
+      <div class="signature">
+        
+        def <strong>curated_dir</strong>
+
+        <a class="method-permalink" href="#curated_dir-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the target directory for curated output files.
+Derived from the decon file path; appended with <code>.genomeark.&lt;version&gt;</code>
+for GenomeArk specimens, or <code>.&lt;version&gt;</code> otherwise.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="curation_pretext(fasta,output,no_email=false)-instance-method">
+      <div class="signature">
+        
+        def <strong>curation_pretext</strong>(fasta, output, no_email = <span class="n">false</span>)
+
+        <a class="method-permalink" href="#curation_pretext%28fasta%2Coutput%2Cno_email%3Dfalse%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Builds and returns the shell command string to invoke the <code>curationpretext.sh</code>
+Nextflow pipeline for <em>fasta</em> (must exist), writing output to <em>output</em>.</p>
+<p>Writes a YAML params file next to <em>fasta</em> and assembles the command with
+the correct read files, Hi-C CRAMs, telomere sequence, and email flag.
+Pass <code>no_email: true</code> to suppress the LSF completion notification.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="decon_file-instance-method">
+      <div class="signature">
+        
+        def <strong>decon_file</strong>
+
+        <a class="method-permalink" href="#decon_file-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the decontamination file path from JIRA custom field <code>customfield_11677</code>.
+May be a <code>.bed</code> file (contamination intervals) or a <code>.fa.gz</code> decontaminated FASTA.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_json-instance-method">
+      <div class="signature">
+        
+        def <strong>get_json</strong>
+
+        <a class="method-permalink" href="#get_json-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Fetches the JIRA issue JSON via the REST API (<code>/rest/api/2/issue/&lt;id&gt;</code>).
+Raises if the request fails.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_token:String-instance-method">
+      <div class="signature">
+        
+        def <strong>get_token</strong> : String
+
+        <a class="method-permalink" href="#get_token%3AString-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Reads the Bearer token for <code>jira.sanger.ac.uk</code> from <code>~/.netrc</code>.
+Raises if no matching entry is found.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="get_yaml-instance-method">
+      <div class="signature">
+        
+        def <strong>get_yaml</strong>
+
+        <a class="method-permalink" href="#get_yaml-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Loads and parses the per-specimen YAML.</p>
+<p>Resolution order:</p>
+<ol>
+<li>Path stored in JIRA custom field <code>customfield_13408</code>, read directly if it exists locally.</li>
+<li>Same path fetched via <code>scp</code> from <code>tol22</code> into <code>/tmp/</code>.</li>
+<li>YAML attachment downloaded directly from the JIRA issue.</li>
+</ol>
+<p>Raises if no YAML can be obtained.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="geval_db-instance-method">
+      <div class="signature">
+        
+        def <strong>geval_db</strong>
+
+        <a class="method-permalink" href="#geval_db-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the geval database name from JIRA custom field <code>customfield_11643</code>,
+or an empty string if not set.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hic_read_dir-instance-method">
+      <div class="signature">
+        
+        def <strong>hic_read_dir</strong>
+
+        <a class="method-permalink" href="#hic_read_dir-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the Hi-C read directory (or directories) as an array of strings.
+Handles both scalar and list values in the YAML.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="json-instance-method">
+      <div class="signature">
+        
+        def <strong>json</strong>
+
+        <a class="method-permalink" href="#json-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the parsed JIRA issue JSON, fetching it on first access.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="merged:Bool-instance-method">
+      <div class="signature">
+        
+        def <strong>merged</strong> : Bool
+
+        <a class="method-permalink" href="#merged%3ABool-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="ont_read_dir-instance-method">
+      <div class="signature">
+        
+        def <strong>ont_read_dir</strong>
+
+        <a class="method-permalink" href="#ont_read_dir-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the ONT read directory, or <code>nil</code> if not present in the YAML.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pacbio_read_dir-instance-method">
+      <div class="signature">
+        
+        def <strong>pacbio_read_dir</strong>
+
+        <a class="method-permalink" href="#pacbio_read_dir-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the PacBio read directory, or <code>nil</code> if not present in the YAML.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pretext_dir-instance-method">
+      <div class="signature">
+        
+        def <strong>pretext_dir</strong>
+
+        <a class="method-permalink" href="#pretext_dir-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the curated pretext map directory for this specimen under
+<code>/nfs/treeoflife-01/teams/grit/data/curated_pretext_maps</code>.
+For invertebrate/other prefixes (<code>i</code>, <code>d</code>, <code>q</code>, <code>t</code>, <code>c</code>) a two-level
+subdirectory lookup is used. Raises if no matching directory is found.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="projects-instance-method">
+      <div class="signature">
+        
+        def <strong>projects</strong>
+
+        <a class="method-permalink" href="#projects-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the list of project names associated with this specimen (e.g. <code>[&quot;DToL&quot;, &quot;GenomeArk&quot;]</code>).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="release_version-instance-method">
+      <div class="signature">
+        
+        def <strong>release_version</strong>
+
+        <a class="method-permalink" href="#release_version-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the integer release version from JIRA custom field <code>customfield_11609</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sample_dot_version-instance-method">
+      <div class="signature">
+        
+        def <strong>sample_dot_version</strong>
+
+        <a class="method-permalink" href="#sample_dot_version-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the specimen identifier in dot form: <code>&lt;tol_id&gt;.&lt;release_version&gt;</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sample_version-instance-method">
+      <div class="signature">
+        
+        def <strong>sample_version</strong>
+
+        <a class="method-permalink" href="#sample_version-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the specimen identifier in underscore form: <code>&lt;tol_id&gt;_&lt;release_version&gt;</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="scientific_name-instance-method">
+      <div class="signature">
+        
+        def <strong>scientific_name</strong>
+
+        <a class="method-permalink" href="#scientific_name-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the scientific name of the specimen from the YAML <code>species</code> key.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="taxonomy-instance-method">
+      <div class="signature">
+        
+        def <strong>taxonomy</strong>
+
+        <a class="method-permalink" href="#taxonomy-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Looks up the NCBI taxonomy ID for this specimen via the EBI taxonomy REST API.
+First tries an exact scientific-name lookup, then falls back to an any-name search.
+Returns the taxon ID as a string. Raises if no result is found.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="telomer-instance-method">
+      <div class="signature">
+        
+        def <strong>telomer</strong>
+
+        <a class="method-permalink" href="#telomer-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the telomere sequence from JIRA custom field <code>customfield_11650</code>,
+or an empty string if not set.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="tol_id-instance-method">
+      <div class="signature">
+        
+        def <strong>tol_id</strong>
+
+        <a class="method-permalink" href="#tol_id-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the ToL specimen ID (e.g. <code>&quot;mMusMus1&quot;</code>) from the YAML <code>specimen</code> key.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="working_dir-instance-method">
+      <div class="signature">
+        
+        def <strong>working_dir</strong>
+
+        <a class="method-permalink" href="#working_dir-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the curation working directory on the HPC.
+Derived from <code><a href="GritJiraIssue.html#pacbio_read_dir-instance-method">#pacbio_read_dir</a></code> or <code><a href="GritJiraIssue.html#ont_read_dir-instance-method">#ont_read_dir</a></code> by replacing the
+<code>genomic_data/...</code> suffix with <code>working/&lt;tol_id&gt;_&lt;user&gt;_curation</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="yaml-instance-method">
+      <div class="signature">
+        
+        def <strong>yaml</strong>
+
+        <a class="method-permalink" href="#yaml-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the parsed per-specimen YAML, fetching it on first access.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+</div>
+
+</body>
+</html>

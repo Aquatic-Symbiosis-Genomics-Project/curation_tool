@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="new_curation_pretext-dev">
+<meta name="crystal_docs.project_name" content="curation_tool">
+
+
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/doc.js"></script>
+
+  <meta name="repository-name" content="curation_tool">
+  <title>CurationTool - curation_tool new_curation_pretext-dev</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="index.html">
+          curation_tool
+        </a>
+      </h1>
+
+      <span class="project-version">
+        new_curation_pretext-dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class=" " data-id="curation_tool/toplevel" data-name="top level namespace">
+      <a href="toplevel.html">Top Level Namespace</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/BTKIssue" data-name="btkissue">
+      <a href="BTKIssue.html">BTKIssue</a>
+      
+    </li>
+  
+  <li class=" current" data-id="curation_tool/CurationTool" data-name="curationtool">
+      <a href="CurationTool.html">CurationTool</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/FCSIssue" data-name="fcsissue">
+      <a href="FCSIssue.html">FCSIssue</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/GritJiraIssue" data-name="gritjiraissue">
+      <a href="GritJiraIssue.html">GritJiraIssue</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/StatIssue" data-name="statissue">
+      <a href="StatIssue.html">StatIssue</a>
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    module
+  </span> CurationTool
+
+</h1>
+
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>High-level curation workflow functions used by the <code>curation_tool</code> binary.</p>
+<p>Each method accepts a <code><a href="GritJiraIssue.html">GritJiraIssue</a></code> instance (conventionally named <code>y</code>)
+and performs one step of the curation pipeline. Methods are mixed into the
+calling context via <code>include <a href="CurationTool.html">CurationTool</a></code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      lib/curation_tool.cr
+    
+    <br/>
+  
+
+
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="VERSION">
+        <strong>VERSION</strong> = <code><span class="s">&quot;v1.2.0&quot;</span></code>
+      </dt>
+      
+    
+  </dl>
+
+
+
+  
+
+  
+
+  
+
+  
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#build_release%28y%29-instance-method" class="signature"><strong>#build_release</strong>(y)</a>
+        
+          <div class="summary"><p>Builds the curated assembly FASTA from the most recent PretextView AGP file and, if a <code>.bed</code> decontamination file is set, removes remaining contamination intervals and regenerates the pretext map.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#copy_qc%28y%29-instance-method" class="signature"><strong>#copy_qc</strong>(y)</a>
+        
+          <div class="summary"><p>Copies curated assembly files and the pretext map into the curated directory for downstream QC.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#setup_local%28y%29-instance-method" class="signature"><strong>#setup_local</strong>(y)</a>
+        
+          <div class="summary"><p>Sets up a local workstation directory for manual curation.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#setup_tol%28y%29-instance-method" class="signature"><strong>#setup_tol</strong>(y)</a>
+        
+          <div class="summary"><p>Initialises the HPC working directory and decompresses the assembly FASTA.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <div class="methods-inherited">
+    
+  </div>
+
+  
+
+  
+
+  
+
+  
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="build_release(y)-instance-method">
+      <div class="signature">
+        
+        def <strong>build_release</strong>(y)
+
+        <a class="method-permalink" href="#build_release%28y%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Builds the curated assembly FASTA from the most recent PretextView AGP file
+and, if a <code>.bed</code> decontamination file is set, removes remaining contamination
+intervals and regenerates the pretext map.</p>
+<p>Steps:</p>
+<ol>
+<li>Finds the latest <code>*.agp_1</code> file in the working directory.</li>
+<li>Runs <code>pretext-to-asm</code> to produce the curated FASTA.</li>
+<li>If a <code>.bed</code> decon file is present, runs <code>remove_contamination_bed</code> via LSF
+(<code>bsub -K</code>) for each haplotype (merged) or for the single primary FASTA.
+<ul>
+<li>For merged assemblies the hap2 decon file is derived by substituting
+<code>hap1</code> → <code>hap2</code> (with a fallback for partially phased naming).</li>
+</ul>
+</li>
+<li>Submits <code>curationpretext.sh</code> to regenerate the pretext map (hap1 only for
+merged assemblies).</li>
+</ol>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="copy_qc(y)-instance-method">
+      <div class="signature">
+        
+        def <strong>copy_qc</strong>(y)
+
+        <a class="method-permalink" href="#copy_qc%28y%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Copies curated assembly files and the pretext map into the curated directory
+for downstream QC.</p>
+<p>For merged assemblies, empty placeholder files are also created for the
+haplotig FASTA and hap2 chromosome list to satisfy pipeline expectations.
+The most recently modified <code>*normal.pretext</code> file from the curationpretext
+output directory is selected and renamed to the canonical curated path under
+<code>pretext_dir</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="setup_local(y)-instance-method">
+      <div class="signature">
+        
+        def <strong>setup_local</strong>(y)
+
+        <a class="method-permalink" href="#setup_local%28y%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sets up a local workstation directory for manual curation.</p>
+<p>Creates a subdirectory named after the ToL ID in the current directory,
+touches a <code>notes</code> file, and copies all matching pretext maps from the
+<code>tol</code> server via <code>scp</code>.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="setup_tol(y)-instance-method">
+      <div class="signature">
+        
+        def <strong>setup_tol</strong>(y)
+
+        <a class="method-permalink" href="#setup_tol%28y%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Initialises the HPC working directory and decompresses the assembly FASTA.</p>
+<p>Creates <code>working_dir</code> on disk, then concatenates the appropriate
+decontaminated FASTA file(s) into <code>original.fa</code>:</p>
+<ul>
+<li>Haploid/primary+haplotigs: single <code>decontaminated.fa.gz</code> derived from the decon file path.</li>
+<li>Merged (hap1/hap2, maternal/paternal, or primary/haplotigs): both haplotype
+FASTA files are concatenated in order.</li>
+</ul>
+<p>Raises if <code>scaffolds.tpf</code> already exists in the working directory (guards
+against accidentally overwriting an in-progress curation).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+</div>
+
+</body>
+</html>

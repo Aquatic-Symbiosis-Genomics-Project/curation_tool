@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.18.2">
+<meta name="crystal_docs.project_version" content="new_curation_pretext-dev">
+<meta name="crystal_docs.project_name" content="curation_tool">
+
+
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/doc.js"></script>
+
+  <meta name="repository-name" content="curation_tool">
+  <title>curation_tool new_curation_pretext-dev</title>
+  <script type="text/javascript">
+  CrystalDocs.base_path = "";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="index.html">
+          curation_tool
+        </a>
+      </h1>
+
+      <span class="project-version">
+        new_curation_pretext-dev
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class=" " data-id="curation_tool/toplevel" data-name="top level namespace">
+      <a href="toplevel.html">Top Level Namespace</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/BTKIssue" data-name="btkissue">
+      <a href="BTKIssue.html">BTKIssue</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/CurationTool" data-name="curationtool">
+      <a href="CurationTool.html">CurationTool</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/FCSIssue" data-name="fcsissue">
+      <a href="FCSIssue.html">FCSIssue</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/GritJiraIssue" data-name="gritjiraissue">
+      <a href="GritJiraIssue.html">GritJiraIssue</a>
+      
+    </li>
+  
+  <li class=" " data-id="curation_tool/StatIssue" data-name="statissue">
+      <a href="StatIssue.html">StatIssue</a>
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1><a id="curation-tool" class="anchor" href="#curation-tool">  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>curation_tool</h1>
+<p><a href="https://crystal-lang.org/"><img src="https://img.shields.io/badge/built%20with-crystal-000000.svg?style=flat-square" alt="Built with Crystal" /></a>
+<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/actions?query=workflow:CI"><img src="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/releases"><img src="https://img.shields.io/github/v/release/Aquatic-Symbiosis-Genomics-Project/curation_tool.svg" alt="Latest Release" /></a></p>
+<p>simple commandline tools to organise curation files using the GRIT JIRA</p>
+<h2><a id="installation" class="anchor" href="#installation">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Installation</h2>
+<ol>
+<li>
+<p>Install <a href="https://github.com/crystal-lang/crystal">Crystal</a></p>
+</li>
+<li>
+<p>Build the project:</p>
+</li>
+</ol>
+<pre><code class="language-crystal">git clone git@github.com<span class="n">:Aquatic</span><span class="o">-</span><span class="t">Symbiosis</span><span class="o">-</span><span class="t">Genomics</span><span class="o">-</span><span class="t">Project</span><span class="o">/</span>curation_tool.git
+cd curation_tool
+shards build</code></pre>
+<ul>
+<li>You can also get binaries compiled using Github Actions from the <a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/releases">Release</a> page. They are statically linked.</li>
+</ul>
+<h2><a id="usage" class="anchor" href="#usage">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Usage</h2>
+<h3><a id="curation-tool-1" class="anchor" href="#curation-tool-1">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>curation_tool</h3>
+<pre><code class="language-crystal">Usage: curation_tool --issue JIRA_ID [options]
+    -i JIRA_ID, --issue JIRA_ID      JIRA ID
+    -p, --copy_pretext               copy over pretext
+    -w, --setup_working_dir          create initial curation files and directory
+    -r, --build_release              create pretext and release files
+    -q, --copy_qc                    copy from DIR to curation for QC
+    -m, --merged                     work on a merged curation &amp; pretext
+    -h, --help                       show this help</code></pre>
+<h3><a id="submit-fcs" class="anchor" href="#submit-fcs">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>submit_fcs</h3>
+<pre><code class="language-crystal">Usage: submit_fcs --issue JIRA_ID 
+    -i JIRA_ID, --issue JIRA_ID      JIRA ID
+    -h, --help                       show this help</code></pre>
+<h3><a id="submit-curation-pretext" class="anchor" href="#submit-curation-pretext">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>submit_curation_pretext</h3>
+<pre><code class="language-crystal">Usage: submit_fcs --issue JIRA_ID 
+    -i JIRA_ID,   --issue JIRA_ID    JIRA ID
+    -n,           --no_email         don&#39;t send an email
+    -f FASTA,     --fasta FASTA      input fasta
+    -o OUTDIR,    --out OUTDIR       output dir
+    -h,           --help             show this help</code></pre>
+<h2><a id="contributors" class="anchor" href="#contributors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Contributors</h2>
+<ul>
+<li><a href="https://github.com/epaule">epaule</a> - creator and maintainer</li>
+</ul>
+</div>
+</body>
+</html>
