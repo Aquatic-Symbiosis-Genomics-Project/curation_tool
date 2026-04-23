@@ -19,7 +19,7 @@ module CurationTool
   #
   # Raises if `scaffolds.tpf` already exists in the working directory (guards
   # against accidentally overwriting an in-progress curation).
-  def setup_tol(y)
+  def setup_tol(y) : Nil
     wd = y.working_dir
     Dir.mkdir_p(wd)
 
@@ -58,7 +58,7 @@ module CurationTool
   #      `hap1` → `hap2` (with a fallback for partially phased naming).
   # 4. Submits `curationpretext.sh` to regenerate the pretext map (hap1 only for
   #    merged assemblies).
-  def build_release(y)
+  def build_release(y) : Nil
     id = y.sample_dot_version
     wd = y.working_dir
 
@@ -117,7 +117,7 @@ module CurationTool
   # The most recently modified `*normal.pretext` file from the curationpretext
   # output directory is selected and renamed to the canonical curated path under
   # `pretext_dir`.
-  def copy_qc(y)
+  def copy_qc(y) : Nil
     target_dir = y.curated_dir
     wd = y.working_dir
 
@@ -169,7 +169,7 @@ module CurationTool
   # Creates a subdirectory named after the ToL ID in the current directory,
   # touches a `notes` file, and copies all matching pretext maps from the
   # `tol` server via `scp`.
-  def setup_local(y)
+  def setup_local(y) : Nil
     wd = "#{Dir.current}/#{y.tol_id}"
     FileUtils.mkdir_p(wd)
 

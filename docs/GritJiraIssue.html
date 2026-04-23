@@ -218,28 +218,28 @@ single merged assembly (hap1/hap2 or maternal/paternal dual-output mode).</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#curated_dir-instance-method" class="signature"><strong>#curated_dir</strong></a>
+        <a href="#curated_dir%3AString-instance-method" class="signature"><strong>#curated_dir</strong> : String</a>
         
           <div class="summary"><p>Returns the target directory for curated output files.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#curation_pretext%28fasta%2Coutput%2Cno_email%3Dfalse%29-instance-method" class="signature"><strong>#curation_pretext</strong>(fasta, output, no_email = <span class="n">false</span>)</a>
+        <a href="#curation_pretext%28fasta%2Coutput%2Cno_email%3Dfalse%29%3AString-instance-method" class="signature"><strong>#curation_pretext</strong>(fasta, output, no_email = <span class="n">false</span>) : String</a>
         
           <div class="summary"><p>Builds and returns the shell command string to invoke the <code>curationpretext.sh</code> Nextflow pipeline for <em>fasta</em> (must exist), writing output to <em>output</em>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#decon_file-instance-method" class="signature"><strong>#decon_file</strong></a>
+        <a href="#decon_file%3AString-instance-method" class="signature"><strong>#decon_file</strong> : String</a>
         
           <div class="summary"><p>Returns the decontamination file path from JIRA custom field <code>customfield_11677</code>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#get_json-instance-method" class="signature"><strong>#get_json</strong></a>
+        <a href="#get_json%3AJSON%3A%3AAny-instance-method" class="signature"><strong>#get_json</strong> : JSON::Any</a>
         
           <div class="summary"><p>Fetches the JIRA issue JSON via the REST API (<code>/rest/api/2/issue/&lt;id&gt;</code>).</p></div>
         
@@ -253,28 +253,28 @@ single merged assembly (hap1/hap2 or maternal/paternal dual-output mode).</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#get_yaml-instance-method" class="signature"><strong>#get_yaml</strong></a>
+        <a href="#get_yaml%3AYAML%3A%3AAny-instance-method" class="signature"><strong>#get_yaml</strong> : YAML::Any</a>
         
           <div class="summary"><p>Loads and parses the per-specimen YAML.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#geval_db-instance-method" class="signature"><strong>#geval_db</strong></a>
+        <a href="#geval_db%3AString-instance-method" class="signature"><strong>#geval_db</strong> : String</a>
         
           <div class="summary"><p>Returns the geval database name from JIRA custom field <code>customfield_11643</code>, or an empty string if not set.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#hic_read_dir-instance-method" class="signature"><strong>#hic_read_dir</strong></a>
+        <a href="#hic_read_dir%3AArray%28YAML%3A%3AAny%29%7CArray%28String%29-instance-method" class="signature"><strong>#hic_read_dir</strong> : Array(YAML::Any) | Array(String)</a>
         
           <div class="summary"><p>Returns the Hi-C read directory (or directories) as an array of strings.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#json-instance-method" class="signature"><strong>#json</strong></a>
+        <a href="#json%3AJSON%3A%3AAny-instance-method" class="signature"><strong>#json</strong> : JSON::Any</a>
         
           <div class="summary"><p>Returns the parsed JIRA issue JSON, fetching it on first access.</p></div>
         
@@ -286,91 +286,91 @@ single merged assembly (hap1/hap2 or maternal/paternal dual-output mode).</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#ont_read_dir-instance-method" class="signature"><strong>#ont_read_dir</strong></a>
+        <a href="#ont_read_dir%3AString%7CNil-instance-method" class="signature"><strong>#ont_read_dir</strong> : String | Nil</a>
         
           <div class="summary"><p>Returns the ONT read directory, or <code>nil</code> if not present in the YAML.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#pacbio_read_dir-instance-method" class="signature"><strong>#pacbio_read_dir</strong></a>
+        <a href="#pacbio_read_dir%3AString%7CNil-instance-method" class="signature"><strong>#pacbio_read_dir</strong> : String | Nil</a>
         
           <div class="summary"><p>Returns the PacBio read directory, or <code>nil</code> if not present in the YAML.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#pretext_dir-instance-method" class="signature"><strong>#pretext_dir</strong></a>
+        <a href="#pretext_dir%3AString-instance-method" class="signature"><strong>#pretext_dir</strong> : String</a>
         
           <div class="summary"><p>Returns the curated pretext map directory for this specimen under <code>/nfs/treeoflife-01/teams/grit/data/curated_pretext_maps</code>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#projects-instance-method" class="signature"><strong>#projects</strong></a>
+        <a href="#projects%3AArray%28YAML%3A%3AAny%29-instance-method" class="signature"><strong>#projects</strong> : Array(YAML::Any)</a>
         
           <div class="summary"><p>Returns the list of project names associated with this specimen (e.g.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#release_version-instance-method" class="signature"><strong>#release_version</strong></a>
+        <a href="#release_version%3AInt32-instance-method" class="signature"><strong>#release_version</strong> : Int32</a>
         
           <div class="summary"><p>Returns the integer release version from JIRA custom field <code>customfield_11609</code>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#sample_dot_version-instance-method" class="signature"><strong>#sample_dot_version</strong></a>
+        <a href="#sample_dot_version%3AString-instance-method" class="signature"><strong>#sample_dot_version</strong> : String</a>
         
           <div class="summary"><p>Returns the specimen identifier in dot form: <code>&lt;tol_id&gt;.&lt;release_version&gt;</code>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#sample_version-instance-method" class="signature"><strong>#sample_version</strong></a>
+        <a href="#sample_version%3AString-instance-method" class="signature"><strong>#sample_version</strong> : String</a>
         
           <div class="summary"><p>Returns the specimen identifier in underscore form: <code>&lt;tol_id&gt;_&lt;release_version&gt;</code>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#scientific_name-instance-method" class="signature"><strong>#scientific_name</strong></a>
+        <a href="#scientific_name%3AString-instance-method" class="signature"><strong>#scientific_name</strong> : String</a>
         
           <div class="summary"><p>Returns the scientific name of the specimen from the YAML <code>species</code> key.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#taxonomy-instance-method" class="signature"><strong>#taxonomy</strong></a>
+        <a href="#taxonomy%3AString-instance-method" class="signature"><strong>#taxonomy</strong> : String</a>
         
           <div class="summary"><p>Looks up the NCBI taxonomy ID for this specimen via the EBI taxonomy REST API.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#telomer-instance-method" class="signature"><strong>#telomer</strong></a>
+        <a href="#telomer%3AString-instance-method" class="signature"><strong>#telomer</strong> : String</a>
         
           <div class="summary"><p>Returns the telomere sequence from JIRA custom field <code>customfield_11650</code>, or an empty string if not set.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#tol_id-instance-method" class="signature"><strong>#tol_id</strong></a>
+        <a href="#tol_id%3AString-instance-method" class="signature"><strong>#tol_id</strong> : String</a>
         
           <div class="summary"><p>Returns the ToL specimen ID (e.g.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#working_dir-instance-method" class="signature"><strong>#working_dir</strong></a>
+        <a href="#working_dir%3AString-instance-method" class="signature"><strong>#working_dir</strong> : String</a>
         
           <div class="summary"><p>Returns the curation working directory on the HPC.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#yaml-instance-method" class="signature"><strong>#yaml</strong></a>
+        <a href="#yaml%3AYAML%3A%3AAny-instance-method" class="signature"><strong>#yaml</strong> : YAML::Any</a>
         
           <div class="summary"><p>Returns the parsed per-specimen YAML, fetching it on first access.</p></div>
         
@@ -458,12 +458,12 @@ Set <em>merged</em> to <code>true</code> for dual-haplotype assemblies.</p>
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="curated_dir-instance-method">
+    <div class="entry-detail" id="curated_dir:String-instance-method">
       <div class="signature">
         
-        def <strong>curated_dir</strong>
+        def <strong>curated_dir</strong> : String
 
-        <a class="method-permalink" href="#curated_dir-instance-method">#</a>
+        <a class="method-permalink" href="#curated_dir%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -481,12 +481,12 @@ for GenomeArk specimens, or <code>.&lt;version&gt;</code> otherwise.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="curation_pretext(fasta,output,no_email=false)-instance-method">
+    <div class="entry-detail" id="curation_pretext(fasta,output,no_email=false):String-instance-method">
       <div class="signature">
         
-        def <strong>curation_pretext</strong>(fasta, output, no_email = <span class="n">false</span>)
+        def <strong>curation_pretext</strong>(fasta, output, no_email = <span class="n">false</span>) : String
 
-        <a class="method-permalink" href="#curation_pretext%28fasta%2Coutput%2Cno_email%3Dfalse%29-instance-method">#</a>
+        <a class="method-permalink" href="#curation_pretext%28fasta%2Coutput%2Cno_email%3Dfalse%29%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -506,12 +506,12 @@ Pass <code>no_email: true</code> to suppress the LSF completion notification.</p
       </div>
     </div>
   
-    <div class="entry-detail" id="decon_file-instance-method">
+    <div class="entry-detail" id="decon_file:String-instance-method">
       <div class="signature">
         
-        def <strong>decon_file</strong>
+        def <strong>decon_file</strong> : String
 
-        <a class="method-permalink" href="#decon_file-instance-method">#</a>
+        <a class="method-permalink" href="#decon_file%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -528,12 +528,12 @@ May be a <code>.bed</code> file (contamination intervals) or a <code>.fa.gz</cod
       </div>
     </div>
   
-    <div class="entry-detail" id="get_json-instance-method">
+    <div class="entry-detail" id="get_json:JSON::Any-instance-method">
       <div class="signature">
         
-        def <strong>get_json</strong>
+        def <strong>get_json</strong> : JSON::Any
 
-        <a class="method-permalink" href="#get_json-instance-method">#</a>
+        <a class="method-permalink" href="#get_json%3AJSON%3A%3AAny-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -572,12 +572,12 @@ Raises if no matching entry is found.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="get_yaml-instance-method">
+    <div class="entry-detail" id="get_yaml:YAML::Any-instance-method">
       <div class="signature">
         
-        def <strong>get_yaml</strong>
+        def <strong>get_yaml</strong> : YAML::Any
 
-        <a class="method-permalink" href="#get_yaml-instance-method">#</a>
+        <a class="method-permalink" href="#get_yaml%3AYAML%3A%3AAny-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -600,12 +600,12 @@ Raises if no matching entry is found.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="geval_db-instance-method">
+    <div class="entry-detail" id="geval_db:String-instance-method">
       <div class="signature">
         
-        def <strong>geval_db</strong>
+        def <strong>geval_db</strong> : String
 
-        <a class="method-permalink" href="#geval_db-instance-method">#</a>
+        <a class="method-permalink" href="#geval_db%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -622,12 +622,12 @@ or an empty string if not set.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="hic_read_dir-instance-method">
+    <div class="entry-detail" id="hic_read_dir:Array(YAML::Any)|Array(String)-instance-method">
       <div class="signature">
         
-        def <strong>hic_read_dir</strong>
+        def <strong>hic_read_dir</strong> : Array(YAML::Any) | Array(String)
 
-        <a class="method-permalink" href="#hic_read_dir-instance-method">#</a>
+        <a class="method-permalink" href="#hic_read_dir%3AArray%28YAML%3A%3AAny%29%7CArray%28String%29-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -644,12 +644,12 @@ Handles both scalar and list values in the YAML.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="json-instance-method">
+    <div class="entry-detail" id="json:JSON::Any-instance-method">
       <div class="signature">
         
-        def <strong>json</strong>
+        def <strong>json</strong> : JSON::Any
 
-        <a class="method-permalink" href="#json-instance-method">#</a>
+        <a class="method-permalink" href="#json%3AJSON%3A%3AAny-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -681,12 +681,12 @@ Handles both scalar and list values in the YAML.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="ont_read_dir-instance-method">
+    <div class="entry-detail" id="ont_read_dir:String|Nil-instance-method">
       <div class="signature">
         
-        def <strong>ont_read_dir</strong>
+        def <strong>ont_read_dir</strong> : String | Nil
 
-        <a class="method-permalink" href="#ont_read_dir-instance-method">#</a>
+        <a class="method-permalink" href="#ont_read_dir%3AString%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -702,12 +702,12 @@ Handles both scalar and list values in the YAML.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="pacbio_read_dir-instance-method">
+    <div class="entry-detail" id="pacbio_read_dir:String|Nil-instance-method">
       <div class="signature">
         
-        def <strong>pacbio_read_dir</strong>
+        def <strong>pacbio_read_dir</strong> : String | Nil
 
-        <a class="method-permalink" href="#pacbio_read_dir-instance-method">#</a>
+        <a class="method-permalink" href="#pacbio_read_dir%3AString%7CNil-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -723,12 +723,12 @@ Handles both scalar and list values in the YAML.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="pretext_dir-instance-method">
+    <div class="entry-detail" id="pretext_dir:String-instance-method">
       <div class="signature">
         
-        def <strong>pretext_dir</strong>
+        def <strong>pretext_dir</strong> : String
 
-        <a class="method-permalink" href="#pretext_dir-instance-method">#</a>
+        <a class="method-permalink" href="#pretext_dir%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -747,12 +747,12 @@ subdirectory lookup is used. Raises if no matching directory is found.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="projects-instance-method">
+    <div class="entry-detail" id="projects:Array(YAML::Any)-instance-method">
       <div class="signature">
         
-        def <strong>projects</strong>
+        def <strong>projects</strong> : Array(YAML::Any)
 
-        <a class="method-permalink" href="#projects-instance-method">#</a>
+        <a class="method-permalink" href="#projects%3AArray%28YAML%3A%3AAny%29-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -768,12 +768,12 @@ subdirectory lookup is used. Raises if no matching directory is found.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="release_version-instance-method">
+    <div class="entry-detail" id="release_version:Int32-instance-method">
       <div class="signature">
         
-        def <strong>release_version</strong>
+        def <strong>release_version</strong> : Int32
 
-        <a class="method-permalink" href="#release_version-instance-method">#</a>
+        <a class="method-permalink" href="#release_version%3AInt32-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -789,12 +789,12 @@ subdirectory lookup is used. Raises if no matching directory is found.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="sample_dot_version-instance-method">
+    <div class="entry-detail" id="sample_dot_version:String-instance-method">
       <div class="signature">
         
-        def <strong>sample_dot_version</strong>
+        def <strong>sample_dot_version</strong> : String
 
-        <a class="method-permalink" href="#sample_dot_version-instance-method">#</a>
+        <a class="method-permalink" href="#sample_dot_version%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -810,12 +810,12 @@ subdirectory lookup is used. Raises if no matching directory is found.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="sample_version-instance-method">
+    <div class="entry-detail" id="sample_version:String-instance-method">
       <div class="signature">
         
-        def <strong>sample_version</strong>
+        def <strong>sample_version</strong> : String
 
-        <a class="method-permalink" href="#sample_version-instance-method">#</a>
+        <a class="method-permalink" href="#sample_version%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -831,12 +831,12 @@ subdirectory lookup is used. Raises if no matching directory is found.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="scientific_name-instance-method">
+    <div class="entry-detail" id="scientific_name:String-instance-method">
       <div class="signature">
         
-        def <strong>scientific_name</strong>
+        def <strong>scientific_name</strong> : String
 
-        <a class="method-permalink" href="#scientific_name-instance-method">#</a>
+        <a class="method-permalink" href="#scientific_name%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -852,12 +852,12 @@ subdirectory lookup is used. Raises if no matching directory is found.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="taxonomy-instance-method">
+    <div class="entry-detail" id="taxonomy:String-instance-method">
       <div class="signature">
         
-        def <strong>taxonomy</strong>
+        def <strong>taxonomy</strong> : String
 
-        <a class="method-permalink" href="#taxonomy-instance-method">#</a>
+        <a class="method-permalink" href="#taxonomy%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -875,12 +875,12 @@ Returns the taxon ID as a string. Raises if no result is found.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="telomer-instance-method">
+    <div class="entry-detail" id="telomer:String-instance-method">
       <div class="signature">
         
-        def <strong>telomer</strong>
+        def <strong>telomer</strong> : String
 
-        <a class="method-permalink" href="#telomer-instance-method">#</a>
+        <a class="method-permalink" href="#telomer%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -897,12 +897,12 @@ or an empty string if not set.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="tol_id-instance-method">
+    <div class="entry-detail" id="tol_id:String-instance-method">
       <div class="signature">
         
-        def <strong>tol_id</strong>
+        def <strong>tol_id</strong> : String
 
-        <a class="method-permalink" href="#tol_id-instance-method">#</a>
+        <a class="method-permalink" href="#tol_id%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -918,18 +918,18 @@ or an empty string if not set.</p>
       </div>
     </div>
   
-    <div class="entry-detail" id="working_dir-instance-method">
+    <div class="entry-detail" id="working_dir:String-instance-method">
       <div class="signature">
         
-        def <strong>working_dir</strong>
+        def <strong>working_dir</strong> : String
 
-        <a class="method-permalink" href="#working_dir-instance-method">#</a>
+        <a class="method-permalink" href="#working_dir%3AString-instance-method">#</a>
       </div>
       
         <div class="doc">
           
           <p>Returns the curation working directory on the HPC.
-Derived from <code><a href="GritJiraIssue.html#pacbio_read_dir-instance-method">#pacbio_read_dir</a></code> or <code><a href="GritJiraIssue.html#ont_read_dir-instance-method">#ont_read_dir</a></code> by replacing the
+Derived from <code><a href="GritJiraIssue.html#pacbio_read_dir%3AString%7CNil-instance-method">#pacbio_read_dir</a></code> or <code><a href="GritJiraIssue.html#ont_read_dir%3AString%7CNil-instance-method">#ont_read_dir</a></code> by replacing the
 <code>genomic_data/...</code> suffix with <code>working/&lt;tol_id&gt;_&lt;user&gt;_curation</code>.</p>
         </div>
       
@@ -941,12 +941,12 @@ Derived from <code><a href="GritJiraIssue.html#pacbio_read_dir-instance-method">
       </div>
     </div>
   
-    <div class="entry-detail" id="yaml-instance-method">
+    <div class="entry-detail" id="yaml:YAML::Any-instance-method">
       <div class="signature">
         
-        def <strong>yaml</strong>
+        def <strong>yaml</strong> : YAML::Any
 
-        <a class="method-permalink" href="#yaml-instance-method">#</a>
+        <a class="method-permalink" href="#yaml%3AYAML%3A%3AAny-instance-method">#</a>
       </div>
       
         <div class="doc">

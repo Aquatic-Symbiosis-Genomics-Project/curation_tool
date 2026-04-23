@@ -30,18 +30,18 @@ class GritJiraIssue
   end
 
   # Returns the parsed JIRA issue JSON, fetching it on first access.
-  def json
+  def json : JSON::Any
     @json ||= self.get_json
   end
 
   # Returns the parsed per-specimen YAML, fetching it on first access.
-  def yaml
+  def yaml : YAML::Any
     @yaml ||= self.get_yaml
   end
 
   # Returns the Hi-C read directory (or directories) as an array of strings.
   # Handles both scalar and list values in the YAML.
-  def hic_read_dir
+  def hic_read_dir : Array(YAML::Any) | Array(String)
     if self.yaml["hic_read_dir"].as_a?
       self.yaml["hic_read_dir"].as_a
     else
@@ -50,25 +50,25 @@ class GritJiraIssue
   end
 
   # Returns the PacBio read directory, or `nil` if not present in the YAML.
-  def pacbio_read_dir
+  def pacbio_read_dir : String?
     return nil unless self.yaml.as_h.has_key?("pacbio_read_dir")
     self.yaml["pacbio_read_dir"].as_s?
   end
 
   # Returns the ONT read directory, or `nil` if not present in the YAML.
-  def ont_read_dir
+  def ont_read_dir : String?
     return nil unless self.yaml.as_h.has_key?("ont_read_dir")
     self.yaml["ont_read_dir"].as_s?
   end
 
   # Returns the list of project names associated with this specimen (e.g. `["DToL", "GenomeArk"]`).
-  def projects
+  def projects : Array(YAML::Any)
     self.yaml["projects"].as_a
   end
 
   # Returns the geval database name from JIRA custom field `customfield_11643`,
   # or an empty string if not set.
-  def geval_db
+  def geval_db : String
     if self.json["fields"]["customfield_11643"].as_s?
       self.json["fields"]["customfield_11643"].as_s
     else
@@ -78,7 +78,7 @@ class GritJiraIssue
 
   # Returns the telomere sequence from JIRA custom field `customfield_11650`,
   # or an empty string if not set.
-  def telomer
+  def telomer : String
     if self.json["fields"]["customfield_11650"].as_s?
       self.json["fields"]["customfield_11650"].as_s
     else
@@ -88,39 +88,39 @@ class GritJiraIssue
 
   # Returns the decontamination file path from JIRA custom field `customfield_11677`.
   # May be a `.bed` file (contamination intervals) or a `.fa.gz` decontaminated FASTA.
-  def decon_file
+  def decon_file : String
     self.json["fields"]["customfield_11677"].as_s
   end
 
   # Returns the integer release version from JIRA custom field `customfield_11609`.
-  def release_version
+  def release_version : Int32
     self.json["fields"]["customfield_11609"].as_f.to_i
   end
 
   # Returns the ToL specimen ID (e.g. `"mMusMus1"`) from the YAML `specimen` key.
-  def tol_id
+  def tol_id : String
     self.yaml["specimen"].as_s
   end
 
   # Returns the scientific name of the specimen from the YAML `species` key.
-  def scientific_name
+  def scientific_name : String
     self.yaml["species"].as_s
   end
 
   # Returns the specimen identifier in underscore form: `<tol_id>_<release_version>`.
-  def sample_version
+  def sample_version : String
     "#{self.tol_id}_#{self.release_version}"
   end
 
   # Returns the specimen identifier in dot form: `<tol_id>.<release_version>`.
-  def sample_dot_version
+  def sample_dot_version : String
     "#{self.tol_id}.#{self.release_version}"
   end
 
   # Returns the curation working directory on the HPC.
   # Derived from `pacbio_read_dir` or `ont_read_dir` by replacing the
   # `genomic_data/...` suffix with `working/<tol_id>_<user>_curation`.
-  def working_dir
+  def working_dir : String
     # "/lustre/scratch123/tol/teams/grit/#{ENV["USER"]}/#{self.tol_id}_#{self.release_version}"
     dir = self.pacbio_read_dir || self.ont_read_dir
     dir.to_s.sub(/genomic_data\/.*/, "working/#{self.tol_id}_#{ENV["USER"]}_curation")
@@ -130,7 +130,7 @@ class GritJiraIssue
   # `/nfs/treeoflife-01/teams/grit/data/curated_pretext_maps`.
   # For invertebrate/other prefixes (`i`, `d`, `q`, `t`, `c`) a two-level
   # subdirectory lookup is used. Raises if no matching directory is found.
-  def pretext_dir
+  def pretext_dir : String
     prefix = self.tol_id[0]
     pretext_root = "/nfs/treeoflife-01/teams/grit/data/curated_pretext_maps"
     dir = Dir["#{pretext_root}/#{prefix}*"].select { |file| File.directory?(file) }
@@ -145,7 +145,7 @@ class GritJiraIssue
   # Returns the target directory for curated output files.
   # Derived from the decon file path; appended with `.genomeark.<version>`
   # for GenomeArk specimens, or `.<version>` otherwise.
-  def curated_dir
+  def curated_dir : String
     t = self.decon_file.split("/")[0..-4].join("/") + "/curated/" + self.tol_id
 
     if self.projects.map(&.as_s.downcase).includes? "genomeark"
@@ -169,7 +169,7 @@ class GritJiraIssue
 
   # Fetches the JIRA issue JSON via the REST API (`/rest/api/2/issue/<id>`).
   # Raises if the request fails.
-  def get_json
+  def get_json : JSON::Any
     r = HTTP::Client.get("https://#{@@url}/rest/api/2/issue/#{@id}", headers: HTTP::Headers{"Accept" => "application/json", "Authorization" => "Bearer #{@token}"})
     raise "cannot get the ticket" unless r.success?
     @json = JSON.parse(r.body)
@@ -183,7 +183,7 @@ class GritJiraIssue
   # 3. YAML attachment downloaded directly from the JIRA issue.
   #
   # Raises if no YAML can be obtained.
-  def get_yaml
+  def get_yaml : YAML::Any
     if self.json["fields"]["customfield_13408"].as_s?
       yaml_path = self.json["fields"]["customfield_13408"].as_s
       if File.exists?(yaml_path)
@@ -222,7 +222,7 @@ class GritJiraIssue
   # Writes a YAML params file next to *fasta* and assembles the command with
   # the correct read files, Hi-C CRAMs, telomere sequence, and email flag.
   # Pass `no_email: true` to suppress the LSF completion notification.
-  def curation_pretext(fasta, output, no_email = false)
+  def curation_pretext(fasta, output, no_email = false) : String
     raise "input fasta file #{fasta} doesn't exist" unless File.exists?(fasta)
 
     telo = self.telomer.size > 1 ? self.telomer : ""
@@ -254,7 +254,7 @@ class GritJiraIssue
   # Looks up the NCBI taxonomy ID for this specimen via the EBI taxonomy REST API.
   # First tries an exact scientific-name lookup, then falls back to an any-name search.
   # Returns the taxon ID as a string. Raises if no result is found.
-  def taxonomy
+  def taxonomy : String
     common_name = self.scientific_name.gsub(/\s/, "%20")
 
     r = HTTP::Client.get("https://www.ebi.ac.uk/ena/taxonomy/rest/scientific-name/#{common_name}", headers: HTTP::Headers{"Accept" => "application/json"})
