@@ -1,9 +1,24 @@
 require "./grit_jira_issue"
 require "file_utils"
 
+# High-level curation workflow functions used by the `curation_tool` binary.
+#
+# Each method accepts a `GritJiraIssue` instance (conventionally named `y`)
+# and performs one step of the curation pipeline. Methods are mixed into the
+# calling context via `include CurationTool`.
 module CurationTool
-  VERSION = "0.1.1"
+  VERSION = "v1.2.0"
 
+  # Initialises the HPC working directory and decompresses the assembly FASTA.
+  #
+  # Creates `working_dir` on disk, then concatenates the appropriate
+  # decontaminated FASTA file(s) into `original.fa`:
+  # - Haploid/primary+haplotigs: single `decontaminated.fa.gz` derived from the decon file path.
+  # - Merged (hap1/hap2, maternal/paternal, or primary/haplotigs): both haplotype
+  #   FASTA files are concatenated in order.
+  #
+  # Raises if `scaffolds.tpf` already exists in the working directory (guards
+  # against accidentally overwriting an in-progress curation).
   def setup_tol(y)
     wd = y.working_dir
     Dir.mkdir_p(wd)
@@ -30,7 +45,19 @@ module CurationTool
     end
   end
 
-  # make files from the preetxt agp and build a new pretext
+  # Builds the curated assembly FASTA from the most recent PretextView AGP file
+  # and, if a `.bed` decontamination file is set, removes remaining contamination
+  # intervals and regenerates the pretext map.
+  #
+  # Steps:
+  # 1. Finds the latest `*.agp_1` file in the working directory.
+  # 2. Runs `pretext-to-asm` to produce the curated FASTA.
+  # 3. If a `.bed` decon file is present, runs `remove_contamination_bed` via LSF
+  #    (`bsub -K`) for each haplotype (merged) or for the single primary FASTA.
+  #    - For merged assemblies the hap2 decon file is derived by substituting
+  #      `hap1` → `hap2` (with a fallback for partially phased naming).
+  # 4. Submits `curationpretext.sh` to regenerate the pretext map (hap1 only for
+  #    merged assemblies).
   def build_release(y)
     id = y.sample_dot_version
     wd = y.working_dir
@@ -82,7 +109,14 @@ module CurationTool
     end
   end
 
-  # copy files into the curated directory for QC
+  # Copies curated assembly files and the pretext map into the curated directory
+  # for downstream QC.
+  #
+  # For merged assemblies, empty placeholder files are also created for the
+  # haplotig FASTA and hap2 chromosome list to satisfy pipeline expectations.
+  # The most recently modified `*normal.pretext` file from the curationpretext
+  # output directory is selected and renamed to the canonical curated path under
+  # `pretext_dir`.
   def copy_qc(y)
     target_dir = y.curated_dir
     wd = y.working_dir
@@ -130,7 +164,11 @@ module CurationTool
     end
   end
 
-  # copy pretext
+  # Sets up a local workstation directory for manual curation.
+  #
+  # Creates a subdirectory named after the ToL ID in the current directory,
+  # touches a `notes` file, and copies all matching pretext maps from the
+  # `tol` server via `scp`.
   def setup_local(y)
     wd = "#{Dir.current}/#{y.tol_id}"
     FileUtils.mkdir_p(wd)
