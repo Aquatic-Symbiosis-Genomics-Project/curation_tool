@@ -240,7 +240,7 @@ class GritJiraIssue
       :all_output     => false,
       :skip_tracks    => "NONE",
       :run_hires      => true,
-      :run_ultra      => "force",
+      :run_ultra      => "yes",
       :split_telomere => true,
       :input          => input_file,
       :reads          => read_files,
