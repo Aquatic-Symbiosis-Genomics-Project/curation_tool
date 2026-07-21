@@ -30,7 +30,7 @@ Usage: curation_tool --issue JIRA_ID [options]
     -w, --setup_working_dir          create initial curation files and directory
     -r, --build_release              create pretext and release files
     -q, --copy_qc                    copy from DIR to curation for QC
-    -m, --merged                     work on a merged curation & pretext
+    -m, --merged                     build files based on a merged map
     -h, --help                       show this help
 ```
 
@@ -41,15 +41,40 @@ Usage: submit_fcs --issue JIRA_ID
     -h, --help                       show this help
 ```
 
+### submit_btk
+```
+Usage: submit_btk --issue JIRA_ID
+    -i JIRA_ID, --issue JIRA_ID      JIRA ID
+    -h, --help                       show this help
+```
+
+Before running, load the required environment:
+
+```
+export MODULEPATH=/software/treeoflife/shpc/current/views/grit:/software/treeoflife/custom-installs/modules:/software/modules
+module load nextflow/23.10.0-5889
+module load ISG/singularity/3.11.4
+module load ISG/python/3.11.4
+```
+
 ### submit_curation_pretext
 ```
-Usage: submit_fcs --issue JIRA_ID 
+Usage: submit_curation_pretext --issue JIRA_ID --fasta FASTA --out OUTDIR
     -i JIRA_ID,   --issue JIRA_ID    JIRA ID
     -n,           --no_email         don't send an email
+    -c,           --no_name_check    don't check the tolid against the fasta name
     -f FASTA,     --fasta FASTA      input fasta
     -o OUTDIR,    --out OUTDIR       output dir
     -h,           --help             show this help
 ```
+
+### ascc_stats
+```
+Usage: ascc_stats JIRA_ID [JIRA_ID ...]
+```
+
+Compares FCS-GX `.contamination` calls against the BED-based calls for each
+issue and prints a tab-separated stats table to stdout.
 
 
 ## Contributors

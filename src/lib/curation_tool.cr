@@ -9,6 +9,14 @@ require "file_utils"
 module CurationTool
   VERSION = "v1.2.0"
 
+  # Returns the most recently modified file matching *pattern*.
+  # Raises a descriptive error mentioning *description* if nothing matches.
+  def latest_file(pattern : String, description : String) : String
+    matches = Dir[pattern].sort_by { |file| File.info(file).modification_time }
+    raise "no #{description} found matching #{pattern}" if matches.empty?
+    matches[-1]
+  end
+
   # Initialises the HPC working directory and decompresses the assembly FASTA.
   #
   # Creates `working_dir` on disk, then concatenates the appropriate
@@ -63,7 +71,7 @@ module CurationTool
     wd = y.working_dir
 
     Dir.cd(wd) do
-      agp = Dir["#{wd}/*.agp_1"].sort_by { |file| File.info(file).modification_time }[-1]
+      agp = latest_file("#{wd}/*.agp_1", "AGP file")
 
       # create fasta
       cmd = "pretext-to-asm -a original.fa -o #{id}.fa -p #{agp}"
@@ -151,12 +159,12 @@ module CurationTool
 
       # copy pretext
       if y.merged
-        pretext = Dir["#{wd}/#{id}.hap1.curationpretext.*/pretext_maps_processed/*normal.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
+        pretext = latest_file("#{wd}/#{id}.hap1.curationpretext.*/pretext_maps_processed/*normal.pretext", "hap1 pretext map")
         target = "#{y.pretext_dir}/#{y.tol_id}.hap1.#{y.release_version}.curated.pretext"
         puts "copying #{pretext} => #{target}"
         FileUtils.cp(pretext, target)
       else
-        pretext = Dir["#{wd}/#{id}.curationpretext.*/pretext_maps_processed/*normal.pretext"].sort_by { |file| File.info(file).modification_time }[-1]
+        pretext = latest_file("#{wd}/#{id}.curationpretext.*/pretext_maps_processed/*normal.pretext", "pretext map")
         target = "#{y.pretext_dir}/#{y.sample_dot_version}.curated.pretext"
         puts "copying #{pretext} => #{target}"
         FileUtils.cp(pretext, target)
@@ -175,7 +183,7 @@ module CurationTool
 
     cmd = <<-HERE
 touch #{wd}/notes;
-scp #{ENV["USER"]}@tol:/nfs/treeoflife-01/teams/grit/data/pretext_maps/#{y.tol_id}*.pretext #{wd}/
+scp #{y.user}@tol:/nfs/treeoflife-01/teams/grit/data/pretext_maps/#{y.tol_id}*.pretext #{wd}/
 HERE
     puts `#{cmd}`
     raise "something went wrong" unless $?.success?

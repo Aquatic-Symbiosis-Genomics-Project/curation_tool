@@ -10,19 +10,9 @@ require "./lib/grit_jira_issue"
 # Requires Nextflow, Singularity, and Python modules to be loaded.
 class BTKIssue < GritJiraIssue
   # Returns the list of assembly FASTA paths present in the specimen YAML.
-  # Checks for `primary` and `haplotigs` keys.
+  # Restricted to the `primary` and `haplotigs` keys for the ASCC pipeline.
   def files : Array(String)
-    files = [] of String
-    ["primary", "haplotigs"].each { |key|
-      files << self.yaml[key].to_s if self.yaml.as_h.has_key?(key)
-    }
-    files
-  end
-
-  # Returns the parent directory of the first assembly file,
-  # used as the base for ASCC pipeline output directories.
-  def decon_dir : String
-    Path[self.files[0]].parent.to_s
+    assembly_files(["primary", "haplotigs"])
   end
 
   # Submits the ASCC pipeline to LSF for each haplotype present in the YAML.
@@ -37,14 +27,15 @@ class BTKIssue < GritJiraIssue
         ascc = "/software/team311/ea10/ascc_latest/cobiontcheck"
         config = "/lustre/scratch123/tol/teams/grit/mh6/ascc_logs/static_settings.config2"
         steps = "tiara coverage fcs-gx create_btk_dataset btk_busco nt_blast nr_diamond uniprot_diamond autofilter_assembly"
-        pacbio = Dir.glob("#{self.yaml["pacbio_read_dir"]}/fasta/*.trim.fasta.gz")[0]
+        pacbio = Dir.glob("#{self.yaml["pacbio_read_dir"]}/fasta/*.trim.fasta.gz").first?
+        raise "no trimmed pacbio reads found under #{self.yaml["pacbio_read_dir"]}/fasta" unless pacbio
         puts `bsub -n1 -q basement -R"span[hosts=1]" -o #{f}_#{key}_ascc.out -e #{f}_#{key}_ascc.err -M5000 -R 'select[mem>5000] rusage[mem=5000]' "#{ascc}/ascc.py #{f} --static_config_path #{config} --pacbio_reads_path #{pacbio} --assembly_title #{tolid}_#{key} --sci_name '#{self.scientific_name}' --taxid #{self.taxonomy} --steps #{steps} --threads 24 --pipeline_run_folder #{self.decon_dir}/#{tolid}_#{key}_ascc_minimal --btk_busco_run_mode mandatory"`
       end
     }
   end
 end
 
-issue = "GRIT-863"
+issue = ""
 
 OptionParser.parse do |parser|
   parser.banner = <<-__HERE__
@@ -78,6 +69,11 @@ __HERE__
     STDERR.puts parser
     exit(1)
   end
+end
+
+if issue.empty?
+  STDERR.puts "ERROR: --issue is required"
+  exit(1)
 end
 
 y = BTKIssue.new(issue, false)

@@ -137,7 +137,7 @@ shards build</code></pre>
     -w, --setup_working_dir          create initial curation files and directory
     -r, --build_release              create pretext and release files
     -q, --copy_qc                    copy from DIR to curation for QC
-    -m, --merged                     work on a merged curation &amp; pretext
+    -m, --merged                     build files based on a merged map
     -h, --help                       show this help</code></pre>
 <h3><a id="submit-fcs" class="anchor" href="#submit-fcs">
   <svg class="octicon-link" aria-hidden="true">
@@ -147,17 +147,39 @@ shards build</code></pre>
 <pre><code class="language-crystal">Usage: submit_fcs --issue JIRA_ID 
     -i JIRA_ID, --issue JIRA_ID      JIRA ID
     -h, --help                       show this help</code></pre>
+<h3><a id="submit-btk" class="anchor" href="#submit-btk">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>submit_btk</h3>
+<pre><code class="language-crystal">Usage: submit_btk --issue JIRA_ID
+    -i JIRA_ID, --issue JIRA_ID      JIRA ID
+    -h, --help                       show this help</code></pre>
+<p>Before running, load the required environment:</p>
+<pre><code class="language-crystal">export MODULEPATH=/software/treeoflife/shpc/current/views/grit:/software/treeoflife/custom-installs/modules:/software/modules
+module load nextflow/23.10.0-5889
+module load ISG/singularity/3.11.4
+module load ISG/python/3.11.4</code></pre>
 <h3><a id="submit-curation-pretext" class="anchor" href="#submit-curation-pretext">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>submit_curation_pretext</h3>
-<pre><code class="language-crystal">Usage: submit_fcs --issue JIRA_ID 
+<pre><code class="language-crystal">Usage: submit_curation_pretext --issue JIRA_ID --fasta FASTA --out OUTDIR
     -i JIRA_ID,   --issue JIRA_ID    JIRA ID
     -n,           --no_email         don&#39;t send an email
+    -c,           --no_name_check    don&#39;t check the tolid against the fasta name
     -f FASTA,     --fasta FASTA      input fasta
     -o OUTDIR,    --out OUTDIR       output dir
     -h,           --help             show this help</code></pre>
+<h3><a id="ascc-stats" class="anchor" href="#ascc-stats">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>ascc_stats</h3>
+<pre><code class="language-crystal"><span class="t">Usage</span>: ascc_stats <span class="t">JIRA_ID</span> [<span class="t">JIRA_ID</span> ...]</code></pre>
+<p>Compares FCS-GX <code>.contamination</code> calls against the BED-based calls for each
+issue and prints a tab-separated stats table to stdout.</p>
 <h2><a id="contributors" class="anchor" href="#contributors">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>

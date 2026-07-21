@@ -8,22 +8,6 @@ require "./lib/grit_jira_issue"
 # Collects the assembly FASTA paths (primary, haplotigs, hap1, hap2) from the
 # specimen YAML and submits the `gx_map_wrapper.bash` pipeline to LSF.
 class FCSIssue < GritJiraIssue
-  # Returns the list of assembly FASTA paths present in the specimen YAML.
-  # Checks for `primary`, `haplotigs`, `hap1`, and `hap2` keys.
-  def files : Array(String)
-    files = [] of String
-    ["primary", "haplotigs", "hap1", "hap2"].each { |key|
-      files << self.yaml[key].to_s if self.yaml.as_h.has_key?(key)
-    }
-    files
-  end
-
-  # Returns the parent directory of the first assembly file,
-  # used as the output directory for contamination screening results.
-  def decon_dir : String
-    Path[self.files[0]].parent.to_s
-  end
-
   # Submits the FCS-GX contamination screening pipeline to LSF.
   # Builds a `bsub` command with the decon directory, taxonomy ID, and
   # all existing assembly FASTA files as inputs.

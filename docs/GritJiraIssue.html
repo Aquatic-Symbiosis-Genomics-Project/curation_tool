@@ -218,6 +218,13 @@ single merged assembly (hap1/hap2 or maternal/paternal dual-output mode).</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
+        <a href="#assembly_files%28keys%3AArray%28String%29%29%3AArray%28String%29-instance-method" class="signature"><strong>#assembly_files</strong>(keys : Array(String)) : Array(String)</a>
+        
+          <div class="summary"><p>Returns the assembly FASTA paths present in the specimen YAML for the given <em>keys</em>, preserving key order.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#curated_dir%3AString-instance-method" class="signature"><strong>#curated_dir</strong> : String</a>
         
           <div class="summary"><p>Returns the target directory for curated output files.</p></div>
@@ -232,9 +239,23 @@ single merged assembly (hap1/hap2 or maternal/paternal dual-output mode).</p>
       </li>
     
       <li class="entry-summary">
+        <a href="#decon_dir%3AString-instance-method" class="signature"><strong>#decon_dir</strong> : String</a>
+        
+          <div class="summary"><p>Returns the parent directory of the first assembly file, used as the output base directory for contamination screening results.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#decon_file%3AString-instance-method" class="signature"><strong>#decon_file</strong> : String</a>
         
           <div class="summary"><p>Returns the decontamination file path from JIRA custom field <code>customfield_11677</code>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#files%3AArray%28String%29-instance-method" class="signature"><strong>#files</strong> : Array(String)</a>
+        
+          <div class="summary"><p>Returns the assembly FASTA paths present in the specimen YAML, checking the <code>primary</code>, <code>haplotigs</code>, <code>hap1</code>, and <code>hap2</code> keys.</p></div>
         
       </li>
     
@@ -363,6 +384,13 @@ single merged assembly (hap1/hap2 or maternal/paternal dual-output mode).</p>
       </li>
     
       <li class="entry-summary">
+        <a href="#user%3AString-instance-method" class="signature"><strong>#user</strong> : String</a>
+        
+          <div class="summary"><p>Returns the current user name from the <code>USER</code> environment variable.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#working_dir%3AString-instance-method" class="signature"><strong>#working_dir</strong> : String</a>
         
           <div class="summary"><p>Returns the curation working directory on the HPC.</p></div>
@@ -458,6 +486,28 @@ Set <em>merged</em> to <code>true</code> for dual-haplotype assemblies.</p>
     Instance Method Detail
   </h2>
   
+    <div class="entry-detail" id="assembly_files(keys:Array(String)):Array(String)-instance-method">
+      <div class="signature">
+        
+        def <strong>assembly_files</strong>(keys : Array(String)) : Array(String)
+
+        <a class="method-permalink" href="#assembly_files%28keys%3AArray%28String%29%29%3AArray%28String%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the assembly FASTA paths present in the specimen YAML for the given
+<em>keys</em>, preserving key order. Keys not present in the YAML are skipped.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L97" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="curated_dir:String-instance-method">
       <div class="signature">
         
@@ -476,7 +526,7 @@ for GenomeArk specimens, or <code>.&lt;version&gt;</code> otherwise.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L148" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L169" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -501,7 +551,30 @@ Pass <code>no_email: true</code> to suppress the LSF completion notification.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L225" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L252" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="decon_dir:String-instance-method">
+      <div class="signature">
+        
+        def <strong>decon_dir</strong> : String
+
+        <a class="method-permalink" href="#decon_dir%3AString-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the parent directory of the first assembly file, used as the output
+base directory for contamination screening results.
+Raises if the specimen YAML contains no assembly files.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L110" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -528,6 +601,28 @@ May be a <code>.bed</code> file (contamination intervals) or a <code>.fa.gz</cod
       </div>
     </div>
   
+    <div class="entry-detail" id="files:Array(String)-instance-method">
+      <div class="signature">
+        
+        def <strong>files</strong> : Array(String)
+
+        <a class="method-permalink" href="#files%3AArray%28String%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the assembly FASTA paths present in the specimen YAML, checking the
+<code>primary</code>, <code>haplotigs</code>, <code>hap1</code>, and <code>hap2</code> keys.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L103" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="get_json:JSON::Any-instance-method">
       <div class="signature">
         
@@ -545,7 +640,7 @@ Raises if the request fails.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L172" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L199" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -567,7 +662,7 @@ Raises if no matching entry is found.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L161" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L188" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -595,7 +690,7 @@ Raises if no matching entry is found.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L186" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L213" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -742,7 +837,7 @@ subdirectory lookup is used. Raises if no matching directory is found.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L133" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L154" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -784,7 +879,7 @@ subdirectory lookup is used. Raises if no matching directory is found.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L96" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L117" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -805,7 +900,7 @@ subdirectory lookup is used. Raises if no matching directory is found.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L116" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L137" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -826,7 +921,7 @@ subdirectory lookup is used. Raises if no matching directory is found.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L111" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L132" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -847,7 +942,7 @@ subdirectory lookup is used. Raises if no matching directory is found.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L106" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L127" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -870,7 +965,7 @@ Returns the taxon ID as a string. Raises if no result is found.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L257" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L284" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -913,7 +1008,29 @@ or an empty string if not set.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L101" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L122" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="user:String-instance-method">
+      <div class="signature">
+        
+        def <strong>user</strong> : String
+
+        <a class="method-permalink" href="#user%3AString-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the current user name from the <code>USER</code> environment variable.
+Raises a clear error if it is not set (rather than a bare <code>KeyError</code>).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L182" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -936,7 +1053,7 @@ Derived from <code><a href="GritJiraIssue.html#pacbio_read_dir%3AString%7CNil-in
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L123" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/grit_jira_issue.cr#L144" target="_blank">View source</a>]
         
       </div>
     </div>

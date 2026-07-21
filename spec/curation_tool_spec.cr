@@ -11,6 +11,37 @@ describe CurationTool do
     end
   end
 
+  describe "#latest_file" do
+    it "raises a descriptive error when nothing matches" do
+      tmpdir = Dir.tempdir
+      testdir = "#{tmpdir}/ct_test_latest_empty_#{Random.rand(100000)}"
+      Dir.mkdir_p(testdir)
+
+      ct = CurationToolTest.new
+      expect_raises(Exception, /no widget found/) do
+        ct.latest_file("#{testdir}/*.widget", "widget")
+      end
+
+      FileUtils.rm_rf(testdir)
+    end
+
+    it "returns the most recently modified matching file" do
+      tmpdir = Dir.tempdir
+      testdir = "#{tmpdir}/ct_test_latest_newest_#{Random.rand(100000)}"
+      Dir.mkdir_p(testdir)
+
+      File.write("#{testdir}/old.widget", "old")
+      File.write("#{testdir}/new.widget", "new")
+      # Force a distinct, later modification time on the expected winner.
+      File.touch("#{testdir}/new.widget", Time.utc + 10.seconds)
+
+      ct = CurationToolTest.new
+      ct.latest_file("#{testdir}/*.widget", "widget").should eq("#{testdir}/new.widget")
+
+      FileUtils.rm_rf(testdir)
+    end
+  end
+
   describe "#setup_tol" do
     it "raises when scaffolds.tpf already exists" do
       tmpdir = Dir.tempdir

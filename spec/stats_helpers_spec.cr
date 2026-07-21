@@ -1,8 +1,34 @@
 require "./spec_helper"
+require "klib"
+
+include Klib
 
 # These functions are defined as top-level methods in src/get_assc_stats.cr.
 # That file has top-level ARGV code that runs on require, so we redefine the
 # pure functions here to test their logic in isolation.
+
+def length_and_gc(f) : Tuple(Hash(String, Int32), Hash(String, Float64), Hash(String, Float64), Hash(String, Float64))
+  l = Hash(String, Int32).new
+  g = Hash(String, Float64).new
+  s = Hash(String, Float64).new
+  r = Hash(String, Float64).new
+  fp = GzipReader.new(f)
+  fx = FastxReader.new(fp)
+  fx.each { |e|
+    size = e.seq.size
+    l[e.name] = size
+    if size.zero?
+      g[e.name] = 0.0
+      s[e.name] = 0.0
+      r[e.name] = 0.0
+    else
+      g[e.name] = e.seq.count("gcGC").to_f/size
+      s[e.name] = e.seq.scan(/TGA|TAG|TAA|TTA|CTA|TCA/i).size.to_f/size
+      r[e.name] = e.seq.count("acgtn").to_f/size
+    end
+  }
+  return(l, g, r, s)
+end
 
 def parse_decon_file(f) : Array(String)
   i = [] of String
@@ -25,10 +51,12 @@ def parse_bed_file(f) : Array(String)
 end
 
 def av(l : Array(Float64)) : Float64
+  return 0.0 if l.empty?
   l.sum / l.size
 end
 
 def av(l : Array(Int32)) : Float64
+  return 0.0 if l.empty?
   l.sum(0.0) / l.size
 end
 
@@ -97,6 +125,37 @@ describe "av" do
   it "handles single-element arrays" do
     av([42.0]).should eq(42.0)
   end
+
+  it "returns 0.0 for an empty Float64 array instead of NaN" do
+    av([] of Float64).should eq(0.0)
+  end
+
+  it "returns 0.0 for an empty Int32 array instead of NaN" do
+    av([] of Int32).should eq(0.0)
+  end
+end
+
+describe "length_and_gc" do
+  it "computes per-sequence stats and avoids NaN for zero-length sequences" do
+    tmpdir = Dir.tempdir
+    base = "#{tmpdir}/stats_lng_#{Random.rand(100000)}.fa"
+    # First record has a header but no sequence (length 0); second is normal.
+    File.write(base, ">empty\n>normal\nGGCCaatt\n")
+    `gzip -f #{base}`
+
+    ln, gc, rep, stops = length_and_gc("#{base}.gz")
+
+    ln["empty"].should eq(0)
+    gc["empty"].should eq(0.0)
+    rep["empty"].should eq(0.0)
+    stops["empty"].should eq(0.0)
+
+    ln["normal"].should eq(8)
+    gc["normal"].should eq(0.5)  # GGCC out of 8 bases
+    rep["normal"].should eq(0.5) # lowercase aatt out of 8 bases
+
+    File.delete("#{base}.gz")
+  end
 end
 
 describe "get_ave" do
@@ -108,5 +167,10 @@ describe "get_ave" do
   it "works with a single key" do
     h = {"x" => 5.0}
     get_ave(h, ["x"]).should eq(5.0)
+  end
+
+  it "returns 0.0 for an empty key list instead of NaN" do
+    h = {"a" => 10.0, "b" => 20.0}
+    get_ave(h, [] of String).should eq(0.0)
   end
 end

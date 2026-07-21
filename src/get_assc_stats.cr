@@ -50,21 +50,30 @@ def length_and_gc(f) : Tuple(Hash(String, Int32), Hash(String, Float64), Hash(St
   fp = GzipReader.new(f)
   fx = FastxReader.new(fp)
   fx.each { |e|
-    l[e.name] = e.seq.size
-    g[e.name] = e.seq.count("gcGC").to_f/e.seq.size
-    s[e.name] = e.seq.scan(/TGA|TAG|TAA|TTA|CTA|TCA/i).size.to_f/e.seq.size
-    r[e.name] = e.seq.count("acgtn").to_f/e.seq.size
+    size = e.seq.size
+    l[e.name] = size
+    if size.zero?
+      g[e.name] = 0.0
+      s[e.name] = 0.0
+      r[e.name] = 0.0
+    else
+      g[e.name] = e.seq.count("gcGC").to_f/size
+      s[e.name] = e.seq.scan(/TGA|TAG|TAA|TTA|CTA|TCA/i).size.to_f/size
+      r[e.name] = e.seq.count("acgtn").to_f/size
+    end
   }
   return(l, g, r, s)
 end
 
-# Returns the arithmetic mean of a Float64 array.
+# Returns the arithmetic mean of a Float64 array, or 0.0 for an empty array.
 def av(l : Array(Float64)) : Float64
+  return 0.0 if l.empty?
   l.sum / l.size
 end
 
-# Returns the arithmetic mean of an Int32 array as Float64.
+# Returns the arithmetic mean of an Int32 array as Float64, or 0.0 for an empty array.
 def av(l : Array(Int32)) : Float64
+  return 0.0 if l.empty?
   l.sum(0.0) / l.size
 end
 

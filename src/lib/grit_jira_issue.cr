@@ -92,6 +92,27 @@ class GritJiraIssue
     self.json["fields"]["customfield_11677"].as_s
   end
 
+  # Returns the assembly FASTA paths present in the specimen YAML for the given
+  # *keys*, preserving key order. Keys not present in the YAML are skipped.
+  def assembly_files(keys : Array(String)) : Array(String)
+    keys.select { |key| self.yaml.as_h.has_key?(key) }.map { |key| self.yaml[key].to_s }
+  end
+
+  # Returns the assembly FASTA paths present in the specimen YAML, checking the
+  # `primary`, `haplotigs`, `hap1`, and `hap2` keys.
+  def files : Array(String)
+    assembly_files(["primary", "haplotigs", "hap1", "hap2"])
+  end
+
+  # Returns the parent directory of the first assembly file, used as the output
+  # base directory for contamination screening results.
+  # Raises if the specimen YAML contains no assembly files.
+  def decon_dir : String
+    first = self.files.first?
+    raise "no assembly FASTA found in the specimen YAML for #{self.tol_id}" unless first
+    Path[first].parent.to_s
+  end
+
   # Returns the integer release version from JIRA custom field `customfield_11609`.
   def release_version : Int32
     self.json["fields"]["customfield_11609"].as_f.to_i
@@ -123,7 +144,7 @@ class GritJiraIssue
   def working_dir : String
     # "/lustre/scratch123/tol/teams/grit/#{ENV["USER"]}/#{self.tol_id}_#{self.release_version}"
     dir = self.pacbio_read_dir || self.ont_read_dir
-    dir.to_s.sub(/genomic_data\/.*/, "working/#{self.tol_id}_#{ENV["USER"]}_curation")
+    dir.to_s.sub(/genomic_data\/.*/, "working/#{self.tol_id}_#{self.user}_curation")
   end
 
   # Returns the curated pretext map directory for this specimen under
@@ -154,6 +175,12 @@ class GritJiraIssue
       t += ".#{self.release_version}"
     end
     t
+  end
+
+  # Returns the current user name from the `USER` environment variable.
+  # Raises a clear error if it is not set (rather than a bare `KeyError`).
+  def user : String
+    ENV["USER"]? || raise "environment variable USER is not set"
   end
 
   # Reads the Bearer token for `jira.sanger.ac.uk` from `~/.netrc`.
@@ -228,7 +255,7 @@ class GritJiraIssue
     telo = self.telomer.size > 1 ? self.telomer : ""
     reads = self.ont_read_dir || "#{self.pacbio_read_dir}/fasta"
     crams = self.hic_read_dir
-    email = no_email ? "" : "-N #{ENV["USER"]}@sanger.ac.uk"
+    email = no_email ? "" : "-N #{self.user}@sanger.ac.uk"
     read_files = Dir.glob("#{reads}/*.fasta.gz")
     cram_files = crams.flat_map { |directory| Dir.glob("#{directory}/*.cram") }
     input_file = Path[fasta].expand

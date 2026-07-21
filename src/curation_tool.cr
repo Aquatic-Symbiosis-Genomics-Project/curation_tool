@@ -12,7 +12,7 @@ require "./lib/curation_tool"
 
 include CurationTool
 
-issue = "GRIT-736"
+issue = ""
 setup = false
 qc = false
 tol = false
@@ -43,6 +43,11 @@ OptionParser.parse do |parser|
     STDERR.puts parser
     exit(1)
   end
+end
+
+if issue.empty?
+  STDERR.puts "ERROR: --issue is required"
+  exit(1)
 end
 
 y = GritJiraIssue.new(issue, merged)

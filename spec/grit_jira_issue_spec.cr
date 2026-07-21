@@ -165,4 +165,79 @@ describe GritJiraIssue do
       dir.should start_with("/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval")
     end
   end
+
+  describe "#files" do
+    it "returns primary and haplotigs assembly paths when present" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: FIXTURE_YAML_MERGED_PRI)
+      files = y.files
+      files.size.should eq(2)
+      files[0].should contain("mMusMus1.primary.fa.gz")
+      files[1].should contain("mMusMus1.haplotigs.fa.gz")
+    end
+
+    it "returns hap1 and hap2 assembly paths when present" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: FIXTURE_YAML_MERGED_HAP)
+      files = y.files
+      files.size.should eq(2)
+      files[0].should contain("mMusMus1.hap1.fa.gz")
+      files[1].should contain("mMusMus1.hap2.fa.gz")
+    end
+
+    it "returns an empty array when no assembly keys are present" do
+      y = TestJiraIssue.new("RC-1234")
+      y.files.should be_empty
+    end
+  end
+
+  describe "#assembly_files" do
+    it "returns only the requested keys, in the requested order" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: FIXTURE_YAML_MERGED_PRI)
+      selected = y.assembly_files(["primary"])
+      selected.size.should eq(1)
+      selected[0].should contain("mMusMus1.primary.fa.gz")
+    end
+
+    it "skips keys that are absent from the YAML" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: FIXTURE_YAML_MERGED_PRI)
+      y.assembly_files(["hap1", "hap2"]).should be_empty
+    end
+  end
+
+  describe "#decon_dir" do
+    it "returns the parent directory of the first assembly file" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: FIXTURE_YAML_MERGED_PRI)
+      y.decon_dir.should eq("/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/primary")
+    end
+
+    it "raises when the YAML contains no assembly files" do
+      y = TestJiraIssue.new("RC-1234")
+      expect_raises(Exception, /no assembly FASTA/) do
+        y.decon_dir
+      end
+    end
+  end
+
+  describe "#user" do
+    it "returns the USER environment variable" do
+      saved = ENV["USER"]?
+      ENV["USER"] = "testuser"
+      begin
+        TestJiraIssue.new("RC-1234").user.should eq("testuser")
+      ensure
+        saved ? (ENV["USER"] = saved) : ENV.delete("USER")
+      end
+    end
+
+    it "raises a clear error when USER is not set" do
+      saved = ENV["USER"]?
+      ENV.delete("USER")
+      begin
+        expect_raises(Exception, /USER is not set/) do
+          TestJiraIssue.new("RC-1234").user
+        end
+      ensure
+        ENV["USER"] = saved if saved
+      end
+    end
+  end
 end

@@ -175,20 +175,6 @@ specimen YAML and submits the <code>gx_map_wrapper.bash</code> pipeline to LSF.<
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#decon_dir%3AString-instance-method" class="signature"><strong>#decon_dir</strong> : String</a>
-        
-          <div class="summary"><p>Returns the parent directory of the first assembly file, used as the output directory for contamination screening results.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#files%3AArray%28String%29-instance-method" class="signature"><strong>#files</strong> : Array(String)</a>
-        
-          <div class="summary"><p>Returns the list of assembly FASTA paths present in the specimen YAML.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
         <a href="#submit_to_lsf%3ANil-instance-method" class="signature"><strong>#submit_to_lsf</strong> : Nil</a>
         
           <div class="summary"><p>Submits the FCS-GX contamination screening pipeline to LSF.</p></div>
@@ -206,6 +192,11 @@ specimen YAML and submits the <code>gx_map_wrapper.bash</code> pipeline to LSF.<
   <h3>Instance methods inherited from class <code><a href="GritJiraIssue.html">GritJiraIssue</a></code></h3>
   
   
+    <a href="GritJiraIssue.html#assembly_files%28keys%3AArray%28String%29%29%3AArray%28String%29-instance-method" class="tooltip">
+      <span>assembly_files(keys : Array(String)) : Array(String)</span>
+    assembly_files</a>, 
+    
+  
     <a href="GritJiraIssue.html#curated_dir%3AString-instance-method" class="tooltip">
       <span>curated_dir : String</span>
     curated_dir</a>, 
@@ -216,9 +207,19 @@ specimen YAML and submits the <code>gx_map_wrapper.bash</code> pipeline to LSF.<
     curation_pretext</a>, 
     
   
+    <a href="GritJiraIssue.html#decon_dir%3AString-instance-method" class="tooltip">
+      <span>decon_dir : String</span>
+    decon_dir</a>, 
+    
+  
     <a href="GritJiraIssue.html#decon_file%3AString-instance-method" class="tooltip">
       <span>decon_file : String</span>
     decon_file</a>, 
+    
+  
+    <a href="GritJiraIssue.html#files%3AArray%28String%29-instance-method" class="tooltip">
+      <span>files : Array(String)</span>
+    files</a>, 
     
   
     <a href="GritJiraIssue.html#get_json%3AJSON%3A%3AAny-instance-method" class="tooltip">
@@ -311,6 +312,11 @@ specimen YAML and submits the <code>gx_map_wrapper.bash</code> pipeline to LSF.<
     tol_id</a>, 
     
   
+    <a href="GritJiraIssue.html#user%3AString-instance-method" class="tooltip">
+      <span>user : String</span>
+    user</a>, 
+    
+  
     <a href="GritJiraIssue.html#working_dir%3AString-instance-method" class="tooltip">
       <span>working_dir : String</span>
     working_dir</a>, 
@@ -386,50 +392,6 @@ specimen YAML and submits the <code>gx_map_wrapper.bash</code> pipeline to LSF.<
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="decon_dir:String-instance-method">
-      <div class="signature">
-        
-        def <strong>decon_dir</strong> : String
-
-        <a class="method-permalink" href="#decon_dir%3AString-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Returns the parent directory of the first assembly file,
-used as the output directory for contamination screening results.</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L23" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="files:Array(String)-instance-method">
-      <div class="signature">
-        
-        def <strong>files</strong> : Array(String)
-
-        <a class="method-permalink" href="#files%3AArray%28String%29-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Returns the list of assembly FASTA paths present in the specimen YAML.
-Checks for <code>primary</code>, <code>haplotigs</code>, <code>hap1</code>, and <code>hap2</code> keys.</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L13" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
     <div class="entry-detail" id="submit_to_lsf:Nil-instance-method">
       <div class="signature">
         
@@ -448,7 +410,7 @@ all existing assembly FASTA files as inputs.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L30" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/submit_fcs.cr#L14" target="_blank">View source</a>]
         
       </div>
     </div>
