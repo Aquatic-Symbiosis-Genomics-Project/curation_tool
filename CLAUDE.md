@@ -29,6 +29,9 @@ crystal tool format
 
 # Run linter (Ameba — installed separately, e.g. `brew install ameba`; not a shard dependency)
 ameba
+
+# Regenerate the API docs into docs/ (commit the result alongside code changes)
+bash build_docs.bash
 ```
 
 ## Architecture
@@ -78,4 +81,9 @@ The `merged` boolean flag on `GritJiraIssue` controls whether hap1/hap2 dual-out
 - Working directory pattern: derived from `pacbio_read_dir` or `ont_read_dir` by replacing `genomic_data/...` with `working/<tolid>_<user>_curation`
 - HPC jobs use LSF (`bsub -K` for synchronous execution in release builds)
 - All entry-point binaries require `--issue`/`-i`; they exit with an error if it is missing (no default issue ID)
-- The `src/lib/_path` file (untracked) appears to be a local path override for development
+- The `src/lib/_path` file (gitignored) appears to be a local path override for development
+
+## Testing Notes
+
+- Specs stub all external I/O (JIRA HTTP, `~/.netrc`, `scp`) via `TestJiraIssue` in `spec/spec_helper.cr`, which overrides `get_token`/`get_json`/`get_yaml` with in-memory fixtures.
+- `src/get_assc_stats.cr` runs its report logic at the top level (executes on `require`), so its pure helpers (`av`, `get_ave`, `parse_*`, `length_and_gc`) are **redefined** inside `spec/stats_helpers_spec.cr` rather than imported. When changing those functions, update both copies or the tests will validate stale logic.
