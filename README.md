@@ -51,10 +51,7 @@ Usage: submit_btk --issue JIRA_ID
 Before running, load the required environment:
 
 ```
-export MODULEPATH=/software/treeoflife/shpc/current/views/grit:/software/treeoflife/custom-installs/modules:/software/modules
-module load nextflow/23.10.0-5889
-module load ISG/singularity/3.11.4
-module load ISG/python/3.11.4
+module load grit
 ```
 
 ### submit_curation_pretext
