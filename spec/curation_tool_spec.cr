@@ -7,7 +7,7 @@ end
 describe CurationTool do
   describe "VERSION" do
     it "is set" do
-      CurationTool::VERSION.should eq("v1.2.0")
+      CurationTool::VERSION.should eq("v1.2.1")
     end
   end
 
@@ -42,6 +42,38 @@ describe CurationTool do
     end
   end
 
+  describe "#hap_decon_file" do
+    decon_json = ->(decon : String) {
+      <<-JSON
+        {"fields": {"customfield_11677": "#{decon}", "customfield_11609": 3.0}}
+        JSON
+    }
+
+    it "substitutes hap1 with the requested haplotype" do
+      y = TestJiraIssue.new("RC-1234", merged: true, json_str: decon_json.call("/x/mMusMus1.hap1.contamination.bed"))
+      ct = CurationToolTest.new
+      ct.hap_decon_file(y, "hap1").should eq("/x/mMusMus1.hap1.contamination.bed")
+      ct.hap_decon_file(y, "hap2").should eq("/x/mMusMus1.hap2.contamination.bed")
+    end
+
+    it "uses the haplotigs file for partially phased assemblies when it exists" do
+      testdir = "#{Dir.tempdir}/ct_test_hap_decon_#{Random.rand(100000)}"
+      Dir.mkdir_p(testdir)
+      FileUtils.touch("#{testdir}/mMusMus1.haplotigs.contamination.bed")
+
+      y = TestJiraIssue.new("RC-1234", merged: true, json_str: decon_json.call("#{testdir}/mMusMus1.primary.contamination.bed"))
+      CurationToolTest.new.hap_decon_file(y, "hap2").should eq("#{testdir}/mMusMus1.haplotigs.contamination.bed")
+
+      FileUtils.rm_rf(testdir)
+    end
+
+    it "falls back to the original decon file if the hap2 guess does not exist" do
+      decon = "/nonexistent/mMusMus1.primary.contamination.bed"
+      y = TestJiraIssue.new("RC-1234", merged: true, json_str: decon_json.call(decon))
+      CurationToolTest.new.hap_decon_file(y, "hap2").should eq(decon)
+    end
+  end
+
   describe "#setup_tol" do
     it "raises when scaffolds.tpf already exists" do
       tmpdir = Dir.tempdir
@@ -49,13 +81,13 @@ describe CurationTool do
       Dir.mkdir_p(testdir)
 
       yaml_str = <<-YAML
-      specimen: mMusMus1
-      species: Mus musculus
-      hic_read_dir: #{testdir}/genomic_data/hic
-      pacbio_read_dir: #{testdir}/genomic_data/pacbio
-      projects:
-        - DToL
-      YAML
+        specimen: mMusMus1
+        species: Mus musculus
+        hic_read_dir: #{testdir}/genomic_data/hic
+        pacbio_read_dir: #{testdir}/genomic_data/pacbio
+        projects:
+          - DToL
+        YAML
 
       y = TestJiraIssue.new("RC-1234", yaml_str: yaml_str)
       wd = y.working_dir
@@ -83,26 +115,26 @@ describe CurationTool do
       `gzip #{testdir}/decontaminated.fa`
 
       yaml_str = <<-YAML
-      specimen: mMusMus1
-      species: Mus musculus
-      hic_read_dir: #{testdir}/genomic_data/hic
-      pacbio_read_dir: #{testdir}/genomic_data/pacbio
-      projects:
-        - DToL
-      YAML
+        specimen: mMusMus1
+        species: Mus musculus
+        hic_read_dir: #{testdir}/genomic_data/hic
+        pacbio_read_dir: #{testdir}/genomic_data/pacbio
+        projects:
+          - DToL
+        YAML
 
       json_str = <<-JSON
-      {
-        "fields": {
-          "customfield_13408": null,
-          "customfield_11677": "#{testdir}/contamination/something.contamination.bed",
-          "customfield_11609": 3.0,
-          "customfield_11650": "TTAGGG",
-          "customfield_11643": null,
-          "attachment": []
+        {
+          "fields": {
+            "customfield_13408": null,
+            "customfield_11677": "#{testdir}/contamination/something.contamination.bed",
+            "customfield_11609": 3.0,
+            "customfield_11650": "TTAGGG",
+            "customfield_11643": null,
+            "attachment": []
+          }
         }
-      }
-      JSON
+        JSON
 
       y = TestJiraIssue.new("RC-1234", json_str: json_str, yaml_str: yaml_str)
       wd = y.working_dir
@@ -134,28 +166,28 @@ describe CurationTool do
       `gzip #{hap2_dir}/mMusMus1.hap2.decontaminated.fa`
 
       yaml_str = <<-YAML
-      specimen: mMusMus1
-      species: Mus musculus
-      hic_read_dir: #{testdir}/genomic_data/hic
-      pacbio_read_dir: #{testdir}/genomic_data/pacbio
-      hap1: #{hap1_dir}/mMusMus1.hap1.fa.gz
-      hap2: #{hap2_dir}/mMusMus1.hap2.fa.gz
-      projects:
-        - DToL
-      YAML
+        specimen: mMusMus1
+        species: Mus musculus
+        hic_read_dir: #{testdir}/genomic_data/hic
+        pacbio_read_dir: #{testdir}/genomic_data/pacbio
+        hap1: #{hap1_dir}/mMusMus1.hap1.fa.gz
+        hap2: #{hap2_dir}/mMusMus1.hap2.fa.gz
+        projects:
+          - DToL
+        YAML
 
       json_str = <<-JSON
-      {
-        "fields": {
-          "customfield_13408": null,
-          "customfield_11677": "#{testdir}/contamination/something.contamination.bed",
-          "customfield_11609": 3.0,
-          "customfield_11650": "TTAGGG",
-          "customfield_11643": null,
-          "attachment": []
+        {
+          "fields": {
+            "customfield_13408": null,
+            "customfield_11677": "#{testdir}/contamination/something.contamination.bed",
+            "customfield_11609": 3.0,
+            "customfield_11650": "TTAGGG",
+            "customfield_11643": null,
+            "attachment": []
+          }
         }
-      }
-      JSON
+        JSON
 
       y = TestJiraIssue.new("RC-1234", merged: true, json_str: json_str, yaml_str: yaml_str)
       wd = y.working_dir

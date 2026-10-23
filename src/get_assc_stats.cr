@@ -10,7 +10,7 @@ include Klib
 class StatIssue < GritJiraIssue
   # Returns the parent directory of the decontamination file.
   def decon_dir : String
-    Path[self.decon_file].parent.to_s
+    Path[decon_file].parent.to_s
   end
 end
 
@@ -49,7 +49,7 @@ def length_and_gc(f) : Tuple(Hash(String, Int32), Hash(String, Float64), Hash(St
   r = Hash(String, Float64).new
   fp = GzipReader.new(f)
   fx = FastxReader.new(fp)
-  fx.each { |e|
+  fx.each do |e|
     size = e.seq.size
     l[e.name] = size
     if size.zero?
@@ -61,7 +61,7 @@ def length_and_gc(f) : Tuple(Hash(String, Int32), Hash(String, Float64), Hash(St
       s[e.name] = e.seq.scan(/TGA|TAG|TAA|TTA|CTA|TCA/i).size.to_f/size
       r[e.name] = e.seq.count("acgtn").to_f/size
     end
-  }
+  end
   return(l, g, r, s)
 end
 
@@ -87,10 +87,10 @@ puts ["tolID", "fasta file", "average gc", "average length", "average repeat", "
       "false positives", "average gc fp", "average len fp", "average repeat fp", "average stops fp",
       "false negatives", "average gc fn", "average len fn", "average repeat fn", "average stops fn"].join("\t")
 
-ARGV.each { |jira_id|
+ARGV.each do |jira_id|
   y = StatIssue.new(jira_id, false)
 
-  Dir.glob("#{y.decon_dir}/*.contamination").each { |file|
+  Dir.glob("#{y.decon_dir}/*.contamination").each do |file|
     contamination_ids = parse_decon_file(file)
     bed_file = "#{file}.bed"
     next unless File.exists?(bed_file)
@@ -112,13 +112,13 @@ ARGV.each { |jira_id|
 
     columns = [y.tol_id, File.basename(file), av(gc.values), av(ln.values), av(rep.values), av(stops.values)]
 
-    [true_positives, false_positives, false_negatives].each { |number|
+    [true_positives, false_positives, false_negatives].each do |number|
       columns << number.size.to_f
       columns << get_ave(gc, number)
       columns << get_ave(ln, number)
       columns << get_ave(rep, number)
       columns << get_ave(stops, number)
-    }
+    end
     puts columns.join("\t")
-  }
-}
+  end
+end

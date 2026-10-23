@@ -1,10 +1,11 @@
 # Main curation workflow orchestrator.
 #
-# Provides four operations controlled by CLI flags:
+# Provides five operations controlled by CLI flags:
 # - `-p` / `--copy_pretext`: copy pretext maps from the `tol` server to the local workstation
 # - `-w` / `--setup_working_dir`: create the HPC working directory and decompress the assembly FASTA
 # - `-r` / `--build_release`: run `pretext-to-asm`, trim contamination, and regenerate pretext maps
 # - `-q` / `--copy_qc`: copy curated files to the curated directory for QC
+# - `-b` / `--busco`: submit BUSCO on the curated primary (hap1 if merged) FASTA to LSF
 #
 # Use `-m` / `--merged` for dual-haplotype (hap1/hap2) assemblies.
 require "option_parser"
@@ -17,6 +18,7 @@ setup = false
 qc = false
 tol = false
 release = false
+busco = false
 merged = false
 OptionParser.parse do |parser|
   parser.banner = "Usage: curation_tool --issue JIRA_ID [options]"
@@ -25,6 +27,7 @@ OptionParser.parse do |parser|
   parser.on("-w", "--setup_working_dir", "create initial curation files and directory") { tol = true }
   parser.on("-r", "--build_release", "create pretext and release files") { release = true }
   parser.on("-q", "--copy_qc", "copy from DIR to curation for QC") { qc = true }
+  parser.on("-b", "--busco", "submit BUSCO on the curated fasta") { busco = true }
   parser.on("-m", "--merged", "build files based on a merged map") { merged = true }
 
   parser.on("-h", "--help", "show this help") do
@@ -66,4 +69,7 @@ elsif release
 elsif qc
   puts "stage for QC => #{y.curated_dir}"
   copy_qc(y)
+elsif busco
+  puts "submitting BUSCO (#{y.busco_lineage}) => #{y.working_dir}"
+  run_busco(y)
 end

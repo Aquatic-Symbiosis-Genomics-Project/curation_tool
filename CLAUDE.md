@@ -28,6 +28,7 @@ crystal tool format --check
 crystal tool format
 
 # Run linter (Ameba — installed separately, e.g. `brew install ameba`; not a shard dependency)
+# The codebase is lint-clean; keep it at 0 failures
 ameba
 
 # Regenerate the API docs into docs/ (commit the result alongside code changes)
@@ -59,8 +60,10 @@ bash build_docs.bash
 **`CurationTool` module** (`src/lib/curation_tool.cr`) — workflow functions:
 - `setup_tol`: Creates working directory and decompresses fasta
 - `build_release`: Runs `pretext-to-asm`, optionally trims contamination via `remove_contamination_bed`, submits `curationpretext.sh` via LSF
+  - helpers: `hap_decon_file` (per-haplotype decon BED path) and `remove_contamination` (synchronous `bsub -K` trim)
 - `copy_qc`: Copies curated fasta/chromosome lists to the curated dir, copies pretext map
 - `setup_local`: Copies pretext files from `tol` server to local workstation
+- `run_busco` (`--busco`/`-b`): Runs BUSCO (singularity, `bsub -K`) on the curated primary FASTA (hap1 if merged) using `busco_lineage` from the YAML
 
 ### Specialised subclasses
 - `FCSIssue` (`submit_fcs.cr`) — adds `submit_to_lsf` for FCS-GX contamination pipeline

@@ -19,19 +19,19 @@ class BTKIssue < GritJiraIssue
   # Each job runs in the `basement` queue with the full ASCC step chain
   # (tiara, coverage, fcs-gx, btk_busco, nt_blast, nr_diamond, etc.).
   def submit_to_lsf : Nil
-    tolid = self.yaml["specimen"]
+    tolid = yaml["specimen"]
 
-    ["primary", "haplotigs"].each { |key|
-      if self.yaml.as_h.has_key?(key)
-        f = self.yaml[key].to_s
+    ["primary", "haplotigs"].each do |key|
+      if yaml.as_h.has_key?(key)
+        f = yaml[key].to_s
         ascc = "/software/team311/ea10/ascc_latest/cobiontcheck"
         config = "/lustre/scratch123/tol/teams/grit/mh6/ascc_logs/static_settings.config2"
         steps = "tiara coverage fcs-gx create_btk_dataset btk_busco nt_blast nr_diamond uniprot_diamond autofilter_assembly"
-        pacbio = Dir.glob("#{self.yaml["pacbio_read_dir"]}/fasta/*.trim.fasta.gz").first?
-        raise "no trimmed pacbio reads found under #{self.yaml["pacbio_read_dir"]}/fasta" unless pacbio
-        puts `bsub -n1 -q basement -R"span[hosts=1]" -o #{f}_#{key}_ascc.out -e #{f}_#{key}_ascc.err -M5000 -R 'select[mem>5000] rusage[mem=5000]' "#{ascc}/ascc.py #{f} --static_config_path #{config} --pacbio_reads_path #{pacbio} --assembly_title #{tolid}_#{key} --sci_name '#{self.scientific_name}' --taxid #{self.taxonomy} --steps #{steps} --threads 24 --pipeline_run_folder #{self.decon_dir}/#{tolid}_#{key}_ascc_minimal --btk_busco_run_mode mandatory"`
+        pacbio = Dir.glob("#{yaml["pacbio_read_dir"]}/fasta/*.trim.fasta.gz").first?
+        raise "no trimmed pacbio reads found under #{yaml["pacbio_read_dir"]}/fasta" unless pacbio
+        puts `bsub -n1 -q basement -R"span[hosts=1]" -o #{f}_#{key}_ascc.out -e #{f}_#{key}_ascc.err -M5000 -R 'select[mem>5000] rusage[mem=5000]' "#{ascc}/ascc.py #{f} --static_config_path #{config} --pacbio_reads_path #{pacbio} --assembly_title #{tolid}_#{key} --sci_name '#{scientific_name}' --taxid #{taxonomy} --steps #{steps} --threads 24 --pipeline_run_folder #{decon_dir}/#{tolid}_#{key}_ascc_minimal --btk_busco_run_mode mandatory"`
       end
-    }
+    end
   end
 end
 
@@ -39,17 +39,17 @@ issue = ""
 
 OptionParser.parse do |parser|
   parser.banner = <<-__HERE__
-Usage: submit_fcs --issue JIRA_ID
+    Usage: submit_fcs --issue JIRA_ID
 
-don't forget to setup your environment:
+    don't forget to setup your environment:
 
-export MODULEPATH=/software/treeoflife/shpc/current/views/grit:/software/treeoflife/custom-installs/modules:/software/modules
-module load nextflow/23.10.0-5889
-module load ISG/singularity/3.11.4
-module load ISG/python/3.11.4
+    export MODULEPATH=/software/treeoflife/shpc/current/views/grit:/software/treeoflife/custom-installs/modules:/software/modules
+    module load nextflow/23.10.0-5889
+    module load ISG/singularity/3.11.4
+    module load ISG/python/3.11.4
 
-the options are:
-__HERE__
+    the options are:
+    __HERE__
 
   parser.on("-i JIRA_ID", "--issue JIRA_ID", "JIRA ID") { |i| issue = i }
 

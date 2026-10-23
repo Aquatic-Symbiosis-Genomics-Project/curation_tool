@@ -14,7 +14,7 @@ def length_and_gc(f) : Tuple(Hash(String, Int32), Hash(String, Float64), Hash(St
   r = Hash(String, Float64).new
   fp = GzipReader.new(f)
   fx = FastxReader.new(fp)
-  fx.each { |e|
+  fx.each do |e|
     size = e.seq.size
     l[e.name] = size
     if size.zero?
@@ -26,7 +26,7 @@ def length_and_gc(f) : Tuple(Hash(String, Int32), Hash(String, Float64), Hash(St
       s[e.name] = e.seq.scan(/TGA|TAG|TAA|TTA|CTA|TCA/i).size.to_f/size
       r[e.name] = e.seq.count("acgtn").to_f/size
     end
-  }
+  end
   return(l, g, r, s)
 end
 

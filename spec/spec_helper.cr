@@ -32,93 +32,93 @@ class TestJiraIssue < GritJiraIssue
 end
 
 FIXTURE_JSON = <<-JSON
-{
-  "fields": {
-    "customfield_13408": "/lustre/scratch123/tol/resources/treeval/yaml/mMusMus1.yaml",
-    "customfield_11677": "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/hap1/contamination/mMusMus1.hap1.contamination.bed",
-    "customfield_11609": 3.0,
-    "customfield_11650": "TTAGGG",
-    "customfield_11643": "mMusMus1_geval",
-    "attachment": [
-      {"content": "https://jira.sanger.ac.uk/secure/attachment/12345/mMusMus1.yaml"},
-      {"content": "https://jira.sanger.ac.uk/secure/attachment/12346/screenshot.png"}
-    ]
+  {
+    "fields": {
+      "customfield_13408": "/lustre/scratch123/tol/resources/treeval/yaml/mMusMus1.yaml",
+      "customfield_11677": "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/hap1/contamination/mMusMus1.hap1.contamination.bed",
+      "customfield_11609": 3.0,
+      "customfield_11650": "TTAGGG",
+      "customfield_11643": "mMusMus1_geval",
+      "attachment": [
+        {"content": "https://jira.sanger.ac.uk/secure/attachment/12345/mMusMus1.yaml"},
+        {"content": "https://jira.sanger.ac.uk/secure/attachment/12346/screenshot.png"}
+      ]
+    }
   }
-}
-JSON
+  JSON
 
 FIXTURE_YAML = <<-YAML
-specimen: mMusMus1
-species: Mus musculus
-hic_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic
-pacbio_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio
-projects:
-  - DToL
-  - GenomeArk
-YAML
+  specimen: mMusMus1
+  species: Mus musculus
+  hic_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic
+  pacbio_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio
+  projects:
+    - DToL
+    - GenomeArk
+  YAML
 
 FIXTURE_YAML_MULTI_HIC = <<-YAML
-specimen: mMusMus1
-species: Mus musculus
-hic_read_dir:
-  - /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic/run1
-  - /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic/run2
-pacbio_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio
-projects:
-  - DToL
-YAML
+  specimen: mMusMus1
+  species: Mus musculus
+  hic_read_dir:
+    - /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic/run1
+    - /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic/run2
+  pacbio_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio
+  projects:
+    - DToL
+  YAML
 
 FIXTURE_YAML_ONT = <<-YAML
-specimen: mMusMus1
-species: Mus musculus
-hic_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic
-ont_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/ont
-projects:
-  - DToL
-YAML
+  specimen: mMusMus1
+  species: Mus musculus
+  hic_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic
+  ont_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/ont
+  projects:
+    - DToL
+  YAML
 
 FIXTURE_YAML_MERGED_HAP = <<-YAML
-specimen: mMusMus1
-species: Mus musculus
-hic_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic
-pacbio_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio
-hap1: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/hap1/mMusMus1.hap1.fa.gz
-hap2: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/hap2/mMusMus1.hap2.fa.gz
-projects:
-  - DToL
-YAML
+  specimen: mMusMus1
+  species: Mus musculus
+  hic_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic
+  pacbio_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio
+  hap1: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/hap1/mMusMus1.hap1.fa.gz
+  hap2: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/hap2/mMusMus1.hap2.fa.gz
+  projects:
+    - DToL
+  YAML
 
 FIXTURE_YAML_MERGED_MAT = <<-YAML
-specimen: mMusMus1
-species: Mus musculus
-hic_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic
-pacbio_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio
-maternal: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/maternal/mMusMus1.maternal.fa.gz
-paternal: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/paternal/mMusMus1.paternal.fa.gz
-projects:
-  - DToL
-YAML
+  specimen: mMusMus1
+  species: Mus musculus
+  hic_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic
+  pacbio_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio
+  maternal: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/maternal/mMusMus1.maternal.fa.gz
+  paternal: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/paternal/mMusMus1.paternal.fa.gz
+  projects:
+    - DToL
+  YAML
 
 FIXTURE_YAML_MERGED_PRI = <<-YAML
-specimen: mMusMus1
-species: Mus musculus
-hic_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic
-pacbio_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio
-primary: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/primary/mMusMus1.primary.fa.gz
-haplotigs: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/haplotigs/mMusMus1.haplotigs.fa.gz
-projects:
-  - DToL
-YAML
+  specimen: mMusMus1
+  species: Mus musculus
+  hic_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic
+  pacbio_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio
+  primary: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/primary/mMusMus1.primary.fa.gz
+  haplotigs: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/haplotigs/mMusMus1.haplotigs.fa.gz
+  projects:
+    - DToL
+  YAML
 
 FIXTURE_JSON_EMPTY_CUSTOM = <<-JSON
-{
-  "fields": {
-    "customfield_13408": null,
-    "customfield_11677": "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/hap1/contamination/mMusMus1.hap1.contamination.bed",
-    "customfield_11609": 1.0,
-    "customfield_11650": null,
-    "customfield_11643": null,
-    "attachment": []
+  {
+    "fields": {
+      "customfield_13408": null,
+      "customfield_11677": "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/hap1/contamination/mMusMus1.hap1.contamination.bed",
+      "customfield_11609": 1.0,
+      "customfield_11650": null,
+      "customfield_11643": null,
+      "attachment": []
+    }
   }
-}
-JSON
+  JSON

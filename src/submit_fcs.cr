@@ -12,8 +12,8 @@ class FCSIssue < GritJiraIssue
   # Builds a `bsub` command with the decon directory, taxonomy ID, and
   # all existing assembly FASTA files as inputs.
   def submit_to_lsf : Nil
-    cmd = "bsub -o #{decon_dir}/fcs.log -M 500000 -n 16 -R'select[mem>500000, tmp>500G] rusage[mem=500000, tmp=600G]' bash  /data/tol/users/mh6/lustre/gx_pipeline/gx_map_wrapper.bash -o #{self.decon_dir} -t #{self.taxonomy}"
-    self.files.each { |file| cmd += " -f #{file}" if File.exists?(file) }
+    cmd = "bsub -o #{decon_dir}/fcs.log -M 500000 -n 16 -R'select[mem>500000, tmp>500G] rusage[mem=500000, tmp=600G]' bash  /data/tol/users/mh6/lustre/gx_pipeline/gx_map_wrapper.bash -o #{decon_dir} -t #{taxonomy}"
+    files.each { |file| cmd += " -f #{file}" if File.exists?(file) }
     puts `#{cmd}`
   end
 end
@@ -42,7 +42,7 @@ OptionParser.parse do |parser|
   end
 end
 
-issues.each { |issue|
+issues.each do |issue|
   y = FCSIssue.new(issue, false)
   y.submit_to_lsf
-}
+end

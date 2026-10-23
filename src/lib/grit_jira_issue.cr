@@ -18,7 +18,7 @@ require "file_utils"
 class GritJiraIssue
   @@url = "jira.sanger.ac.uk"
   @token : String?
-  @yaml : (YAML::Any | Nil)
+  @yaml : (YAML::Any)?
 
   getter merged
 
@@ -26,51 +26,51 @@ class GritJiraIssue
   # Set *merged* to `true` for dual-haplotype assemblies.
   def initialize(name : String, @merged : Bool = false)
     @id = name
-    @token = self.get_token
+    @token = get_token
   end
 
   # Returns the parsed JIRA issue JSON, fetching it on first access.
   def json : JSON::Any
-    @json ||= self.get_json
+    @json ||= get_json
   end
 
   # Returns the parsed per-specimen YAML, fetching it on first access.
   def yaml : YAML::Any
-    @yaml ||= self.get_yaml
+    @yaml ||= get_yaml
   end
 
   # Returns the Hi-C read directory (or directories) as an array of strings.
   # Handles both scalar and list values in the YAML.
   def hic_read_dir : Array(YAML::Any) | Array(String)
-    if self.yaml["hic_read_dir"].as_a?
-      self.yaml["hic_read_dir"].as_a
+    if yaml["hic_read_dir"].as_a?
+      yaml["hic_read_dir"].as_a
     else
-      [self.yaml["hic_read_dir"].as_s]
+      [yaml["hic_read_dir"].as_s]
     end
   end
 
   # Returns the PacBio read directory, or `nil` if not present in the YAML.
   def pacbio_read_dir : String?
-    return nil unless self.yaml.as_h.has_key?("pacbio_read_dir")
-    self.yaml["pacbio_read_dir"].as_s?
+    return unless yaml.as_h.has_key?("pacbio_read_dir")
+    yaml["pacbio_read_dir"].as_s?
   end
 
   # Returns the ONT read directory, or `nil` if not present in the YAML.
   def ont_read_dir : String?
-    return nil unless self.yaml.as_h.has_key?("ont_read_dir")
-    self.yaml["ont_read_dir"].as_s?
+    return unless yaml.as_h.has_key?("ont_read_dir")
+    yaml["ont_read_dir"].as_s?
   end
 
   # Returns the list of project names associated with this specimen (e.g. `["DToL", "GenomeArk"]`).
   def projects : Array(YAML::Any)
-    self.yaml["projects"].as_a
+    yaml["projects"].as_a
   end
 
   # Returns the geval database name from JIRA custom field `customfield_11643`,
   # or an empty string if not set.
   def geval_db : String
-    if self.json["fields"]["customfield_11643"].as_s?
-      self.json["fields"]["customfield_11643"].as_s
+    if json["fields"]["customfield_11643"].as_s?
+      json["fields"]["customfield_11643"].as_s
     else
       ""
     end
@@ -79,8 +79,8 @@ class GritJiraIssue
   # Returns the telomere sequence from JIRA custom field `customfield_11650`,
   # or an empty string if not set.
   def telomer : String
-    if self.json["fields"]["customfield_11650"].as_s?
-      self.json["fields"]["customfield_11650"].as_s
+    if json["fields"]["customfield_11650"].as_s?
+      json["fields"]["customfield_11650"].as_s
     else
       ""
     end
@@ -89,13 +89,13 @@ class GritJiraIssue
   # Returns the decontamination file path from JIRA custom field `customfield_11677`.
   # May be a `.bed` file (contamination intervals) or a `.fa.gz` decontaminated FASTA.
   def decon_file : String
-    self.json["fields"]["customfield_11677"].as_s
+    json["fields"]["customfield_11677"].as_s
   end
 
   # Returns the assembly FASTA paths present in the specimen YAML for the given
   # *keys*, preserving key order. Keys not present in the YAML are skipped.
   def assembly_files(keys : Array(String)) : Array(String)
-    keys.select { |key| self.yaml.as_h.has_key?(key) }.map { |key| self.yaml[key].to_s }
+    keys.select { |key| yaml.as_h.has_key?(key) }.map { |key| yaml[key].to_s }
   end
 
   # Returns the assembly FASTA paths present in the specimen YAML, checking the
@@ -108,34 +108,39 @@ class GritJiraIssue
   # base directory for contamination screening results.
   # Raises if the specimen YAML contains no assembly files.
   def decon_dir : String
-    first = self.files.first?
-    raise "no assembly FASTA found in the specimen YAML for #{self.tol_id}" unless first
+    first = files.first?
+    raise "no assembly FASTA found in the specimen YAML for #{tol_id}" unless first
     Path[first].parent.to_s
   end
 
   # Returns the integer release version from JIRA custom field `customfield_11609`.
   def release_version : Int32
-    self.json["fields"]["customfield_11609"].as_f.to_i
+    json["fields"]["customfield_11609"].as_f.to_i
   end
 
   # Returns the ToL specimen ID (e.g. `"mMusMus1"`) from the YAML `specimen` key.
   def tol_id : String
-    self.yaml["specimen"].as_s
+    yaml["specimen"].as_s
   end
 
   # Returns the scientific name of the specimen from the YAML `species` key.
   def scientific_name : String
-    self.yaml["species"].as_s
+    yaml["species"].as_s
+  end
+
+  # returns the busco_lineage used from the YAML
+  def busco_lineage : String
+    yaml["busco_lineage"].as_s
   end
 
   # Returns the specimen identifier in underscore form: `<tol_id>_<release_version>`.
   def sample_version : String
-    "#{self.tol_id}_#{self.release_version}"
+    "#{tol_id}_#{release_version}"
   end
 
   # Returns the specimen identifier in dot form: `<tol_id>.<release_version>`.
   def sample_dot_version : String
-    "#{self.tol_id}.#{self.release_version}"
+    "#{tol_id}.#{release_version}"
   end
 
   # Returns the curation working directory on the HPC.
@@ -143,8 +148,8 @@ class GritJiraIssue
   # `genomic_data/...` suffix with `working/<tol_id>_<user>_curation`.
   def working_dir : String
     # "/lustre/scratch123/tol/teams/grit/#{ENV["USER"]}/#{self.tol_id}_#{self.release_version}"
-    dir = self.pacbio_read_dir || self.ont_read_dir
-    dir.to_s.sub(/genomic_data\/.*/, "working/#{self.tol_id}_#{self.user}_curation")
+    dir = pacbio_read_dir || ont_read_dir
+    dir.to_s.sub(/genomic_data\/.*/, "working/#{tol_id}_#{user}_curation")
   end
 
   # Returns the curated pretext map directory for this specimen under
@@ -152,14 +157,14 @@ class GritJiraIssue
   # For invertebrate/other prefixes (`i`, `d`, `q`, `t`, `c`) a two-level
   # subdirectory lookup is used. Raises if no matching directory is found.
   def pretext_dir : String
-    prefix = self.tol_id[0]
+    prefix = tol_id[0]
     pretext_root = "/nfs/treeoflife-01/teams/grit/data/curated_pretext_maps"
     dir = Dir["#{pretext_root}/#{prefix}*"].select { |file| File.directory?(file) }
     if ['i', 'd', 'q', 't', 'c'].includes?(prefix)
-      second = self.tol_id[1]
+      second = tol_id[1]
       dir = Dir["#{pretext_root}/#{prefix}_*/#{second}_*"].select { |file| File.directory?(file) }
     end
-    raise "no pretext directory found for #{self.tol_id} under #{pretext_root}" if dir.empty?
+    raise "no pretext directory found for #{tol_id} under #{pretext_root}" if dir.empty?
     dir[0]
   end
 
@@ -167,12 +172,12 @@ class GritJiraIssue
   # Derived from the decon file path; appended with `.genomeark.<version>`
   # for GenomeArk specimens, or `.<version>` otherwise.
   def curated_dir : String
-    t = self.decon_file.split("/")[0..-4].join("/") + "/curated/" + self.tol_id
+    t = decon_file.split("/")[0..-4].join("/") + "/curated/" + tol_id
 
-    if self.projects.map(&.as_s.downcase).includes? "genomeark"
-      t += ".genomeark.#{self.release_version}"
+    if projects.map(&.as_s.downcase).includes? "genomeark"
+      t += ".genomeark.#{release_version}"
     else
-      t += ".#{self.release_version}"
+      t += ".#{release_version}"
     end
     t
   end
@@ -186,11 +191,11 @@ class GritJiraIssue
   # Reads the Bearer token for `jira.sanger.ac.uk` from `~/.netrc`.
   # Raises if no matching entry is found.
   def get_token : String
-    File.each_line(Path["~/.netrc"].expand(home: true)) { |line|
+    File.each_line(Path["~/.netrc"].expand(home: true)) do |line|
       line = line.chomp
       columns = line.split
       return columns[-1].to_s if /\s+#{@@url}\s+login\s+token\s+password/.match(line)
-    }
+    end
     raise "cannot get token for #{@@url}"
   end
 
@@ -211,8 +216,8 @@ class GritJiraIssue
   #
   # Raises if no YAML can be obtained.
   def get_yaml : YAML::Any
-    if self.json["fields"]["customfield_13408"].as_s?
-      yaml_path = self.json["fields"]["customfield_13408"].as_s
+    if json["fields"]["customfield_13408"].as_s?
+      yaml_path = json["fields"]["customfield_13408"].as_s
       if File.exists?(yaml_path)
         yaml = YAML.parse(File.read(yaml_path))
       else
@@ -231,7 +236,7 @@ class GritJiraIssue
 
     # if the file doesn't work, get it from Jira
     if yaml.nil?
-      attachments = self.json["fields"]["attachment"].as_a
+      attachments = json["fields"]["attachment"].as_a
         .map(&.["content"].as_s)
         .select { |url| /\.(yaml|yml)$/.match(url) }
       raise "no YAML attachment found on Jira issue #{@id}" if attachments.empty?
@@ -252,17 +257,17 @@ class GritJiraIssue
   def curation_pretext(fasta, output, no_email = false) : String
     raise "input fasta file #{fasta} doesn't exist" unless File.exists?(fasta)
 
-    telo = self.telomer.size > 1 ? self.telomer : ""
-    reads = self.ont_read_dir || "#{self.pacbio_read_dir}/fasta"
-    crams = self.hic_read_dir
-    email = no_email ? "" : "-N #{self.user}@sanger.ac.uk"
+    telo = telomer.size > 1 ? telomer : ""
+    reads = ont_read_dir || "#{pacbio_read_dir}/fasta"
+    crams = hic_read_dir
+    email = no_email ? "" : "-N #{user}@sanger.ac.uk"
     read_files = Dir.glob("#{reads}/*.fasta.gz")
     cram_files = crams.flat_map { |directory| Dir.glob("#{directory}/*.cram") }
     input_file = Path[fasta].expand
     yaml_file = "#{input_file}.yml"
 
     params = {
-      :sample         => self.sample_dot_version,
+      :sample         => sample_dot_version,
       :teloseq        => telo,
       :all_output     => false,
       :skip_tracks    => "NONE",
@@ -282,7 +287,7 @@ class GritJiraIssue
   # First tries an exact scientific-name lookup, then falls back to an any-name search.
   # Returns the taxon ID as a string. Raises if no result is found.
   def taxonomy : String
-    common_name = self.scientific_name.gsub(/\s/, "%20")
+    common_name = scientific_name.gsub(/\s/, "%20")
 
     r = HTTP::Client.get("https://www.ebi.ac.uk/ena/taxonomy/rest/scientific-name/#{common_name}", headers: HTTP::Headers{"Accept" => "application/json"})
     raise "cannot get the taxonomy" unless r.success?

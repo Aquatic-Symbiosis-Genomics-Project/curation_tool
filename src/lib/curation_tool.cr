@@ -7,7 +7,7 @@ require "file_utils"
 # and performs one step of the curation pipeline. Methods are mixed into the
 # calling context via `include CurationTool`.
 module CurationTool
-  VERSION = "v1.2.0"
+  VERSION = "v1.2.1"
 
   # Returns the most recently modified file matching *pattern*.
   # Raises a descriptive error mentioning *description* if nothing matches.
@@ -53,6 +53,33 @@ module CurationTool
     end
   end
 
+  # Returns the decontamination file for *hap* (`"hap1"` or `"hap2"`) of a
+  # merged assembly, derived from the issue's decon file by substituting
+  # `hap1` → *hap*.
+  #
+  # For partially phased assemblies (no `hap2` in the name) the hap2 file is
+  # guessed as the `haplotigs` / `alternate_contigs` variant, falling back to
+  # the original decon file if that doesn't exist.
+  def hap_decon_file(y, hap : String) : String
+    decon_file = y.decon_file.sub("hap1", hap)
+    return decon_file if hap != "hap2" || decon_file.includes?("hap2")
+
+    if decon_file.includes?("primary")
+      decon_file = decon_file.sub("primary", "haplotigs")
+    else
+      decon_file = decon_file.sub(".contamination", "alternate_contigs.contamination")
+    end
+    File.exists?(decon_file) ? decon_file : y.decon_file
+  end
+
+  # Runs `remove_contamination_bed` on *fasta* with the BED *decon_file* via
+  # LSF (`bsub -K`), replacing *fasta* in place with the cleaned version.
+  def remove_contamination(fasta : String, decon_file : String) : Nil
+    cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{fasta} -c #{decon_file} && mv #{fasta}_cleaned #{fasta}"
+    puts `bsub -K -o /dev/null -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
+    raise "something went wrong with #{cmd}" unless $?.success?
+  end
+
   # Builds the curated assembly FASTA from the most recent PretextView AGP file
   # and, if a `.bed` decontamination file is set, removes remaining contamination
   # intervals and regenerates the pretext map.
@@ -81,33 +108,16 @@ module CurationTool
       # trim contamination
       if y.decon_file.includes?(".bed")
         if y.merged
-          ["hap1", "hap2"].each { |hap|
-            decon_file = y.decon_file.sub("hap1", hap)
-
-            # special case for partially phased assemblies
-            if hap == "hap2" && !decon_file.includes?("hap2")
-              if decon_file.includes?("primary")
-                decon_file = decon_file.sub("primary", "haplotigs")
-              else
-                decon_file = decon_file.sub(".contamination", "alternate_contigs.contamination")
-              end
-              decon_file = y.decon_file unless File.exists?(decon_file)
-            end
-            primary_fa = "#{y.tol_id}.#{hap}.#{y.release_version}.primary.curated.fa"
-
-            cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{primary_fa} -c #{decon_file} && mv #{primary_fa}_cleaned #{primary_fa}"
-            puts `bsub -K -o /dev/null -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
-            raise "something went wrong with #{cmd}" unless $?.success?
-          }
+          ["hap1", "hap2"].each do |hap|
+            remove_contamination("#{y.tol_id}.#{hap}.#{y.release_version}.primary.curated.fa", hap_decon_file(y, hap))
+          end
 
           # Make new pretext map for hap1.
           cmd = y.curation_pretext("#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa", "#{id}.hap1.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
           puts `#{cmd}`
           raise "something went wrong" unless $?.success?
         else
-          cmd = "/nfs/users/nfs_m/mh6/remove_contamination_bed -f #{id}.primary.curated.fa -c #{y.decon_file} && mv #{id}.primary.curated.fa_cleaned #{id}.primary.curated.fa"
-          puts `bsub -K -o /dev/null -M 8G -R'select[mem>8G] rusage[mem=8G]' #{cmd}`
-          raise "something went wrong with #{cmd}" unless $?.success?
+          remove_contamination("#{id}.primary.curated.fa", y.decon_file)
           # Make new pretext map.
           cmd = y.curation_pretext("#{id}.primary.curated.fa", "#{id}.curationpretext.#{Time.utc.to_s("%Y-%m-%d_%H:%M:%S")}")
           puts `#{cmd}`
@@ -134,9 +144,9 @@ module CurationTool
 
     Dir.cd(wd) do
       if y.merged
-        ["hap1", "hap2"].each { |hap|
+        ["hap1", "hap2"].each do |hap|
           FileUtils.touch("#{target_dir}/#{y.tol_id}.#{hap}.#{y.release_version}.all_haplotigs.curated.fa")
-        }
+        end
         FileUtils.touch("#{target_dir}/#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv")
       end
 
@@ -149,13 +159,13 @@ module CurationTool
                "#{id}.all_haplotigs.fa",
       ]
 
-      files.each { |file_name|
+      files.each do |file_name|
         file = "#{wd}/#{file_name}"
         target = "#{target_dir}/#{file_name}"
         next unless File.exists?(file)
         puts "#{file} => #{target}"
         FileUtils.cp(file, target)
-      }
+      end
 
       # copy pretext
       if y.merged
@@ -182,10 +192,53 @@ module CurationTool
     FileUtils.mkdir_p(wd)
 
     cmd = <<-HERE
-touch #{wd}/notes;
-scp #{y.user}@tol:/nfs/treeoflife-01/teams/grit/data/pretext_maps/#{y.tol_id}*.pretext #{wd}/
-HERE
+      touch #{wd}/notes;
+      scp #{y.user}@tol:/nfs/treeoflife-01/teams/grit/data/pretext_maps/#{y.tol_id}*.pretext #{wd}/
+      HERE
     puts `#{cmd}`
     raise "something went wrong" unless $?.success?
+  end
+
+  # Submits BUSCO (via singularity on LSF) for the curated primary FASTA, using
+  # the `busco_lineage` from the YAML.
+  #
+  # Runs in the working directory on the hap1 FASTA for merged assemblies, or
+  # the single primary FASTA otherwise. Memory is scaled by FASTA size.
+  # Output goes to `<fasta basename>.busco5` in the working directory.
+  # Blocks until the job finishes (`bsub -K`).
+  # Raises if no curated FASTA exists (run `build_release` first).
+  def run_busco(y) : Nil
+    image = "/nfs/treeoflife-01/teams/grit/users/mh6/singularity/busco.sif"
+    lineage_dir = "/lustre/scratch122/tol/resources/busco/latest/lineages"
+    cores = 16
+    wd = y.working_dir
+
+    fasta = if y.merged
+              "#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa"
+            else
+              "#{y.sample_dot_version}.primary.curated.fa"
+            end
+
+    Dir.cd(wd) do
+      raise "#{wd}/#{fasta} not found, run --build_release first" unless File.exists?(fasta)
+
+      # set the memory
+      file_size_gb = File.size(fasta) / (1024**3)
+      mem_gb = if file_size_gb < 1
+                 50
+               elsif file_size_gb < 2
+                 100
+               elsif file_size_gb < 3
+                 150
+               else
+                 220
+               end
+
+      output = "#{File.basename(fasta, ".fa")}.busco5"
+      cmd = "bsub -K -n #{cores} -o #{output}.%J.out -e #{output}.%J.err -M#{mem_gb}G -R'select[mem>#{mem_gb}G] rusage[mem=#{mem_gb}G] span[hosts=1]' " \
+            "singularity exec -B /lustre #{image} busco -i #{fasta} -o #{output} -m genome -l #{lineage_dir}/#{y.busco_lineage} -c #{cores}"
+      puts `#{cmd}`
+      raise "something went wrong with #{cmd}" unless $?.success?
+    end
   end
 end

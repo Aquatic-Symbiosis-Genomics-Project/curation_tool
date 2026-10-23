@@ -167,7 +167,7 @@ calling context via <code>include <a href="CurationTool.html">CurationTool</a></
   <dl>
     
       <dt class="entry-const" id="VERSION">
-        <strong>VERSION</strong> = <code><span class="s">&quot;v1.2.0&quot;</span></code>
+        <strong>VERSION</strong> = <code><span class="s">&quot;v1.2.1&quot;</span></code>
       </dt>
       
     
@@ -207,9 +207,30 @@ calling context via <code>include <a href="CurationTool.html">CurationTool</a></
       </li>
     
       <li class="entry-summary">
+        <a href="#hap_decon_file%28y%2Chap%3AString%29%3AString-instance-method" class="signature"><strong>#hap_decon_file</strong>(y, hap : String) : String</a>
+        
+          <div class="summary"><p>Returns the decontamination file for <em>hap</em> (<code>&quot;hap1&quot;</code> or <code>&quot;hap2&quot;</code>) of a merged assembly, derived from the issue's decon file by substituting <code>hap1</code> → <em>hap</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#latest_file%28pattern%3AString%2Cdescription%3AString%29%3AString-instance-method" class="signature"><strong>#latest_file</strong>(pattern : String, description : String) : String</a>
         
           <div class="summary"><p>Returns the most recently modified file matching <em>pattern</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#remove_contamination%28fasta%3AString%2Cdecon_file%3AString%29%3ANil-instance-method" class="signature"><strong>#remove_contamination</strong>(fasta : String, decon_file : String) : Nil</a>
+        
+          <div class="summary"><p>Runs <code>remove_contamination_bed</code> on <em>fasta</em> with the BED <em>decon_file</em> via LSF (<code>bsub -K</code>), replacing <em>fasta</em> in place with the cleaned version.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#run_busco%28y%29%3ANil-instance-method" class="signature"><strong>#run_busco</strong>(y) : Nil</a>
+        
+          <div class="summary"><p>Submits BUSCO (via singularity on LSF) for the curated primary FASTA, using the <code>busco_lineage</code> from the YAML.</p></div>
         
       </li>
     
@@ -283,7 +304,7 @@ merged assemblies).</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L69" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L96" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -310,7 +331,33 @@ output directory is selected and renamed to the canonical curated path under
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L128" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L138" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="hap_decon_file(y,hap:String):String-instance-method">
+      <div class="signature">
+        
+        def <strong>hap_decon_file</strong>(y, hap : String) : String
+
+        <a class="method-permalink" href="#hap_decon_file%28y%2Chap%3AString%29%3AString-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the decontamination file for <em>hap</em> (<code>&quot;hap1&quot;</code> or <code>&quot;hap2&quot;</code>) of a
+merged assembly, derived from the issue's decon file by substituting
+<code>hap1</code> → <em>hap</em>.</p>
+<p>For partially phased assemblies (no <code>hap2</code> in the name) the hap2 file is
+guessed as the <code>haplotigs</code> / <code>alternate_contigs</code> variant, falling back to
+the original decon file if that doesn't exist.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L63" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -337,6 +384,55 @@ Raises a descriptive error mentioning <em>description</em> if nothing matches.</
       </div>
     </div>
   
+    <div class="entry-detail" id="remove_contamination(fasta:String,decon_file:String):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>remove_contamination</strong>(fasta : String, decon_file : String) : Nil
+
+        <a class="method-permalink" href="#remove_contamination%28fasta%3AString%2Cdecon_file%3AString%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Runs <code>remove_contamination_bed</code> on <em>fasta</em> with the BED <em>decon_file</em> via
+LSF (<code>bsub -K</code>), replacing <em>fasta</em> in place with the cleaned version.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L77" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="run_busco(y):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>run_busco</strong>(y) : Nil
+
+        <a class="method-permalink" href="#run_busco%28y%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Submits BUSCO (via singularity on LSF) for the curated primary FASTA, using
+the <code>busco_lineage</code> from the YAML.</p>
+<p>Runs in the working directory on the hap1 FASTA for merged assemblies, or
+the single primary FASTA otherwise. Memory is scaled by FASTA size.
+Output goes to <code>&lt;fasta basename&gt;.busco5</code> in the working directory.
+Blocks until the job finishes (<code>bsub -K</code>).
+Raises if no curated FASTA exists (run <code><a href="CurationTool.html#build_release%28y%29%3ANil-instance-method">#build_release</a></code> first).</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L210" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="setup_local(y):Nil-instance-method">
       <div class="signature">
         
@@ -356,7 +452,7 @@ touches a <code>notes</code> file, and copies all matching pretext maps from the
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L180" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L190" target="_blank">View source</a>]
         
       </div>
     </div>
