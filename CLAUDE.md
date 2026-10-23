@@ -31,7 +31,8 @@ crystal tool format
 # The codebase is lint-clean; keep it at 0 failures
 ameba
 
-# Regenerate the API docs into docs/ (commit the result alongside code changes)
+# Regenerate the API docs into docs/ (commit the result alongside code changes).
+# The docs version is read from CurationTool::VERSION; keep shard.yml's version in sync.
 bash build_docs.bash
 ```
 
@@ -63,7 +64,7 @@ bash build_docs.bash
   - helpers: `hap_decon_file` (per-haplotype decon BED path) and `remove_contamination` (synchronous `bsub -K` trim)
 - `copy_qc`: Copies curated fasta/chromosome lists to the curated dir, copies pretext map
 - `setup_local`: Copies pretext files from `tol` server to local workstation
-- `run_busco` (`--busco`/`-b`): Runs BUSCO (singularity, `bsub -K`) on the curated primary FASTA (hap1 if merged) using `busco_lineage` from the YAML
+- `run_busco` (`--busco`/`-b`): Runs BUSCO (singularity, `bsub -K`) on the curated primary FASTA (hap1 if merged) using `busco_lineage` from the YAML; prints the short summary, copies it into the working dir, then removes the BUSCO output, `BUSCO/` and `busco_downloads/`
 
 ### Specialised subclasses
 - `FCSIssue` (`submit_fcs.cr`) — adds `submit_to_lsf` for FCS-GX contamination pipeline

@@ -204,11 +204,14 @@ module CurationTool
   #
   # Runs in the working directory on the hap1 FASTA for merged assemblies, or
   # the single primary FASTA otherwise. Memory is scaled by FASTA size.
-  # Output goes to `<fasta basename>.busco5` in the working directory.
+  # Output goes to `<fasta basename>.busco5` in the working directory; once the
+  # job finishes its short summary is printed and copied into the working
+  # directory, then the output directory (plus any `BUSCO/` and
+  # `busco_downloads/`) is removed.
   # Blocks until the job finishes (`bsub -K`).
   # Raises if no curated FASTA exists (run `build_release` first).
   def run_busco(y) : Nil
-    image = "/nfs/treeoflife-01/teams/grit/users/mh6/singularity/busco.sif"
+    image = "/nfs/treeoflife-01/teams/grit/users/mh6/singularity/busco_6.1.0.sif"
     lineage_dir = "/lustre/scratch122/tol/resources/busco/latest/lineages"
     cores = 16
     wd = y.working_dir
@@ -239,6 +242,13 @@ module CurationTool
             "singularity exec -B /lustre #{image} busco -i #{fasta} -o #{output} -m genome -l #{lineage_dir}/#{y.busco_lineage} -c #{cores}"
       puts `#{cmd}`
       raise "something went wrong with #{cmd}" unless $?.success?
+
+      # e.g. short_summary.specific.insecta_odb10.<output>.txt
+      summary = latest_file("#{output}/short_summary.specific.*.#{output}.txt", "BUSCO short summary")
+      puts File.read(summary)
+      FileUtils.cp(summary, File.basename(summary))
+
+      [output, "BUSCO", "busco_downloads"].each { |dir| FileUtils.rm_rf(dir) }
     end
   end
 end

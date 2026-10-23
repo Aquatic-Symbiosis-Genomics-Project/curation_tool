@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.18.2">
-<meta name="crystal_docs.project_version" content="v1.2.0">
+<meta name="crystal_docs.project_version" content="v1.2.1">
 <meta name="crystal_docs.project_name" content="curation_tool">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="curation_tool">
-  <title>CurationTool - curation_tool v1.2.0</title>
+  <title>CurationTool - curation_tool v1.2.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        v1.2.0
+        v1.2.1
       </span>
     </div>
   </div>
@@ -420,7 +420,10 @@ LSF (<code>bsub -K</code>), replacing <em>fasta</em> in place with the cleaned v
 the <code>busco_lineage</code> from the YAML.</p>
 <p>Runs in the working directory on the hap1 FASTA for merged assemblies, or
 the single primary FASTA otherwise. Memory is scaled by FASTA size.
-Output goes to <code>&lt;fasta basename&gt;.busco5</code> in the working directory.
+Output goes to <code>&lt;fasta basename&gt;.busco5</code> in the working directory; once the
+job finishes its short summary is printed and copied into the working
+directory, then the output directory (plus any <code>BUSCO/</code> and
+<code>busco_downloads/</code>) is removed.
 Blocks until the job finishes (<code>bsub -K</code>).
 Raises if no curated FASTA exists (run <code><a href="CurationTool.html#build_release%28y%29%3ANil-instance-method">#build_release</a></code> first).</p>
         </div>
@@ -428,7 +431,7 @@ Raises if no curated FASTA exists (run <code><a href="CurationTool.html#build_re
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L210" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L213" target="_blank">View source</a>]
         
       </div>
     </div>

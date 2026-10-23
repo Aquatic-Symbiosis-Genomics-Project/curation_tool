@@ -30,6 +30,7 @@ Usage: curation_tool --issue JIRA_ID [options]
     -w, --setup_working_dir          create initial curation files and directory
     -r, --build_release              create pretext and release files
     -q, --copy_qc                    copy from DIR to curation for QC
+    -b, --busco                      submit BUSCO on the curated fasta
     -m, --merged                     build files based on a merged map
     -h, --help                       show this help
 ```
