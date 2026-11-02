@@ -70,6 +70,6 @@ elsif qc
   puts "stage for QC => #{y.curated_dir}"
   copy_qc(y)
 elsif busco
-  puts "submitting BUSCO (#{y.busco_lineage}) => #{y.working_dir}"
+  puts "submitting BUSCO (#{y.busco_lineage}) => #{y.curated_dir}"
   run_busco(y)
 end
