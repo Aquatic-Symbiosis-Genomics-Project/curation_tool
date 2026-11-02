@@ -202,7 +202,7 @@ module CurationTool
   # Submits BUSCO (via singularity on LSF) for the curated primary FASTA, using
   # the `busco_lineage` from the YAML.
   #
-  # Runs in the working directory on the hap1 FASTA for merged assemblies, or
+  # Runs in the curated assembly directory on the hap1 FASTA for merged assemblies, or
   # the single primary FASTA otherwise. Memory is scaled by FASTA size.
   # Output goes to `<fasta basename>.busco5` in the working directory; once the
   # job finishes its short summary is printed and copied into the working
@@ -214,7 +214,7 @@ module CurationTool
     image = "/nfs/treeoflife-01/teams/grit/users/mh6/singularity/busco_6.1.0.sif"
     lineage_dir = "/lustre/scratch122/tol/resources/busco/latest/lineages"
     cores = 16
-    wd = y.working_dir
+    wd = y.curated_dir
 
     fasta = if y.merged
               "#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa"
