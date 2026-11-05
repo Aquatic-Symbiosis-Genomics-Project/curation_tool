@@ -199,6 +199,46 @@ module CurationTool
     raise "something went wrong" unless $?.success?
   end
 
+  # Returns the paths of the curated primary FASTA files staged in the curated
+  # assembly directory (by `copy_qc`): hap1 and hap2 for merged assemblies, the
+  # single primary otherwise. Only files that exist are returned, in that order.
+  def curated_fastas(y) : Array(String)
+    staged_curated_files(y, "primary.curated.fa")
+  end
+
+  # Returns the paths of the chromosome list CSVs staged in the curated assembly
+  # directory (by `copy_qc`): hap1 and hap2 for merged assemblies (hap2's is an
+  # empty placeholder created by `copy_qc`), the single primary otherwise. Only
+  # files that exist are returned, in that order.
+  def curated_chromosome_lists(y) : Array(String)
+    staged_curated_files(y, "primary.chromosome.list.csv")
+  end
+
+  # Checks that the number of non-empty chromosome list CSVs staged in the
+  # curated directory equals the curated chromosome count in JIRA
+  # (`customfield_13210`). Prints both counts.
+  # Raises if the JIRA field is unset or the counts differ.
+  def check_chromosome_lists(y) : Nil
+    expected = y.curated_chromosomes
+    raise "curated chromosome count (customfield_13210) is not set in JIRA for #{y.tol_id}" if expected.nil?
+
+    found = curated_chromosome_lists(y).count { |path| File.size(path) > 0 }
+    puts "non-empty chromosome lists: #{found}, curated chromosomes in JIRA: #{expected}"
+    raise "non-empty chromosome list count (#{found}) does not match curated chromosome count in JIRA (#{expected}) for #{y.curated_dir}" if found != expected
+  end
+
+  # Builds the staged file names for merged or single primary assemblies.
+  private def staged_curated_files(y, suffix : String) : Array(String)
+    names = if y.merged
+              ["#{y.tol_id}.hap1.#{y.release_version}.#{suffix}",
+               "#{y.tol_id}.hap2.#{y.release_version}.#{suffix}"]
+            else
+              ["#{y.sample_dot_version}.#{suffix}"]
+            end
+
+    names.map { |name| "#{y.curated_dir}/#{name}" }.select { |path| File.exists?(path) }
+  end
+
   # Submits BUSCO (via singularity on LSF) for the curated primary FASTA, using
   # the `busco_lineage` from the YAML.
   #
@@ -209,22 +249,16 @@ module CurationTool
   # directory, then the output directory (plus any `BUSCO/` and
   # `busco_downloads/`) is removed.
   # Blocks until the job finishes (`bsub -K`).
-  # Raises if no curated FASTA exists (run `build_release` first).
+  # Raises if no curated FASTA exists (run `copy_qc` first).
   def run_busco(y) : Nil
     image = "/nfs/treeoflife-01/teams/grit/users/mh6/singularity/busco_6.1.0.sif"
     lineage_dir = "/lustre/scratch122/tol/resources/busco/latest/lineages"
     cores = 16
     wd = y.curated_dir
 
-    fasta = if y.merged
-              "#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa"
-            else
-              "#{y.sample_dot_version}.primary.curated.fa"
-            end
+    fasta = curated_fastas(y).first? || raise "no curated primary FASTA in #{wd}, run --copy_qc first"
 
     Dir.cd(wd) do
-      raise "#{wd}/#{fasta} not found, run --build_release first" unless File.exists?(fasta)
-
       # set the memory
       file_size_gb = File.size(fasta) / (1024**3)
       mem_gb = if file_size_gb < 1

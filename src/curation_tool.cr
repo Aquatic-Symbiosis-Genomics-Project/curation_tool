@@ -1,11 +1,12 @@
 # Main curation workflow orchestrator.
 #
-# Provides five operations controlled by CLI flags:
+# Provides six operations controlled by CLI flags:
 # - `-p` / `--copy_pretext`: copy pretext maps from the `tol` server to the local workstation
 # - `-w` / `--setup_working_dir`: create the HPC working directory and decompress the assembly FASTA
 # - `-r` / `--build_release`: run `pretext-to-asm`, trim contamination, and regenerate pretext maps
 # - `-q` / `--copy_qc`: copy curated files to the curated directory for QC
 # - `-b` / `--busco`: submit BUSCO on the curated primary (hap1 if merged) FASTA to LSF
+# - `-c` / `--check_chromosome_lists`: compare the number of non-empty staged chromosome list CSVs with the JIRA curated chromosome count
 #
 # Use `-m` / `--merged` for dual-haplotype (hap1/hap2) assemblies.
 require "option_parser"
@@ -19,6 +20,7 @@ qc = false
 tol = false
 release = false
 busco = false
+check = false
 merged = false
 OptionParser.parse do |parser|
   parser.banner = "Usage: curation_tool --issue JIRA_ID [options]"
@@ -28,6 +30,7 @@ OptionParser.parse do |parser|
   parser.on("-r", "--build_release", "create pretext and release files") { release = true }
   parser.on("-q", "--copy_qc", "copy from DIR to curation for QC") { qc = true }
   parser.on("-b", "--busco", "submit BUSCO on the curated fasta") { busco = true }
+  parser.on("-c", "--check_chromosome_lists", "check the staged chromosome lists against the JIRA chromosome count") { check = true }
   parser.on("-m", "--merged", "build files based on a merged map") { merged = true }
 
   parser.on("-h", "--help", "show this help") do
@@ -72,4 +75,7 @@ elsif qc
 elsif busco
   puts "submitting BUSCO (#{y.busco_lineage}) => #{y.curated_dir}"
   run_busco(y)
+elsif check
+  puts "checking chromosome lists => #{y.curated_dir}"
+  check_chromosome_lists(y)
 end

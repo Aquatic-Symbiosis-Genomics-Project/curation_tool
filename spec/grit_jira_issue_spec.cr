@@ -22,6 +22,18 @@ describe GritJiraIssue do
     end
   end
 
+  describe "#curated_chromosomes" do
+    it "returns the curated chromosome count when set" do
+      y = TestJiraIssue.new("RC-1234")
+      y.curated_chromosomes.should eq(21)
+    end
+
+    it "returns nil when not set" do
+      y = TestJiraIssue.new("RC-1234", json_str: FIXTURE_JSON_EMPTY_CUSTOM)
+      y.curated_chromosomes.should be_nil
+    end
+  end
+
   describe "#sample_version" do
     it "returns tolid_version with underscore" do
       y = TestJiraIssue.new("RC-1234")

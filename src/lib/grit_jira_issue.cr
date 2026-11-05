@@ -118,6 +118,11 @@ class GritJiraIssue
     json["fields"]["customfield_11609"].as_f.to_i
   end
 
+  # Returns the number of curated chromosomes from JIRA custom field `customfield_13210`, or `nil` if not set.
+  def curated_chromosomes : Int32?
+    json["fields"]["customfield_13210"]?.try(&.as_f?).try(&.to_i)
+  end
+
   # Returns the ToL specimen ID (e.g. `"mMusMus1"`) from the YAML `specimen` key.
   def tol_id : String
     yaml["specimen"].as_s
