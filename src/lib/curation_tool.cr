@@ -238,7 +238,7 @@ module CurationTool
                end
 
       output = "#{File.basename(fasta, ".fa")}.busco5"
-      cmd = "bsub -K -n #{cores} -o #{output}.%J.out -e #{output}.%J.err -M#{mem_gb}G -R'select[mem>#{mem_gb}G] rusage[mem=#{mem_gb}G] span[hosts=1]' " \
+      cmd = "bsub -K -n #{cores} -o /dev/null -M#{mem_gb}G -R'select[mem>#{mem_gb}G] rusage[mem=#{mem_gb}G] span[hosts=1]' " \
             "singularity exec -B /lustre #{image} busco -i #{fasta} -o #{output} -m genome -l #{lineage_dir}/#{y.busco_lineage} -c #{cores}"
       puts `#{cmd}`
       raise "something went wrong with #{cmd}" unless $?.success?
