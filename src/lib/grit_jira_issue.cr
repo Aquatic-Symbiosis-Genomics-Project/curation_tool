@@ -119,8 +119,14 @@ class GritJiraIssue
   end
 
   # Returns the number of curated chromosomes from JIRA custom field `customfield_13210`, or `nil` if not set.
+  #
+  # The field is a JIRA select list, so the count arrives as an option object
+  # (`{"value": "21", ...}`); plain numbers and numeric strings are accepted too.
   def curated_chromosomes : Int32?
-    json["fields"]["customfield_13210"]?.try(&.as_f?).try(&.to_i)
+    field = json["fields"]["customfield_13210"]?
+    return unless field
+    field = field["value"]? || return if field.as_h?
+    field.as_i? || field.as_f?.try(&.to_i) || field.as_s?.try(&.strip.to_i?)
   end
 
   # Returns the ToL specimen ID (e.g. `"mMusMus1"`) from the YAML `specimen` key.
