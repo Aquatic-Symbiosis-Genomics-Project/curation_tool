@@ -37,7 +37,7 @@ FIXTURE_JSON = <<-JSON
       "customfield_13408": "/lustre/scratch123/tol/resources/treeval/yaml/mMusMus1.yaml",
       "customfield_11677": "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/hap1/contamination/mMusMus1.hap1.contamination.bed",
       "customfield_11609": 3.0,
-      "customfield_13210": 21.0,
+      "customfield_13210": {"self": "https://jira.sanger.ac.uk/rest/api/2/customFieldOption/13047", "value": "21", "id": "13047", "disabled": false},
       "customfield_11650": "TTAGGG",
       "customfield_11643": "mMusMus1_geval",
       "attachment": [

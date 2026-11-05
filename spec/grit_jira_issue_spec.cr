@@ -23,9 +23,16 @@ describe GritJiraIssue do
   end
 
   describe "#curated_chromosomes" do
-    it "returns the curated chromosome count when set" do
+    it "returns the curated chromosome count from a JIRA select option" do
       y = TestJiraIssue.new("RC-1234")
       y.curated_chromosomes.should eq(21)
+    end
+
+    it "accepts a plain integer, float or numeric string" do
+      ["21", "21.0", %("21")].each do |value|
+        y = TestJiraIssue.new("RC-1234", json_str: %({"fields": {"customfield_13210": #{value}}}))
+        y.curated_chromosomes.should eq(21)
+      end
     end
 
     it "returns nil when not set" do
