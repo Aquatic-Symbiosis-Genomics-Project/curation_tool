@@ -200,9 +200,30 @@ calling context via <code>include <a href="CurationTool.html">CurationTool</a></
       </li>
     
       <li class="entry-summary">
+        <a href="#check_chromosome_lists%28y%29%3ANil-instance-method" class="signature"><strong>#check_chromosome_lists</strong>(y) : Nil</a>
+        
+          <div class="summary"><p>Checks that the number of non-empty chromosome list CSVs staged in the curated directory equals the curated chromosome count in JIRA (<code>customfield_13210</code>).</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#copy_qc%28y%29%3ANil-instance-method" class="signature"><strong>#copy_qc</strong>(y) : Nil</a>
         
           <div class="summary"><p>Copies curated assembly files and the pretext map into the curated directory for downstream QC.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#curated_chromosome_lists%28y%29%3AArray%28String%29-instance-method" class="signature"><strong>#curated_chromosome_lists</strong>(y) : Array(String)</a>
+        
+          <div class="summary"><p>Returns the paths of the chromosome list CSVs staged in the curated assembly directory (by <code><a href="CurationTool.html#copy_qc%28y%29%3ANil-instance-method">#copy_qc</a></code>): hap1 and hap2 for merged assemblies (hap2's is an empty placeholder created by <code><a href="CurationTool.html#copy_qc%28y%29%3ANil-instance-method">#copy_qc</a></code>), the single primary otherwise.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#curated_fastas%28y%29%3AArray%28String%29-instance-method" class="signature"><strong>#curated_fastas</strong>(y) : Array(String)</a>
+        
+          <div class="summary"><p>Returns the paths of the curated primary FASTA files staged in the curated assembly directory (by <code><a href="CurationTool.html#copy_qc%28y%29%3ANil-instance-method">#copy_qc</a></code>): hap1 and hap2 for merged assemblies, the single primary otherwise.</p></div>
         
       </li>
     
@@ -309,6 +330,30 @@ merged assemblies).</li>
       </div>
     </div>
   
+    <div class="entry-detail" id="check_chromosome_lists(y):Nil-instance-method">
+      <div class="signature">
+        
+        def <strong>check_chromosome_lists</strong>(y) : Nil
+
+        <a class="method-permalink" href="#check_chromosome_lists%28y%29%3ANil-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Checks that the number of non-empty chromosome list CSVs staged in the
+curated directory equals the curated chromosome count in JIRA
+(<code>customfield_13210</code>). Prints both counts.
+Raises if the JIRA field is unset or the counts differ.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L221" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
     <div class="entry-detail" id="copy_qc(y):Nil-instance-method">
       <div class="signature">
         
@@ -332,6 +377,53 @@ output directory is selected and renamed to the canonical curated path under
       <div>
         
           [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L138" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="curated_chromosome_lists(y):Array(String)-instance-method">
+      <div class="signature">
+        
+        def <strong>curated_chromosome_lists</strong>(y) : Array(String)
+
+        <a class="method-permalink" href="#curated_chromosome_lists%28y%29%3AArray%28String%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the paths of the chromosome list CSVs staged in the curated assembly
+directory (by <code><a href="CurationTool.html#copy_qc%28y%29%3ANil-instance-method">#copy_qc</a></code>): hap1 and hap2 for merged assemblies (hap2's is an
+empty placeholder created by <code><a href="CurationTool.html#copy_qc%28y%29%3ANil-instance-method">#copy_qc</a></code>), the single primary otherwise. Only
+files that exist are returned, in that order.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L213" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="curated_fastas(y):Array(String)-instance-method">
+      <div class="signature">
+        
+        def <strong>curated_fastas</strong>(y) : Array(String)
+
+        <a class="method-permalink" href="#curated_fastas%28y%29%3AArray%28String%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns the paths of the curated primary FASTA files staged in the curated
+assembly directory (by <code><a href="CurationTool.html#copy_qc%28y%29%3ANil-instance-method">#copy_qc</a></code>): hap1 and hap2 for merged assemblies, the
+single primary otherwise. Only files that exist are returned, in that order.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L205" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -418,20 +510,20 @@ LSF (<code>bsub -K</code>), replacing <em>fasta</em> in place with the cleaned v
           
           <p>Submits BUSCO (via singularity on LSF) for the curated primary FASTA, using
 the <code>busco_lineage</code> from the YAML.</p>
-<p>Runs in the working directory on the hap1 FASTA for merged assemblies, or
+<p>Runs in the curated assembly directory on the hap1 FASTA for merged assemblies, or
 the single primary FASTA otherwise. Memory is scaled by FASTA size.
 Output goes to <code>&lt;fasta basename&gt;.busco5</code> in the working directory; once the
 job finishes its short summary is printed and copied into the working
 directory, then the output directory (plus any <code>BUSCO/</code> and
 <code>busco_downloads/</code>) is removed.
 Blocks until the job finishes (<code>bsub -K</code>).
-Raises if no curated FASTA exists (run <code><a href="CurationTool.html#build_release%28y%29%3ANil-instance-method">#build_release</a></code> first).</p>
+Raises if no curated FASTA exists (run <code><a href="CurationTool.html#copy_qc%28y%29%3ANil-instance-method">#copy_qc</a></code> first).</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L213" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L253" target="_blank">View source</a>]
         
       </div>
     </div>

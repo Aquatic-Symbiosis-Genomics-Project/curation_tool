@@ -37,6 +37,7 @@ FIXTURE_JSON = <<-JSON
       "customfield_13408": "/lustre/scratch123/tol/resources/treeval/yaml/mMusMus1.yaml",
       "customfield_11677": "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/hap1/contamination/mMusMus1.hap1.contamination.bed",
       "customfield_11609": 3.0,
+      "customfield_13210": 21.0,
       "customfield_11650": "TTAGGG",
       "customfield_11643": "mMusMus1_geval",
       "attachment": [
@@ -116,6 +117,7 @@ FIXTURE_JSON_EMPTY_CUSTOM = <<-JSON
       "customfield_13408": null,
       "customfield_11677": "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/assembly/draft/treeval/hap1/contamination/mMusMus1.hap1.contamination.bed",
       "customfield_11609": 1.0,
+      "customfield_13210": null,
       "customfield_11650": null,
       "customfield_11643": null,
       "attachment": []

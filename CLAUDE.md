@@ -65,6 +65,9 @@ bash build_docs.bash
 - `copy_qc`: Copies curated fasta/chromosome lists to the curated dir, copies pretext map
 - `setup_local`: Copies pretext files from `tol` server to local workstation
 - `run_busco` (`--busco`/`-b`): Runs BUSCO (singularity, `bsub -K`) on the curated primary FASTA (hap1 if merged) using `busco_lineage` from the YAML; prints the short summary, copies it into the working dir, then removes the BUSCO output, `BUSCO/` and `busco_downloads/`
+  - helper: `curated_fastas` (existing curated primary FASTA paths in the curated dir: hap1+hap2 if merged, else primary)
+  - helper: `curated_chromosome_lists` (existing chromosome list CSV paths in the curated dir: hap1+hap2 if merged, else primary)
+- `check_chromosome_lists` (`--check_chromosome_lists`/`-c`): compares the number of non-empty staged chromosome list CSVs with `curated_chromosomes` (JIRA `customfield_13210`); raises on mismatch or if unset
 
 ### Specialised subclasses
 - `FCSIssue` (`submit_fcs.cr`) — adds `submit_to_lsf` for FCS-GX contamination pipeline
@@ -81,7 +84,7 @@ The `merged` boolean flag on `GritJiraIssue` controls whether hap1/hap2 dual-out
 
 ## Key Conventions
 
-- JIRA custom fields: `customfield_13408` = YAML path, `customfield_11677` = decon file, `customfield_11609` = release version, `customfield_11650` = telomere sequence, `customfield_11643` = geval DB
+- JIRA custom fields: `customfield_13408` = YAML path, `customfield_11677` = decon file, `customfield_11609` = release version, `customfield_11650` = telomere sequence, `customfield_11643` = geval DB, `customfield_13210` = curated chromosome count
 - Working directory pattern: derived from `pacbio_read_dir` or `ont_read_dir` by replacing `genomic_data/...` with `working/<tolid>_<user>_curation`
 - HPC jobs use LSF (`bsub -K` for synchronous execution in release builds)
 - All entry-point binaries require `--issue`/`-i`; they exit with an error if it is missing (no default issue ID)

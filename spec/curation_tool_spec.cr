@@ -74,6 +74,169 @@ describe CurationTool do
     end
   end
 
+  describe "#curated_fastas" do
+    json_str = ->(testdir : String) {
+      <<-JSON
+        {"fields": {"customfield_11677": "#{testdir}/assembly/decon/file.bed", "customfield_11609": 3.0}}
+        JSON
+    }
+    yaml_str = <<-YAML
+      specimen: mMusMus1
+      species: Mus musculus
+      projects:
+        - DToL
+      YAML
+
+    it "returns the staged primary for a non-merged assembly" do
+      testdir = "#{Dir.tempdir}/ct_test_curated_fastas_single_#{Random.rand(100000)}"
+      y = TestJiraIssue.new("RC-1234", json_str: json_str.call(testdir), yaml_str: yaml_str)
+      path = "#{y.curated_dir}/#{y.sample_dot_version}.primary.curated.fa"
+      FileUtils.mkdir_p(y.curated_dir)
+      FileUtils.touch(path)
+
+      CurationToolTest.new.curated_fastas(y).should eq([path])
+      FileUtils.rm_rf(testdir)
+    end
+
+    it "returns hap1 then hap2 for a merged assembly" do
+      testdir = "#{Dir.tempdir}/ct_test_curated_fastas_merged_#{Random.rand(100000)}"
+      y = TestJiraIssue.new("RC-1234", merged: true, json_str: json_str.call(testdir), yaml_str: yaml_str)
+      paths = ["#{y.curated_dir}/#{y.tol_id}.hap1.#{y.release_version}.primary.curated.fa",
+               "#{y.curated_dir}/#{y.tol_id}.hap2.#{y.release_version}.primary.curated.fa"]
+      FileUtils.mkdir_p(y.curated_dir)
+      paths.each { |path| FileUtils.touch(path) }
+
+      CurationToolTest.new.curated_fastas(y).should eq(paths)
+      FileUtils.rm_rf(testdir)
+    end
+
+    it "returns an empty array when no primary FASTA is staged" do
+      testdir = "#{Dir.tempdir}/ct_test_curated_fastas_empty_#{Random.rand(100000)}"
+      y = TestJiraIssue.new("RC-1234", json_str: json_str.call(testdir), yaml_str: yaml_str)
+
+      CurationToolTest.new.curated_fastas(y).should eq([] of String)
+      FileUtils.rm_rf(testdir)
+    end
+  end
+
+  describe "#curated_chromosome_lists" do
+    json_str = ->(testdir : String) {
+      <<-JSON
+        {"fields": {"customfield_11677": "#{testdir}/assembly/decon/file.bed", "customfield_11609": 3.0}}
+        JSON
+    }
+    yaml_str = <<-YAML
+      specimen: mMusMus1
+      species: Mus musculus
+      projects:
+        - DToL
+      YAML
+
+    it "returns the staged primary for a non-merged assembly" do
+      testdir = "#{Dir.tempdir}/ct_test_curated_chromosome_lists_single_#{Random.rand(100000)}"
+      y = TestJiraIssue.new("RC-1234", json_str: json_str.call(testdir), yaml_str: yaml_str)
+      path = "#{y.curated_dir}/#{y.sample_dot_version}.primary.chromosome.list.csv"
+      FileUtils.mkdir_p(y.curated_dir)
+      FileUtils.touch(path)
+
+      CurationToolTest.new.curated_chromosome_lists(y).should eq([path])
+      FileUtils.rm_rf(testdir)
+    end
+
+    it "returns hap1 then hap2 for a merged assembly" do
+      testdir = "#{Dir.tempdir}/ct_test_curated_chromosome_lists_merged_#{Random.rand(100000)}"
+      y = TestJiraIssue.new("RC-1234", merged: true, json_str: json_str.call(testdir), yaml_str: yaml_str)
+      paths = ["#{y.curated_dir}/#{y.tol_id}.hap1.#{y.release_version}.primary.chromosome.list.csv",
+               "#{y.curated_dir}/#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv"]
+      FileUtils.mkdir_p(y.curated_dir)
+      paths.each { |path| FileUtils.touch(path) }
+
+      CurationToolTest.new.curated_chromosome_lists(y).should eq(paths)
+      FileUtils.rm_rf(testdir)
+    end
+
+    it "returns an empty array when no chromosome list is staged" do
+      testdir = "#{Dir.tempdir}/ct_test_curated_chromosome_lists_empty_#{Random.rand(100000)}"
+      y = TestJiraIssue.new("RC-1234", json_str: json_str.call(testdir), yaml_str: yaml_str)
+
+      CurationToolTest.new.curated_chromosome_lists(y).should eq([] of String)
+      FileUtils.rm_rf(testdir)
+    end
+  end
+
+  describe "#check_chromosome_lists" do
+    json_str = ->(testdir : String, chromosome_count : String) {
+      <<-JSON
+        {"fields": {"customfield_11677": "#{testdir}/assembly/decon/file.bed", "customfield_11609": 3.0, "customfield_13210": #{chromosome_count}}}
+        JSON
+    }
+    yaml_str = <<-YAML
+      specimen: mMusMus1
+      species: Mus musculus
+      projects:
+        - DToL
+      YAML
+
+    it "accepts one non-empty list for a non-merged assembly with JIRA count 1" do
+      testdir = "#{Dir.tempdir}/ct_test_check_chromosome_lists_single_#{Random.rand(100000)}"
+      begin
+        y = TestJiraIssue.new("RC-1234", json_str: json_str.call(testdir, "1.0"), yaml_str: yaml_str)
+        path = "#{y.curated_dir}/#{y.sample_dot_version}.primary.chromosome.list.csv"
+        FileUtils.mkdir_p(y.curated_dir)
+        File.write(path, "chr1\n")
+
+        CurationToolTest.new.check_chromosome_lists(y)
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+
+    it "ignores an empty hap2 placeholder for a merged assembly" do
+      testdir = "#{Dir.tempdir}/ct_test_check_chromosome_lists_merged_#{Random.rand(100000)}"
+      begin
+        y = TestJiraIssue.new("RC-1234", merged: true, json_str: json_str.call(testdir, "1.0"), yaml_str: yaml_str)
+        hap1 = "#{y.curated_dir}/#{y.tol_id}.hap1.#{y.release_version}.primary.chromosome.list.csv"
+        hap2 = "#{y.curated_dir}/#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv"
+        FileUtils.mkdir_p(y.curated_dir)
+        File.write(hap1, "chr1\n")
+        FileUtils.touch(hap2)
+
+        CurationToolTest.new.check_chromosome_lists(y)
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+
+    it "raises when the non-empty file count differs from JIRA" do
+      testdir = "#{Dir.tempdir}/ct_test_check_chromosome_lists_mismatch_#{Random.rand(100000)}"
+      begin
+        y = TestJiraIssue.new("RC-1234", json_str: json_str.call(testdir, "2.0"), yaml_str: yaml_str)
+        path = "#{y.curated_dir}/#{y.sample_dot_version}.primary.chromosome.list.csv"
+        FileUtils.mkdir_p(y.curated_dir)
+        File.write(path, "chr1\n")
+
+        expect_raises(Exception, /does not match/) do
+          CurationToolTest.new.check_chromosome_lists(y)
+        end
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+
+    it "raises when the JIRA curated chromosome count is unset" do
+      testdir = "#{Dir.tempdir}/ct_test_check_chromosome_lists_unset_#{Random.rand(100000)}"
+      begin
+        y = TestJiraIssue.new("RC-1234", json_str: json_str.call(testdir, "null"), yaml_str: yaml_str)
+
+        expect_raises(Exception, /customfield_13210/) do
+          CurationToolTest.new.check_chromosome_lists(y)
+        end
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+  end
+
   describe "#setup_tol" do
     it "raises when scaffolds.tpf already exists" do
       tmpdir = Dir.tempdir
