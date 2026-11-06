@@ -207,6 +207,43 @@ describe CurationTool do
       end
     end
 
+    it "reports each merged chromosome list as empty or non-empty" do
+      testdir = "#{Dir.tempdir}/ct_test_check_chromosome_lists_output_#{Random.rand(100000)}"
+      begin
+        y = TestJiraIssue.new("RC-1234", merged: true, json_str: json_str.call(testdir, "1.0"), yaml_str: yaml_str)
+        hap1 = "#{y.curated_dir}/#{y.tol_id}.hap1.#{y.release_version}.primary.chromosome.list.csv"
+        hap2 = "#{y.curated_dir}/#{y.tol_id}.hap2.#{y.release_version}.primary.chromosome.list.csv"
+        FileUtils.mkdir_p(y.curated_dir)
+        File.write(hap1, "chr1\n")
+        FileUtils.touch(hap2)
+
+        io = IO::Memory.new
+        CurationToolTest.new.check_chromosome_lists(y, io)
+
+        output = io.to_s
+        output.should contain("  non-empty: #{hap1}")
+        output.should contain("  empty: #{hap2}")
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+
+    it "reports when no chromosome lists are found" do
+      testdir = "#{Dir.tempdir}/ct_test_check_chromosome_lists_none_#{Random.rand(100000)}"
+      begin
+        y = TestJiraIssue.new("RC-1234", json_str: json_str.call(testdir, "1.0"), yaml_str: yaml_str)
+
+        io = IO::Memory.new
+        expect_raises(Exception, /does not match/) do
+          CurationToolTest.new.check_chromosome_lists(y, io)
+        end
+
+        io.to_s.should contain("no chromosome lists were found in #{y.curated_dir}")
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+
     it "raises when the non-empty file count differs from JIRA" do
       testdir = "#{Dir.tempdir}/ct_test_check_chromosome_lists_mismatch_#{Random.rand(100000)}"
       begin

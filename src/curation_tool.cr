@@ -77,5 +77,10 @@ elsif busco
   run_busco(y)
 elsif check
   puts "checking chromosome lists => #{y.curated_dir}"
-  check_chromosome_lists(y)
+  begin
+    check_chromosome_lists(y)
+  rescue ex
+    STDERR.puts "ERROR: #{ex.message}"
+    exit(1)
+  end
 end

@@ -200,7 +200,7 @@ calling context via <code>include <a href="CurationTool.html">CurationTool</a></
       </li>
     
       <li class="entry-summary">
-        <a href="#check_chromosome_lists%28y%29%3ANil-instance-method" class="signature"><strong>#check_chromosome_lists</strong>(y) : Nil</a>
+        <a href="#check_chromosome_lists%28y%2Cio%3AIO%3DSTDOUT%29%3ANil-instance-method" class="signature"><strong>#check_chromosome_lists</strong>(y, io : IO = <span class="t">STDOUT</span>) : Nil</a>
         
           <div class="summary"><p>Checks that the number of non-empty chromosome list CSVs staged in the curated directory equals the curated chromosome count in JIRA (<code>customfield_13210</code>).</p></div>
         
@@ -330,26 +330,27 @@ merged assemblies).</li>
       </div>
     </div>
   
-    <div class="entry-detail" id="check_chromosome_lists(y):Nil-instance-method">
+    <div class="entry-detail" id="check_chromosome_lists(y,io:IO=STDOUT):Nil-instance-method">
       <div class="signature">
         
-        def <strong>check_chromosome_lists</strong>(y) : Nil
+        def <strong>check_chromosome_lists</strong>(y, io : IO = <span class="t">STDOUT</span>) : Nil
 
-        <a class="method-permalink" href="#check_chromosome_lists%28y%29%3ANil-instance-method">#</a>
+        <a class="method-permalink" href="#check_chromosome_lists%28y%2Cio%3AIO%3DSTDOUT%29%3ANil-instance-method">#</a>
       </div>
       
         <div class="doc">
           
           <p>Checks that the number of non-empty chromosome list CSVs staged in the
 curated directory equals the curated chromosome count in JIRA
-(<code>customfield_13210</code>). Prints both counts.
+(<code>customfield_13210</code>). Prints each file's empty/non-empty status and both counts.
+Output goes to <em>io</em> (STDOUT by default).
 Raises if the JIRA field is unset or the counts differ.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L221" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L222" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -523,7 +524,7 @@ Raises if no curated FASTA exists (run <code><a href="CurationTool.html#copy_qc%
       <br/>
       <div>
         
-          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L253" target="_blank">View source</a>]
+          [<a href="https://github.com/Aquatic-Symbiosis-Genomics-Project/curation_tool/blob/new_curation_pretext/src/lib/curation_tool.cr#L263" target="_blank">View source</a>]
         
       </div>
     </div>

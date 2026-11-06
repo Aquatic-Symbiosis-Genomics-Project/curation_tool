@@ -216,14 +216,24 @@ module CurationTool
 
   # Checks that the number of non-empty chromosome list CSVs staged in the
   # curated directory equals the curated chromosome count in JIRA
-  # (`customfield_13210`). Prints both counts.
+  # (`customfield_13210`). Prints each file's empty/non-empty status and both counts.
+  # Output goes to *io* (STDOUT by default).
   # Raises if the JIRA field is unset or the counts differ.
-  def check_chromosome_lists(y) : Nil
+  def check_chromosome_lists(y, io : IO = STDOUT) : Nil
     expected = y.curated_chromosomes
     raise "curated chromosome count (customfield_13210) is not set in JIRA for #{y.tol_id}" if expected.nil?
 
-    found = curated_chromosome_lists(y).count { |path| File.size(path) > 0 }
-    puts "non-empty chromosome lists: #{found}, curated chromosomes in JIRA: #{expected}"
+    chromosome_lists = curated_chromosome_lists(y).map { |path| {path, File.size(path)} }
+    if chromosome_lists.empty?
+      io.puts "no chromosome lists were found in #{y.curated_dir}"
+    else
+      chromosome_lists.each do |path, size|
+        io.puts "  #{size > 0 ? "non-empty" : "empty"}: #{path}"
+      end
+    end
+
+    found = chromosome_lists.count { |_, size| size > 0 }
+    io.puts "non-empty chromosome lists: #{found}, curated chromosomes in JIRA: #{expected}"
     raise "non-empty chromosome list count (#{found}) does not match curated chromosome count in JIRA (#{expected}) for #{y.curated_dir}" if found != expected
   end
 
