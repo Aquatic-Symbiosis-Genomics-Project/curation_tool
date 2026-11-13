@@ -139,6 +139,235 @@ describe GritJiraIssue do
     end
   end
 
+  describe "#hic_read_files" do
+    it "returns the Hi-C read file paths when present" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: FIXTURE_YAML_READ_FILES)
+      y.hic_read_files.should eq([
+        "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic/mMusMus1.hic.1.cram",
+        "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic/mMusMus1.hic.2.cram",
+      ])
+    end
+
+    it "returns nil when not present" do
+      y = TestJiraIssue.new("RC-1234")
+      y.hic_read_files.should be_nil
+    end
+
+    it "returns nil when the list is empty" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: "hic_read_files: []")
+      y.hic_read_files.should be_nil
+    end
+
+    it "returns nil when the key is blank" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: "hic_read_files:")
+      y.hic_read_files.should be_nil
+    end
+  end
+
+  describe "#pacbio_read_files" do
+    it "returns the PacBio read file paths when present" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: FIXTURE_YAML_READ_FILES)
+      y.pacbio_read_files.should eq([
+        "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio/mMusMus1.pacbio.1.fasta.gz",
+        "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio/mMusMus1.pacbio.2.fasta.gz",
+      ])
+    end
+
+    it "returns nil when not present" do
+      y = TestJiraIssue.new("RC-1234")
+      y.pacbio_read_files.should be_nil
+    end
+
+    it "returns nil when the list is empty" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: "pacbio_read_files: []")
+      y.pacbio_read_files.should be_nil
+    end
+  end
+
+  describe "#ont_read_files" do
+    it "returns the ONT read file paths when present" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: FIXTURE_YAML_READ_FILES)
+      y.ont_read_files.should eq([
+        "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/ont/mMusMus1.ont.1.fasta.gz",
+        "/lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/ont/mMusMus1.ont.2.fasta.gz",
+      ])
+    end
+
+    it "returns nil when not present" do
+      y = TestJiraIssue.new("RC-1234")
+      y.ont_read_files.should be_nil
+    end
+
+    it "returns nil when the list is empty" do
+      y = TestJiraIssue.new("RC-1234", yaml_str: "ont_read_files: []")
+      y.ont_read_files.should be_nil
+    end
+  end
+
+  describe "#curation_pretext" do
+    it "prefers ONT reads and uses explicit Hi-C files" do
+      testdir = "#{Dir.tempdir}/grit_jira_curation_pretext_#{Random.rand(UInt64)}"
+      Dir.mkdir_p(testdir)
+      fasta = "#{testdir}/input.fa"
+      File.write(fasta, ">sample\nACGT\n")
+
+      begin
+        issue = TestJiraIssue.new("RC-1234", yaml_str: FIXTURE_YAML_READ_FILES)
+        yaml_path = "#{Path[fasta].expand}.yml"
+        issue.curation_pretext(fasta, "#{testdir}/output", no_email: true)
+        params = YAML.parse(File.read(yaml_path))
+        params["reads"].as_a.map(&.as_s).should eq(issue.ont_read_files)
+        params["cram"].as_a.map(&.as_s).should eq(issue.hic_read_files)
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+
+    it "uses PacBio reads when ONT files are absent" do
+      testdir = "#{Dir.tempdir}/grit_jira_curation_pretext_#{Random.rand(UInt64)}"
+      Dir.mkdir_p(testdir)
+      fasta = "#{testdir}/input.fa"
+      File.write(fasta, ">sample\nACGT\n")
+      yaml = <<-YAML
+        specimen: mMusMus1
+        species: Mus musculus
+        projects:
+          - DToL
+        pacbio_read_files:
+          - /reads/pacbio.1.fasta.gz
+          - /reads/pacbio.2.fasta.gz
+        hic_read_files:
+          - /reads/hic.1.cram
+        YAML
+
+      begin
+        issue = TestJiraIssue.new("RC-1234", yaml_str: yaml)
+        yaml_path = "#{Path[fasta].expand}.yml"
+        issue.curation_pretext(fasta, "#{testdir}/output", no_email: true)
+        params = YAML.parse(File.read(yaml_path))
+        params["reads"].as_a.map(&.as_s).should eq(issue.pacbio_read_files)
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+
+    it "uses explicit Hi-C files without requiring a Hi-C directory" do
+      testdir = "#{Dir.tempdir}/grit_jira_curation_pretext_#{Random.rand(UInt64)}"
+      Dir.mkdir_p(testdir)
+      fasta = "#{testdir}/input.fa"
+      File.write(fasta, ">sample\nACGT\n")
+      yaml = <<-YAML
+        specimen: mMusMus1
+        species: Mus musculus
+        projects:
+          - DToL
+        hic_read_files:
+          - /reads/hic.1.cram
+          - /reads/hic.2.cram
+        YAML
+
+      begin
+        issue = TestJiraIssue.new("RC-1234", yaml_str: yaml)
+        yaml_path = "#{Path[fasta].expand}.yml"
+        issue.curation_pretext(fasta, "#{testdir}/output", no_email: true).should_not be_empty
+        params = YAML.parse(File.read(yaml_path))
+        params["cram"].as_a.map(&.as_s).should eq(issue.hic_read_files)
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+
+    it "globs read and CRAM files from their directories" do
+      testdir = "#{Dir.tempdir}/grit_jira_curation_pretext_#{Random.rand(UInt64)}"
+      ont_dir = "#{testdir}/ont"
+      hic_dir = "#{testdir}/hic"
+      Dir.mkdir_p(ont_dir)
+      Dir.mkdir_p(hic_dir)
+      fasta = "#{testdir}/input.fa"
+      File.write(fasta, ">sample\nACGT\n")
+      ["reads.1.fasta.gz", "reads.2.fasta.gz", "ignore.txt"].each do |name|
+        File.write("#{ont_dir}/#{name}", "file")
+      end
+      ["reads.1.cram", "reads.2.cram", "ignore.txt"].each do |name|
+        File.write("#{hic_dir}/#{name}", "file")
+      end
+      yaml = <<-YAML
+        specimen: mMusMus1
+        species: Mus musculus
+        projects:
+          - DToL
+        ont_read_dir: #{ont_dir}
+        hic_read_dir: #{hic_dir}
+        YAML
+
+      begin
+        issue = TestJiraIssue.new("RC-1234", yaml_str: yaml)
+        yaml_path = "#{Path[fasta].expand}.yml"
+        issue.curation_pretext(fasta, "#{testdir}/output", no_email: true)
+        params = YAML.parse(File.read(yaml_path))
+        params["reads"].as_a.map(&.as_s).sort!.should eq(Dir.glob("#{ont_dir}/*.fasta.gz").sort)
+        params["cram"].as_a.map(&.as_s).sort!.should eq(Dir.glob("#{hic_dir}/*.cram").sort)
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+
+    it "globs read and CRAM files when the YAML lists are empty" do
+      testdir = "#{Dir.tempdir}/grit_jira_curation_pretext_#{Random.rand(UInt64)}"
+      ont_dir = "#{testdir}/ont"
+      hic_dir = "#{testdir}/hic"
+      Dir.mkdir_p(ont_dir)
+      Dir.mkdir_p(hic_dir)
+      fasta = "#{testdir}/input.fa"
+      File.write(fasta, ">sample\nACGT\n")
+      ["reads.1.fasta.gz", "reads.2.fasta.gz", "ignore.txt"].each do |name|
+        File.write("#{ont_dir}/#{name}", "file")
+      end
+      ["reads.1.cram", "reads.2.cram", "ignore.txt"].each do |name|
+        File.write("#{hic_dir}/#{name}", "file")
+      end
+      yaml = <<-YAML
+        specimen: mMusMus1
+        species: Mus musculus
+        projects:
+          - DToL
+        ont_read_files: []
+        hic_read_files: []
+        ont_read_dir: #{ont_dir}
+        hic_read_dir: #{hic_dir}
+        YAML
+
+      begin
+        issue = TestJiraIssue.new("RC-1234", yaml_str: yaml)
+        yaml_path = "#{Path[fasta].expand}.yml"
+        issue.curation_pretext(fasta, "#{testdir}/output", no_email: true)
+        params = YAML.parse(File.read(yaml_path))
+        params["reads"].as_a.map(&.as_s).sort!.should eq(Dir.glob("#{ont_dir}/*.fasta.gz").sort)
+        params["cram"].as_a.map(&.as_s).sort!.should eq(Dir.glob("#{hic_dir}/*.cram").sort)
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+
+    it "returns a command with the params file and output directory" do
+      testdir = "#{Dir.tempdir}/grit_jira_curation_pretext_#{Random.rand(UInt64)}"
+      Dir.mkdir_p(testdir)
+      fasta = "#{testdir}/input.fa"
+      output = "#{testdir}/output"
+      File.write(fasta, ">sample\nACGT\n")
+
+      begin
+        issue = TestJiraIssue.new("RC-1234", yaml_str: FIXTURE_YAML_READ_FILES)
+        yaml_path = "#{Path[fasta].expand}.yml"
+        command = issue.curation_pretext(fasta, output, no_email: true)
+        command.should contain("-params-file #{yaml_path}")
+        command.should contain("--outdir #{output}")
+      ensure
+        FileUtils.rm_rf(testdir)
+      end
+    end
+  end
+
   describe "#projects" do
     it "returns the list of projects" do
       y = TestJiraIssue.new("RC-1234")

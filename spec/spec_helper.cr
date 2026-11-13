@@ -78,6 +78,25 @@ FIXTURE_YAML_ONT = <<-YAML
     - DToL
   YAML
 
+FIXTURE_YAML_READ_FILES = <<-YAML
+  specimen: mMusMus1
+  species: Mus musculus
+  hic_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic
+  pacbio_read_dir: /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio
+  projects:
+    - DToL
+    - GenomeArk
+  hic_read_files:
+    - /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic/mMusMus1.hic.1.cram
+    - /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/hic/mMusMus1.hic.2.cram
+  pacbio_read_files:
+    - /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio/mMusMus1.pacbio.1.fasta.gz
+    - /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/pacbio/mMusMus1.pacbio.2.fasta.gz
+  ont_read_files:
+    - /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/ont/mMusMus1.ont.1.fasta.gz
+    - /lustre/scratch123/tol/species/Mus_musculus/mMusMus1/genomic_data/ont/mMusMus1.ont.2.fasta.gz
+  YAML
+
 FIXTURE_YAML_MERGED_HAP = <<-YAML
   specimen: mMusMus1
   species: Mus musculus

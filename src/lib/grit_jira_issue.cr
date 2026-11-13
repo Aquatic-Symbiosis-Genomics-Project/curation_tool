@@ -61,6 +61,21 @@ class GritJiraIssue
     yaml["ont_read_dir"].as_s?
   end
 
+  # Returns the Hi-C read files, or `nil` if absent or empty in the YAML.
+  def hic_read_files : Array(String)?
+    read_file_list("hic_read_files")
+  end
+
+  # Returns the PacBio read files, or `nil` if absent or empty in the YAML.
+  def pacbio_read_files : Array(String)?
+    read_file_list("pacbio_read_files")
+  end
+
+  # Returns the ONT read files, or `nil` if absent or empty in the YAML.
+  def ont_read_files : Array(String)?
+    read_file_list("ont_read_files")
+  end
+
   # Returns the list of project names associated with this specimen (e.g. `["DToL", "GenomeArk"]`).
   def projects : Array(YAML::Any)
     yaml["projects"].as_a
@@ -269,11 +284,10 @@ class GritJiraIssue
     raise "input fasta file #{fasta} doesn't exist" unless File.exists?(fasta)
 
     telo = telomer.size > 1 ? telomer : ""
-    reads = ont_read_dir || "#{pacbio_read_dir}/fasta"
-    crams = hic_read_dir
     email = no_email ? "" : "-N #{user}@sanger.ac.uk"
-    read_files = Dir.glob("#{reads}/*.fasta.gz")
-    cram_files = crams.flat_map { |directory| Dir.glob("#{directory}/*.cram") }
+    read_files = ont_read_files || pacbio_read_files ||
+                 Dir.glob("#{ont_read_dir || "#{pacbio_read_dir}/fasta"}/*.fasta.gz")
+    cram_files = hic_read_files || hic_read_dir.flat_map { |directory| Dir.glob("#{directory}/*.cram") }
     input_file = Path[fasta].expand
     yaml_file = "#{input_file}.yml"
 
@@ -315,5 +329,13 @@ class GritJiraIssue
     raise "cannot get the taxonomy" if json.as_a.size < 1
 
     json[0]["taxId"].as_s
+  end
+
+  private def read_file_list(key : String) : Array(String)?
+    list = yaml[key]?.try &.as_a?
+    return unless list
+
+    files = list.map(&.as_s)
+    files unless files.empty?
   end
 end
